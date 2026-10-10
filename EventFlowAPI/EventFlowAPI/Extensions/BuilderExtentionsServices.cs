@@ -72,7 +72,6 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<ICopyMakerService, CopyMakerService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
             services.AddScoped<IPlotService, PlotService>();
-            services.AddScoped<IPaymentService, PaymentService>();
         }
     }
 }

@@ -2,7 +2,7 @@ import { forwardRef, useEffect } from "react";
 import { EventPassType } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import { EventPassRequest } from "../../models/create_schemas/EventPassSchema";
-import { PayUPaymentResponse } from "../../models/response_models/PayUPaymentResponse";
+import { PaymentRedirectResponse } from "../../models/response_models/PaymentRedirectResponse";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -25,7 +25,7 @@ const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps
       data: paymentResponse,
       statusCode: createPaymentStatusCode,
       post: createBuyPassPaymentTransaction,
-    } = useApi<PayUPaymentResponse, EventPassRequest>(ApiEndpoint.EventPassCreateBuyTransaction);
+    } = useApi<PaymentRedirectResponse, EventPassRequest>(ApiEndpoint.EventPassCreateBuyTransaction);
 
     const onSubmit = async () => {
       if (eventPassType !== undefined) {
@@ -33,8 +33,8 @@ const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps
           passTypeId: eventPassType.id,
         };
         await toast.promise(createBuyPassPaymentTransaction({ id: undefined, body: data }), {
-          pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-          error: "Wystąpił błąd przekierowania do bramki płatniczej",
+          pending: "Trwa przetwarzanie płatności",
+          error: "Wystąpił błąd podczas przetwarzania płatności",
         });
       }
     };
@@ -75,7 +75,7 @@ const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps
                       )}
                       gap={10}
                     />
-                    <LabelText labelWidth={150} label="Typ płatności:" text="PayU" gap={10} />
+                    <LabelText labelWidth={150} label="Typ płatności:" text="Płatność online" gap={10} />
                     <LabelText
                       label="Typ karnetu:"
                       labelWidth={150}

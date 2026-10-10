@@ -19,7 +19,7 @@ import {
 } from "../../../models/update_schemas/EventPassUpdateSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import { PayUPaymentResponse } from "../../../models/response_models/PayUPaymentResponse";
+import { PaymentRedirectResponse } from "../../../models/response_models/PaymentRedirectResponse";
 import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
@@ -38,7 +38,7 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
       data: paymentResponse,
       statusCode: createPaymentStatusCode,
       post: createRenewPassPaymentTransaction,
-    } = useApi<PayUPaymentResponse, EventPassUpdateRequest>(
+    } = useApi<PaymentRedirectResponse, EventPassUpdateRequest>(
       ApiEndpoint.EventPassCreateRenewTransaction
     );
 
@@ -93,8 +93,8 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
       if (eventPass !== undefined) {
         //setPromisePending(true);
         await toast.promise(createRenewPassPaymentTransaction({ id: eventPass.id, body: data }), {
-          pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-          error: "Wystąpił błąd przekierowania do bramki płatniczej",
+          pending: "Trwa przetwarzanie płatności",
+          error: "Wystąpił błąd podczas przetwarzania płatności",
         });
         //setPromisePending(false);
         //setActionPerformed(true);
@@ -229,7 +229,7 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
                             <LabelText
                               labelWidth={150}
                               label="Typ płatności:"
-                              text="PayU"
+                              text="Płatność online"
                               gap={10}
                             />
                           </div>

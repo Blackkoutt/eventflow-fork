@@ -8,7 +8,7 @@ import { HallRentRequest, HallRentSchema } from "../../models/create_schemas/Hal
 import MultiSelect from "../common/forms/MultiSelect";
 import DatePicker from "../common/forms/DatePicker";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
-import { PayUPaymentResponse } from "../../models/response_models/PayUPaymentResponse";
+import { PaymentRedirectResponse } from "../../models/response_models/PaymentRedirectResponse";
 import useApi from "../../hooks/useApi";
 import { SelectOption } from "../../helpers/SelectOptions";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -45,7 +45,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
       data: paymentResponse,
       statusCode: createPaymentStatusCode,
       post: createRentPaymentTransaction,
-    } = useApi<PayUPaymentResponse, HallRentDto>(ApiEndpoint.HallRentCreateTransaction);
+    } = useApi<PaymentRedirectResponse, HallRentDto>(ApiEndpoint.HallRentCreateTransaction);
     const { data: services, get: getServices } = useApi<AdditionalServices>(
       ApiEndpoint.AdditionalServices
     );
@@ -161,8 +161,8 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
             endDate: DateFormatter.ToLocalISOString(data.endDate),
           };
           await toast.promise(createRentPaymentTransaction({ body: requestData }), {
-            pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-            error: "Wystąpił błąd przekierowania do bramki płatniczej",
+            pending: "Trwa przetwarzanie płatności",
+            error: "Wystąpił błąd podczas przetwarzania płatności",
           });
         } else {
           toast.error("Zaloguj się aby wynająć tę salę");
@@ -228,7 +228,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
                           Podsumowanie rezerwacji:
                         </p>
                         <div className="flex flex-col justify-center items-center gap-2 -translate-x-[30px]">
-                          <LabelText labelWidth={163} label="Typ płatności:" text="PayU" gap={10} />
+                          <LabelText labelWidth={163} label="Typ płatności:" text="Płatność online" gap={10} />
                           <LabelText
                             label="Początek rezerwacji:"
                             labelWidth={163}

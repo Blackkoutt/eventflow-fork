@@ -14,7 +14,7 @@ import {
   Ticket,
 } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
-import { PayUPaymentResponse } from "../../models/response_models/PayUPaymentResponse";
+import { PaymentRedirectResponse } from "../../models/response_models/PaymentRedirectResponse";
 import useApi from "../../hooks/useApi";
 import { SelectOption } from "../../helpers/SelectOptions";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -45,7 +45,7 @@ const EventReservationDialog = forwardRef<HTMLDialogElement, EventReservationDia
       data: paymentResponse,
       statusCode: createPaymentStatusCode,
       post: createReservationPaymentTransaction,
-    } = useApi<PayUPaymentResponse, ReservationRequest>(ApiEndpoint.ReservationCreateTransaction);
+    } = useApi<PaymentRedirectResponse, ReservationRequest>(ApiEndpoint.ReservationCreateTransaction);
 
     const { data: hallWithDetails, get: getHallWithDetails } = useApi<Hall>(ApiEndpoint.Hall);
     const { data: seatTypes, get: getSeatTypes } = useApi<SeatType>(ApiEndpoint.SeatType);
@@ -280,14 +280,14 @@ const EventReservationDialog = forwardRef<HTMLDialogElement, EventReservationDia
             console.log(isEventPass);
             if (isEventPass) {
               await toast.promise(postReservation({ body: data }), {
-                pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-                error: "Wystąpił błąd przekierowania do bramki płatniczej",
+                pending: "Trwa przetwarzanie płatności",
+                error: "Wystąpił błąd podczas przetwarzania płatności",
               });
               onDialogClose();
             } else {
               await toast.promise(createReservationPaymentTransaction({ body: data }), {
-                pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-                error: "Wystąpił błąd przekierowania do bramki płatniczej",
+                pending: "Trwa przetwarzanie płatności",
+                error: "Wystąpił błąd podczas przetwarzania płatności",
               });
             }
           } else {

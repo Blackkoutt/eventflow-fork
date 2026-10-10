@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -14,7 +15,7 @@ using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Helpers.PayU;
+
 using EventFlowAPI.Logic.Services.OtherServices.Services;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
@@ -29,7 +30,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         ICopyMakerService copyMaker,
         ICollisionCheckerService collisionChecker,
         IFileService fileService,
-        IPaymentService paymentService,
         IHttpContextAccessor httpContextAccessor,
         IEmailSenderService emailSender) :
         GenericService<
@@ -44,7 +44,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ICopyMakerService _copyMaker = copyMaker;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly IFileService _fileService = fileService;
-        private readonly IPaymentService _paymentService = paymentService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IEmailSenderService _emailSender = emailSender;
 
@@ -103,79 +102,34 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallRentResponseDto>.Success(hallRent);
         }
 
-        /*private async Task<Result<HallRentRequestDto>> CheckRentTransactionStatus()
-        {
-            var rentRequestString = _httpContextAccessor.HttpContext!.Session.GetString("RentRequest");
-            if (rentRequestString == null)
-                return Result<HallRentRequestDto>.Failure(HallRentError.SessionError);
-            else
-                _httpContextAccessor.HttpContext!.Session.Remove("RentRequest");
-
-            var isTransactionCompleteResult = await _paymentService.CheckTransactionStatus();
-            if (!isTransactionCompleteResult.IsSuccessful)
-                return Result<HallRentRequestDto>.Failure(isTransactionCompleteResult.Error);
-
-            var requestDto = JsonSerializer.Deserialize<HallRentRequestDto>(rentRequestString);
-            if(requestDto == null) return Result<HallRentRequestDto>.Failure(Error.SerializationError);
-
-            return Result<HallRentRequestDto>.Success(requestDto);
-        }*/
-
-        public async Task<Result<PayUCreatePaymentResponseDto>> CreateRentPayment(HallRentRequestDto? requestDto)
+        public async Task<Result<PaymentRedirectDto>> CreateRentPayment(HallRentRequestDto? requestDto)
         {
             // Logowanie requestDto
             Log.Information("Received HallRentRequestDto: {@RequestDto}", requestDto);
 
             var validationError = await ValidateEntity(requestDto, null);
             if (validationError != Error.None)
-                return Result<PayUCreatePaymentResponseDto>.Failure(validationError);
+                return Result<PaymentRedirectDto>.Failure(validationError);
 
             var hall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(requestDto!.HallId);
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync(q => q.Where(a => requestDto.AdditionalServicesIds.Contains(a.Id)));
 
             var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(userResult.Error);
+                return Result<PaymentRedirectDto>.Failure(userResult.Error);
             var user = userResult.Value;
 
             var rentPrice = CalculatePaymentAmount(requestDto, hall!, additionalServices);
 
-            var paymentRequest = new PayURequestPaymentDto
-            {
-                Description = $"Rezerwacja sali nr {hall!.HallNr} EventFlow",
-                ContinueUrl = $"http://localhost:5173/rents/{requestDto.HallId}?rent",
-                TotalAmount = (int)(rentPrice * 100),
-                Products = new List<PayUProductDto>()
-                {
-                    new PayUProductDto
-                    {
-                        Name = $"Rezerwacja sali nr {hall!.HallNr} EventFlow",
-                        Price = (int)(rentPrice * 100),
-                        Quanitity = 1,
-                    }
-                },
-                Buyer = new PayUBuyerDto
-                {
-                    Email = user.EmailAddress,
-                    FirstName = user.Name,
-                    LastName = user.Surname,
-                }
-            };
-
-            var createPaymentResult = await _paymentService.CreatePayment(paymentRequest);
-            if (!createPaymentResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(createPaymentResult.Error);
-
-            var response = createPaymentResult.Value;
-            _httpContextAccessor.HttpContext!.Session.SetString("TransactionId", response.OrderId);
+            var response = new PaymentRedirectDto { RedirectUri = $"http://localhost:5173/rents/{requestDto.HallId}?rent" };
             _httpContextAccessor.HttpContext!.Session.SetString("RentRequest", JsonSerializer.Serialize(requestDto));
 
-            return Result<PayUCreatePaymentResponseDto>.Success(response);
+            return Result<PaymentRedirectDto>.Success(response);
         }
 
         public async Task<Result<HallRentResponseDto>> MakeRent()
         {
-            var transactionStatusResult = await _paymentService.CheckNewTransactionStatus<HallRentRequestDto>("RentRequest");
+            var transactionStatusResult = SessionRequestHelper.TakeRequest<HallRentRequestDto>(_httpContextAccessor, "RentRequest");
             if (!transactionStatusResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(transactionStatusResult.Error);
 
