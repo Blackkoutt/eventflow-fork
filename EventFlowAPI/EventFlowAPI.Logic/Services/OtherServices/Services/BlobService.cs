@@ -19,7 +19,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly string _generatedPath;
         private readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
 
-        // File name templates come from the "FileNames" section of appsettings.json
         private readonly string _ticketJPGFileNameTemplate;
         private readonly string _ticketPDFFileNameTemplate;
 
@@ -62,7 +61,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<string>.Success(newBlob.FileName);
         }
 
-
         public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(TicketBlobsRequestDto request)
         {
             List<IFileEntity> files = [];
@@ -104,7 +102,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 var uploadResult = await UploadAsync(newBlob);
                 if (!uploadResult.IsSuccessful)
                 {
-                    await DeleteAllAddedBlobs(addedBlobs);
+                    foreach (var addedBlob in addedBlobs)
+                    {
+                        await DeleteAsync(addedBlob);
+                    }
                     return Result<List<IFileEntity>>.Failure(uploadResult.Error);
                 }
 
@@ -112,8 +113,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             }
             return Result<List<IFileEntity>>.Success(files);
         }
-
-
 
         public async Task<Result<object>> UploadAsync(BlobRequestDto blob)
         {
@@ -129,7 +128,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             await File.WriteAllBytesAsync(filePath, blob.Data, blob.CancellationToken);
             return Result<object>.Success();
         }
-
 
         public async Task<Result<BlobResponseDto>> DownloadAsync(BlobRequestDto blob)
         {
@@ -162,24 +160,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<BlobResponseDto>.Success(blobResponse);
         }
 
-
         public Task DeleteAsync(BlobRequestDto blob)
         {
-            // Only generated/uploaded files are deleted, static assets are never touched
             var filePath = GetFilePath(blob.Container, blob.FileName);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
             return Task.CompletedTask;
-        }
-
-        private async Task DeleteAllAddedBlobs(List<BlobRequestDto> blobs)
-        {
-            foreach (var blob in blobs)
-            {
-                await DeleteAsync(blob);
-            }
         }
 
         private Error ValidateBlobRequest(BlobRequestDto blob, bool isUpload)
@@ -209,10 +197,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Error.None;
         }
 
-
-        // Generated (and newly uploaded) files live in the generated folder. With useStaticFallback, a file
-        // missing there is looked up among the static ones shipped with the repo.
-        // Path.GetFileName strips any directory part, so a file name cannot escape its container folder.
         private string GetFilePath(BlobContainer container, string fileName, bool useStaticFallback = false)
         {
             var relativePath = Path.Combine(container.ToLowerString(), Path.GetFileName(fileName));

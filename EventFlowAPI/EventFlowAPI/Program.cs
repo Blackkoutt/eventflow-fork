@@ -33,9 +33,7 @@ builder.Services.AddUnitOfWork();
 builder.Services.AddCorsPolicy();
 
 // App Services
-builder.Services.AddApplicationCRUDServices();
-builder.Services.AddApplicationAuthServices();
-builder.Services.AddApplicationOtherServices();
+builder.Services.AddApplicationServices();
 
 // Other Services
 builder.Services.AddControllers().AddJsonOptions(options =>
