@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Configuration;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Errors;
@@ -11,46 +12,45 @@ using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
-    public class BlobService(LocalStorageSettings storageSettings) : IBlobService
+    public class BlobService(LocalStorageSettings storageSettings, IConfiguration configuration) : IBlobService
     {
         private readonly string _staticPath = storageSettings.StaticPath;
         private readonly string _generatedPath = storageSettings.GeneratedPath;
         private static readonly FileExtensionContentTypeProvider ContentTypeProvider = new();
-        private string ticketJPGFileNameTemplate = @$"eventflow_bilet_{{0}}_{{1}}.jpg";
-        private string ticketPDFFileNameTemplate = @$"eventflow_bilet_{{0}}.pdf";
 
-        private string eventPassJPGFileNameTemplate = @$"eventflow_karnet_{{0}}.jpg";
-        private string eventPassPDFFileNameTemplate = @$"eventflow_karnet_{{0}}.pdf";
+        // File name templates come from the "FileNames" section of appsettings.json
+        private readonly string ticketJPGFileNameTemplate = GetFileNameTemplate(configuration, "TicketJPG");
+        private readonly string ticketPDFFileNameTemplate = GetFileNameTemplate(configuration, "TicketPDF");
 
-        public async Task<Result<object>> CreateBlob(string fileName, BlobContainer blobContainer, string contentType, byte[] data, bool isUpdate = false)
+        private readonly string eventPassJPGFileNameTemplate = GetFileNameTemplate(configuration, "EventPassJPG");
+        private readonly string eventPassPDFFileNameTemplate = GetFileNameTemplate(configuration, "EventPassPDF");
+
+        private static string GetFileNameTemplate(IConfiguration configuration, string key) =>
+            configuration.GetSection("FileNames")[key]
+                ?? throw new InvalidOperationException($"Missing configuration value 'FileNames:{key}'.");
+
+        public async Task<Result<object>> CreateBlob(BlobRequestDto blob)
         {
-            var newBlob = new BlobRequestDto
-            {
-                Container = blobContainer,
-                FileName = fileName,
-                ContentType = contentType,
-                Data = data
-            };
-            var uploadResult = await UploadAsync(newBlob, isUpdate: isUpdate);
+            var uploadResult = await UploadAsync(blob);
             if (!uploadResult.IsSuccessful)
                 return Result<object>.Failure(uploadResult.Error);
 
-            return Result<object>.Success(fileName);
+            return Result<object>.Success(blob.FileName);
         }
 
-        public async Task<Result<string>> CreateEventPassBlob(Guid eventPassGuid, byte[] data, string contentType, bool isUpdate=false)
+        public async Task<Result<string>> CreateEventPassBlob(EventPassBlobRequestDto request)
         {
             BlobContainer container;
             string fileName = string.Empty; 
-            switch (contentType)
+            switch (request.ContentType)
             {
                 case ContentType.PDF:
                     container = BlobContainer.EventPassesPDF;
-                    fileName = string.Format(eventPassPDFFileNameTemplate, eventPassGuid);
+                    fileName = string.Format(eventPassPDFFileNameTemplate, request.EventPassGuid);
                     break;
                 case ContentType.JPEG:
                     container = BlobContainer.EventPassesJPG;
-                    fileName = string.Format(eventPassJPGFileNameTemplate, eventPassGuid);
+                    fileName = string.Format(eventPassJPGFileNameTemplate, request.EventPassGuid);
                     break;
                 default:
                     return Result<string>.Failure(BlobError.UnsupportedContentType);
@@ -59,10 +59,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             {
                 Container = container,
                 FileName = fileName,
-                ContentType = contentType,
-                Data = data
+                ContentType = request.ContentType,
+                Data = request.Data
             };
-            var uploadResult = await UploadAsync(newBlob, isUpdate: isUpdate);
+            var uploadResult = await UploadAsync(newBlob);
             if (!uploadResult.IsSuccessful)
             {
                 return Result<string>.Failure(uploadResult.Error);
@@ -72,23 +72,22 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(Guid reservationGuid,
-            List<byte[]> dataList, BlobContainer container, string contentType, bool isUpdate = false)
+        public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(TicketBlobsRequestDto request)
         {
             List<IFileEntity> files = [];
             List<BlobRequestDto> addedBlobs = [];
             IFileEntity file;
 
-            for (var i = 0; i < dataList.Count; i++)
+            for (var i = 0; i < request.DataList.Count; i++)
             {
-                switch (contentType)
+                switch (request.ContentType)
                 {
                     case ContentType.PDF:
                         {
                             file = new TicketPDF
                             {
-                                FileName = string.Format(ticketPDFFileNameTemplate, reservationGuid),
-                                ReservationGuid = reservationGuid
+                                FileName = string.Format(ticketPDFFileNameTemplate, request.ReservationGuid),
+                                ReservationGuid = request.ReservationGuid
                             };
                             break;
                         }
@@ -96,8 +95,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                         {
                             file = new TicketJPG
                             {
-                                FileName = string.Format(ticketJPGFileNameTemplate, reservationGuid, i + 1),
-                                ReservationGuid = reservationGuid
+                                FileName = string.Format(ticketJPGFileNameTemplate, request.ReservationGuid, i + 1),
+                                ReservationGuid = request.ReservationGuid
                             };
                             break;
                         }
@@ -111,14 +110,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
                 var newBlob = new BlobRequestDto
                 {
-                    Container = container,
+                    Container = request.Container,
                     FileName = file.FileName,
-                    ContentType = contentType,
-                    Data = dataList[i]
+                    ContentType = request.ContentType,
+                    Data = request.DataList[i]
                 };
                 addedBlobs.Add(newBlob);
 
-                var uploadResult = await UploadAsync(newBlob, isUpdate: isUpdate);
+                var uploadResult = await UploadAsync(newBlob);
                 if (!uploadResult.IsSuccessful)
                 {
                     await DeleteAllAddedBlobs(addedBlobs);
@@ -130,7 +129,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
 
 
-        public async Task<Result<object>> UploadAsync(BlobRequestDto blob, bool isUpdate = false)
+        public async Task<Result<object>> UploadAsync(BlobRequestDto blob)
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: true);
             if (blobError != Error.None)

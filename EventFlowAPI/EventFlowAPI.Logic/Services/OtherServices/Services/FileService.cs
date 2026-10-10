@@ -189,7 +189,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     await file.CopyToAsync(memoryStream);
                     var photoBitmap = memoryStream.ToArray();
 
-                    var createBlobResult  = await _blobService.CreateBlob(fileName, blobContainer, file.ContentType, photoBitmap, isUpdate: isUpdate);
+                    var createBlobResult  = await _blobService.CreateBlob(new BlobRequestDto
+                    {
+                        Container = blobContainer,
+                        FileName = fileName,
+                        ContentType = file.ContentType,
+                        Data = photoBitmap
+                    });
                     if(!createBlobResult.IsSuccessful)
                         return createBlobResult.Error;
                 }
@@ -283,12 +289,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             string fileName = string.Format(hallRentPDFFileNameTemplate, hallRent.HallRentGuid);
 
-            var pdfBlobResult = await _blobService.CreateBlob(
-                                       fileName: fileName,
-                                       blobContainer: BlobContainer.HallRentsPDF,
-                                       contentType: ContentType.PDF,
-                                       data: hallRentPDFBitmap,
-                                       isUpdate: isUpdate);
+            var pdfBlobResult = await _blobService.CreateBlob(new BlobRequestDto
+            {
+                Container = BlobContainer.HallRentsPDF,
+                FileName = fileName,
+                ContentType = ContentType.PDF,
+                Data = hallRentPDFBitmap
+            });
 
             if (!pdfBlobResult.IsSuccessful)
                 return Result<(byte[], string)>.Failure(pdfBlobResult.Error);
@@ -314,12 +321,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             hall.HallViewFileName = fileName;
 
-            var pdfBlobResult = await _blobService.CreateBlob(
-                                       fileName: fileName,
-                                       blobContainer: BlobContainer.HallViewsPDF,
-                                       contentType: ContentType.PDF,
-                                       data: hallViewPDFBitmap,
-                                       isUpdate: isUpdate);
+            var pdfBlobResult = await _blobService.CreateBlob(new BlobRequestDto
+            {
+                Container = BlobContainer.HallViewsPDF,
+                FileName = fileName,
+                ContentType = ContentType.PDF,
+                Data = hallViewPDFBitmap
+            });
 
             if (!pdfBlobResult.IsSuccessful)
                 return Result<string>.Failure(pdfBlobResult.Error);
@@ -421,11 +429,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var eventPassBitmap = await _jpgCreator.CreateEventPass(eventPass);
 
-            var eventPassBlobResult = await _blobService.CreateEventPassBlob(
-                                            eventPassGuid: eventPass.EventPassGuid,
-                                            data: eventPassBitmap,
-                                            contentType: ContentType.JPEG,
-                                            isUpdate: isUpdate);
+            var eventPassBlobResult = await _blobService.CreateEventPassBlob(new EventPassBlobRequestDto
+            {
+                EventPassGuid = eventPass.EventPassGuid,
+                ContentType = ContentType.JPEG,
+                Data = eventPassBitmap
+            });
             if (!eventPassBlobResult.IsSuccessful)
             {
                 return Result<(byte[] Bitmap, string FileName)>.Failure(eventPassBlobResult.Error);
@@ -439,11 +448,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var eventPassPDFBitmap = await _pdfBuilder.CreateEventPassPdf(eventPass, eventPassJPGBitmap, oldEventPassType);
 
-            var eventPassBlobResult = await _blobService.CreateEventPassBlob(
-                                            eventPassGuid: eventPass.EventPassGuid,
-                                            data: eventPassPDFBitmap,
-                                            contentType: ContentType.PDF,
-                                            isUpdate: isUpdate);
+            var eventPassBlobResult = await _blobService.CreateEventPassBlob(new EventPassBlobRequestDto
+            {
+                EventPassGuid = eventPass.EventPassGuid,
+                ContentType = ContentType.PDF,
+                Data = eventPassPDFBitmap
+            });
             if (!eventPassBlobResult.IsSuccessful)
             {
                 return Result<(byte[] Bitmap, string FileName)>.Failure(eventPassBlobResult.Error);
@@ -458,12 +468,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var ticketPDFBitmap = await _pdfBuilder.CreateTicketPdf(reservationEntity, ticketBitmaps);
 
-            var pdfBlobResult = await _blobService.CreateTicketBlobs(
-                                        reservationGuid: reservationEntity.ReservationGuid,
-                                        dataList: new List<byte[]> { ticketPDFBitmap },
-                                        container: BlobContainer.TicketsPDF,
-                                        contentType: ContentType.PDF,
-                                        isUpdate: isUpdate);
+            var pdfBlobResult = await _blobService.CreateTicketBlobs(new TicketBlobsRequestDto
+            {
+                ReservationGuid = reservationEntity.ReservationGuid,
+                Container = BlobContainer.TicketsPDF,
+                ContentType = ContentType.PDF,
+                DataList = new List<byte[]> { ticketPDFBitmap }
+            });
             if (!pdfBlobResult.IsSuccessful)
             {
                 return Result<(byte[] Bitmap, IFileEntity FileEntity)>.Failure(pdfBlobResult.Error);
@@ -489,12 +500,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 ticketBitmaps.Add(ticketBitmap);
             }
 
-            var jpgBlobResult = await _blobService.CreateTicketBlobs(
-                                       reservationGuid: reservationEntity.ReservationGuid,
-                                       dataList: ticketBitmaps,
-                                       container: BlobContainer.TicketsJPG,
-                                       contentType: ContentType.JPEG,
-                                       isUpdate: isUpdate);
+            var jpgBlobResult = await _blobService.CreateTicketBlobs(new TicketBlobsRequestDto
+            {
+                ReservationGuid = reservationEntity.ReservationGuid,
+                Container = BlobContainer.TicketsJPG,
+                ContentType = ContentType.JPEG,
+                DataList = ticketBitmaps
+            });
 
             if (!jpgBlobResult.IsSuccessful)
             {
