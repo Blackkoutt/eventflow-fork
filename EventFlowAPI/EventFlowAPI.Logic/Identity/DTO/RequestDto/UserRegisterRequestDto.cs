@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Identity.DTO.RequestDto
         [Required(ErrorMessage = "Adres e-mail jest wymagany.")]
         [Length(5, 255, ErrorMessage = "Adres e-mail powinien zawierać od 5 do 255 znaków.")]
         [DataType(DataType.EmailAddress)]
-        [RegularExpression(@"^[A-ZÀ-Ź][a-zà-ÿąćęłńóśźż]*([ '-][A-ZÀ-Źa-zà-ÿąćęłńóśźż]*)*$", ErrorMessage = "Adres e-mail ma niepoprawny format.")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Adres e-mail ma niepoprawny format.")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Data urodzenia jest wymagana.")]
