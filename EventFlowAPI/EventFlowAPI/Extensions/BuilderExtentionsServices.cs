@@ -1,16 +1,10 @@
-﻿using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+﻿using EventFlowAPI.Logic;
 using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Extensions
 {
     public static class BuilderExtentionsServices
     {
-        private static readonly string[] ServiceNamespaces =
-        [
-            "EventFlowAPI.Logic.Services",
-            "EventFlowAPI.Logic.Identity.Services"
-        ];
-
         public static void AddUnitOfWork(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -18,19 +12,19 @@ namespace EventFlowAPI.Extensions
 
         public static void AddApplicationServices(this IServiceCollection services)
         {
-            var implementations = typeof(IBlobService).Assembly.GetTypes()
+            var implementations = AssemblyReference.Assembly.GetTypes()
                 .Where(type => type.IsClass
                             && !type.IsAbstract
                             && !type.IsGenericTypeDefinition
                             && type.Namespace != null
-                            && ServiceNamespaces.Any(serviceNamespace => type.Namespace.StartsWith(serviceNamespace)));
+                            && type.Namespace.Split('.').Contains("Services"));
 
             foreach (var implementation in implementations)
             {
                 var serviceInterface = implementation.GetInterfaces()
                     .FirstOrDefault(@interface => @interface.Name == $"I{implementation.Name}");
 
-                if (serviceInterface != null)
+                if (serviceInterface != null && services.All(service => service.ServiceType != serviceInterface))
                 {
                     services.AddScoped(serviceInterface, implementation);
                 }
