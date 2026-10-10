@@ -53,6 +53,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
     }: RequestParams<TPostEntity, TPutEntity, TPatchEntity>) => {
       setLoading(true);
       setError(null);
+      // Status code of the finished request, returned so callers can react to it right away
+      let resultCode: number | null = null;
       try {
         switch (httpMethod) {
           case HTTPMethod.GET:
@@ -65,7 +67,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
             let dataArray: TEntity[] = getData as TEntity[];
             if (!Array.isArray(dataArray)) dataArray = [getData as TEntity];
             setData(dataArray);
-            setStatusCode(getCode as number);
+            resultCode = getCode as number;
+            setStatusCode(resultCode);
             break;
 
           case HTTPMethod.POST:
@@ -86,7 +89,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
               }
             });*/
             setData((prev) => [...prev, postData as TEntity]);
-            setStatusCode(postCode as number);
+            resultCode = postCode as number;
+            setStatusCode(resultCode);
             break;
 
           case HTTPMethod.PUT:
@@ -98,7 +102,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
               id
             );
             console.log("putcode", putCode);
-            setStatusCode(putCode as number);
+            resultCode = putCode as number;
+            setStatusCode(resultCode);
             break;
 
           case HTTPMethod.PATCH:
@@ -113,14 +118,16 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
             /* setData((prev) =>
                 prev.map((item) => (item.id === id ? { ...item, ...putResponse } : item))
               );*/
-            setStatusCode(patchCode as number);
+            resultCode = patchCode as number;
+            setStatusCode(resultCode);
             break;
 
           case HTTPMethod.DELETE:
             if (id === undefined) throw Error("DELETE Error: id is undefined");
             const [deleteData, deleteCode] = await ApiClient.Delete(endpoint, id);
             //setData((prev) => prev.filter((item) => item.id !== id));
-            setStatusCode(deleteCode as number);
+            resultCode = deleteCode as number;
+            setStatusCode(resultCode);
             break;
           default:
             throw new Error(`Unsupported HTTP method: ${httpMethod}`);
@@ -138,7 +145,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
 
           console.log("API Error: ", apiError);
           setError(apiError);
-          setStatusCode(apiError.code);
+          resultCode = apiError.code;
+          setStatusCode(resultCode);
           if (apiError.details.errors.length > 0) {
             apiError.details.errors.forEach((error) => {
               toast.error(error);
@@ -149,36 +157,37 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
       } finally {
         setLoading(false);
       }
+      return resultCode;
     },
     [endpoint]
   );
 
   const get = useCallback(
-    ({ id, queryParams, isBlob }: GETRequestParams): Promise<void> =>
+    ({ id, queryParams, isBlob }: GETRequestParams): Promise<number | null> =>
       request({ httpMethod: HTTPMethod.GET, id, queryParams, isBlob }),
     [request]
   );
 
   const post = useCallback(
-    ({ body, id }: POSTRequestParams<TPostEntity>): Promise<void> =>
+    ({ body, id }: POSTRequestParams<TPostEntity>): Promise<number | null> =>
       request({ httpMethod: HTTPMethod.POST, id, body }),
     [request]
   );
 
   const put = useCallback(
-    ({ body, id }: PUTRequestParams<TPutEntity>): Promise<void> =>
+    ({ body, id }: PUTRequestParams<TPutEntity>): Promise<number | null> =>
       request({ httpMethod: HTTPMethod.PUT, id, body }),
     [request]
   );
 
   const patch = useCallback(
-    ({ id, body }: PATCHRequestParams<TPatchEntity>): Promise<void> =>
+    ({ id, body }: PATCHRequestParams<TPatchEntity>): Promise<number | null> =>
       request({ httpMethod: HTTPMethod.PATCH, id, body }),
     [request]
   );
 
   const del = useCallback(
-    ({ id }: DELETERequestParams): Promise<void> => request({ httpMethod: HTTPMethod.DELETE, id }),
+    ({ id }: DELETERequestParams): Promise<number | null> => request({ httpMethod: HTTPMethod.DELETE, id }),
     [request]
   );
 

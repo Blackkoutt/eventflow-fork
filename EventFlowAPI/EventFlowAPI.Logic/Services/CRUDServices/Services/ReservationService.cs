@@ -107,60 +107,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<ReservationResponseDto>.Success(reservation);         
         }
 
-        public async Task<Result<PaymentRedirectDto>> CreateReservationPayment(ReservationRequestDto? requestDto)
+        public async Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto)
         {
-
-            var validationError = await ValidateEntity(requestDto, null);
-            if (validationError != Error.None)
-                return Result<PaymentRedirectDto>.Failure(validationError);
-
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<PaymentRedirectDto>.Failure(userResult.Error);
-            var user = userResult.Value;
-
-            var ticket = await ((ITicketRepository)_unitOfWork.GetRepository<Ticket>()).GetOneAsync(requestDto!.TicketId);
-            var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
-
-            decimal reservationPrice = 0;
-            if (requestDto!.IsReservationForFestival)
-            {
-                reservationPrice = ticket!.Price;
-            }
-            else
-            {
-                decimal totalAdditionalPayment = 0;
-                foreach (var seat in seatsList)
-                {
-                    var additionalPayment = ticket!.Price * (seat.SeatType.AddtionalPaymentPercentage / 100);
-                    totalAdditionalPayment += additionalPayment;
-                    reservationPrice += ticket.Price + additionalPayment;
-                }
-            }
-
-            
-            string continuteUrl = string.Empty;
-            if (requestDto.IsReservationForFestival) continuteUrl = $"http://localhost:5173/festivals/{ticket!.FestivalId}?reservation";
-            else continuteUrl = $"http://localhost:5173/events/{ticket!.EventId}?reservation";
-
-            var response = new PaymentRedirectDto { RedirectUri = continuteUrl };
-            _httpContextAccessor.HttpContext!.Session.SetString("ReservationRequest", JsonSerializer.Serialize(requestDto));
-
-            return Result<PaymentRedirectDto>.Success(response);
-        }
-
-        public async Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? reservationRequestDto)
-        {
-            var requestDto = reservationRequestDto;
-            if (requestDto == null)
-            {
-                var transactionStatusResult = SessionRequestHelper.TakeRequest<ReservationRequestDto>(_httpContextAccessor, "ReservationRequest");
-                if (!transactionStatusResult.IsSuccessful)
-                    return Result<IEnumerable<ReservationResponseDto>>.Failure(transactionStatusResult.Error);
-
-                requestDto = transactionStatusResult.Value;
-            }
-
             // Validation
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)

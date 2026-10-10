@@ -19,8 +19,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             HallRentQuery
         >
     {
-        Task<Result<HallRentResponseDto>> MakeRent();
-        Task<Result<PaymentRedirectDto>> CreateRentPayment(HallRentRequestDto? requestDto);
+        Task<Result<HallRentResponseDto>> MakeRent(HallRentRequestDto? requestDto);
         Task<Error> SendMailsAboutUpdatedHallRents(IEnumerable<HallRent> activeHallRents, Hall hallEntity);
         Task<Error> SoftDeleteHallRent(HallRent hallRent);
     }

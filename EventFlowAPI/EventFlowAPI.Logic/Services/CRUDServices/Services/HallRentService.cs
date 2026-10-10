@@ -102,39 +102,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallRentResponseDto>.Success(hallRent);
         }
 
-        public async Task<Result<PaymentRedirectDto>> CreateRentPayment(HallRentRequestDto? requestDto)
+        public async Task<Result<HallRentResponseDto>> MakeRent(HallRentRequestDto? requestDto)
         {
-            // Logowanie requestDto
-            Log.Information("Received HallRentRequestDto: {@RequestDto}", requestDto);
-
-            var validationError = await ValidateEntity(requestDto, null);
-            if (validationError != Error.None)
-                return Result<PaymentRedirectDto>.Failure(validationError);
-
-            var hall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(requestDto!.HallId);
-            var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync(q => q.Where(a => requestDto.AdditionalServicesIds.Contains(a.Id)));
-
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<PaymentRedirectDto>.Failure(userResult.Error);
-            var user = userResult.Value;
-
-            var rentPrice = CalculatePaymentAmount(requestDto, hall!, additionalServices);
-
-            var response = new PaymentRedirectDto { RedirectUri = $"http://localhost:5173/rents/{requestDto.HallId}?rent" };
-            _httpContextAccessor.HttpContext!.Session.SetString("RentRequest", JsonSerializer.Serialize(requestDto));
-
-            return Result<PaymentRedirectDto>.Success(response);
-        }
-
-        public async Task<Result<HallRentResponseDto>> MakeRent()
-        {
-            var transactionStatusResult = SessionRequestHelper.TakeRequest<HallRentRequestDto>(_httpContextAccessor, "RentRequest");
-            if (!transactionStatusResult.IsSuccessful)
-                return Result<HallRentResponseDto>.Failure(transactionStatusResult.Error);
-
-            var requestDto = transactionStatusResult.Value;
-
             // Validation
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)

@@ -102,18 +102,6 @@ namespace EventFlowAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("create-reservation-transaction")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateReservationTransaction([FromBody] ReservationRequestDto reservationReqestDto)
-        {
-            var result = await _reservationService.CreateReservationPayment(reservationReqestDto);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
-        }
-
-        [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

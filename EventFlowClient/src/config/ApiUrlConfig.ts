@@ -31,12 +31,6 @@ export const ApiUrlConfig = {
   [ApiEndpoint.EventPass]: {
     url: (id?: number | string) => `/eventpasses${id ? `/${id}` : ""}`,
   },
-  [ApiEndpoint.EventPassCreateRenewTransaction]: {
-    url: (id?: number | string) => `/eventpasses/${id}/create-renew-transaction`,
-  },
-  [ApiEndpoint.EventPassCreateBuyTransaction]: {
-    url: (id?: number | string) => `/eventpasses/create-buy-transaction`,
-  },
   [ApiEndpoint.EventPassPDF]: {
     url: (id?: number | string) => `/eventpasses/${id}/pdf`,
   },
@@ -63,9 +57,6 @@ export const ApiUrlConfig = {
   },
   [ApiEndpoint.HallRent]: {
     url: (id?: number | string) => `/hallrents${id ? `/${id}` : ""}`,
-  },
-  [ApiEndpoint.HallRentCreateTransaction]: {
-    url: (id?: number | string) => `/hallrents/create-rent-transaction`,
   },
   [ApiEndpoint.HallRentUpdateHall]: {
     url: (id?: number | string) => `/hallrents/${id}/hall`,
@@ -102,9 +93,6 @@ export const ApiUrlConfig = {
   },
   [ApiEndpoint.Reservation]: {
     url: (id?: number | string) => `/reservations${id ? `/${id}` : ""}`,
-  },
-  [ApiEndpoint.ReservationCreateTransaction]: {
-    url: (id?: number | string) => `/reservations/create-reservation-transaction`,
   },
   [ApiEndpoint.ReservationZIPTickets]: {
     url: (id?: number | string) => `/reservations/${id}/jpg-tickets`,

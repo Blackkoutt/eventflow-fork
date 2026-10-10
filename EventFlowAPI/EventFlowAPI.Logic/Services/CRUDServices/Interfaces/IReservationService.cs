@@ -21,7 +21,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         >
     {
         Task<IEnumerable<Reservation>> GetActiveReservationsForFestival(int festivalId);
-        Task<Result<PaymentRedirectDto>> CreateReservationPayment(ReservationRequestDto? requestDto);
         Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
         Task<Error> SendMailsAboutUpdatedReservations<TEntity>(IEnumerable<Reservation> reservationsForEvent, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class;
         Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId);

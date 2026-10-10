@@ -15,7 +15,6 @@ import {
   Ticket,
 } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
-import { PaymentRedirectResponse } from "../../models/response_models/PaymentRedirectResponse";
 import useApi from "../../hooks/useApi";
 import { SelectOption } from "../../helpers/SelectOptions";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -52,12 +51,6 @@ type EventReservedSeat = {
 
 const FestivalReservationDialog = forwardRef<HTMLDialogElement, FestivalReservationDialogProps>(
   ({ festival, onDialogClose, onDialogConfirm }: FestivalReservationDialogProps, ref) => {
-    const {
-      data: paymentResponse,
-      statusCode: createPaymentStatusCode,
-      post: createReservationPaymentTransaction,
-    } = useApi<PaymentRedirectResponse, ReservationRequest>(ApiEndpoint.ReservationCreateTransaction);
-
     const { data: hallWithDetails, get: getHallWithDetails } = useApi<Hall>(ApiEndpoint.Hall);
     const { data: seatTypes, get: getSeatTypes } = useApi<SeatType>(ApiEndpoint.SeatType);
     const {
@@ -382,33 +375,20 @@ const FestivalReservationDialog = forwardRef<HTMLDialogElement, FestivalReservat
           data.isReservationForFestival = true;
           data.seatsIds = reservedSeatsDetails.map((s) => s.id);
 
-          const isEventPass =
-            paymentTypes.filter((pt) => pt.id == data.paymentTypeId)[0].name.toLowerCase() ==
-            "karnet".toLowerCase();
-          if (isEventPass) {
-            await toast.promise(postReservation({ body: data }), {
-              pending: "Trwa przetwarzanie płatności",
-              error: "Wystąpił błąd podczas przetwarzania płatności",
-            });
-            onDialogClose();
-          } else {
-            await toast.promise(createReservationPaymentTransaction({ body: data }), {
-              pending: "Trwa przetwarzanie płatności",
-              error: "Wystąpił błąd podczas przetwarzania płatności",
-            });
+          const request = postReservation({ body: data });
+          await toast.promise(request, {
+            pending: "Trwa przetwarzanie rezerwacji",
+            error: "Wystąpił błąd podczas kupna biletu",
+          });
+          if ((await request) == HTTPStatusCode.Ok) {
+            toast.success("Bilet został zakupiony pomyślnie");
+            onDialogConfirm();
           }
         } else {
           toast.error("Zaloguj się aby dokonać rezerwacji");
         }
       }
     };
-
-    useEffect(() => {
-      if (createPaymentStatusCode == HTTPStatusCode.Ok && paymentResponse.length == 1) {
-        const redirectUri = paymentResponse[0].redirectUri;
-        window.location.href = redirectUri;
-      }
-    }, [paymentResponse]);
 
     return (
       <div className="h-full">

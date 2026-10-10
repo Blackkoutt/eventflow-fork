@@ -19,7 +19,6 @@ import {
 } from "../../../models/update_schemas/EventPassUpdateSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import { PaymentRedirectResponse } from "../../../models/response_models/PaymentRedirectResponse";
 import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
@@ -34,12 +33,8 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
     // const { put: renewEventPass, statusCode: statusCode } = useApi<EventPass>(
     //   ApiEndpoint.EventPass
     // );
-    const {
-      data: paymentResponse,
-      statusCode: createPaymentStatusCode,
-      post: createRenewPassPaymentTransaction,
-    } = useApi<PaymentRedirectResponse, EventPassUpdateRequest>(
-      ApiEndpoint.EventPassCreateRenewTransaction
+    const { put: renewEventPass } = useApi<EventPass, undefined, EventPassUpdateRequest>(
+      ApiEndpoint.EventPass
     );
 
     const { data: eventPassTypes, get: getEventPassTypes } = useApi<EventPassType>(
@@ -92,21 +87,19 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
       console.log(data);
       if (eventPass !== undefined) {
         //setPromisePending(true);
-        await toast.promise(createRenewPassPaymentTransaction({ id: eventPass.id, body: data }), {
-          pending: "Trwa przetwarzanie płatności",
-          error: "Wystąpił błąd podczas przetwarzania płatności",
+        const request = renewEventPass({ id: eventPass.id, body: data });
+        await toast.promise(request, {
+          pending: "Trwa przetwarzanie przedłużenia karnetu",
+          error: "Wystąpił błąd podczas przedłużania karnetu",
         });
+        if ((await request) == HTTPStatusCode.NoContent) {
+          toast.success("Karnet został przedłużony pomyślnie");
+          onDialogConfirm();
+        }
         //setPromisePending(false);
         //setActionPerformed(true);
       }
     };
-
-    useEffect(() => {
-      if (createPaymentStatusCode == HTTPStatusCode.Ok && paymentResponse.length == 1) {
-        const redirectUri = paymentResponse[0].redirectUri;
-        window.location.href = redirectUri;
-      }
-    }, [paymentResponse]);
 
     // useEffect(() => {
     //   if (actionPerformed) {

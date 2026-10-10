@@ -15,7 +15,5 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error EntityIsDeleted = new(new BadRequestResponse("Nie można wykonać operacji, ponieważ encja została usunięta wcześniej."));
         public static readonly Error BadRequestType = new(new BadRequestResponse("Niepoprawny typ żądania."));
         public static readonly Error BadPhotoFileExtension = new(new BadRequestResponse("Niepoprawne rozszerzenie pliku. Spróbuj przesłać plik w formacie jpeg lub png."));
-        public static readonly Error SerializationError = new(new InternalServerErrorResponse("Błąd serializacji."));
-        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Nie można znaleźć danych dla transakcji."));
     }
 }

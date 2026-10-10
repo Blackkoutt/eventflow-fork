@@ -46,7 +46,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAPISession();
 
 var app = builder.Build();
 
@@ -63,7 +62,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.AddApplicationMiddleware();
-app.UseSession();
 
 app.UseCors(CORSPolicy.AllowSpecificOrigins);
 
