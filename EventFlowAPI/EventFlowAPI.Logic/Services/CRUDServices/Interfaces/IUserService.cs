@@ -9,14 +9,9 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface IUserService : IGenericService<
-            User,
-            UserDataRequestDto,
-            UpdateUserDataRequestDto,
-            UserResponseDto,
-            UserDataQuery
-        >
+    public interface IUserService
     {
+        Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserDataQuery query);
         Task<Result<BlobResponseDto>> GetUserPhoto();
         Task<Result<UserResponseDto>> GetOneAsync(string id);
         Task<Result<object>> SetUserInfo(UserDataRequestDto userDataRequestDto);

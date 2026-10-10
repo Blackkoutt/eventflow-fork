@@ -6,6 +6,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Interfaces.BaseInterfaces
     public interface IBaseAuthService
     {
         Result<string> GetCurrentUserId();
-        Task<IList<string>?> GetRolesForCurrentUser(User user);
+        IList<string>? GetRolesForCurrentUser(User user);
     }
 }

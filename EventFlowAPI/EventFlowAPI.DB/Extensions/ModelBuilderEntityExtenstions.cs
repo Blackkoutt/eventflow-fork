@@ -39,11 +39,13 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<TicketPDF>().HasKey(x => x.Id);
             modelBuilder.Entity<Reservation_Seat>().HasKey(x => new { x.ReservationId, x.SeatId });
             modelBuilder.Entity<Reservation_TicketJPG>().HasKey(x => new { x.ReservationId, x.TicketJPGId });
-           // modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
             modelBuilder.Entity<UserData>().HasKey(x => x.Id);
         }
         public static void AddEntitiesConstraints(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
+
             
             /*modelBuilder.Entity<Hall>()
                 .HasIndex(e => e.HallNr)

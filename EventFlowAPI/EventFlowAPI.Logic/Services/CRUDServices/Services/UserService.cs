@@ -23,28 +23,22 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     public class UserService(
         IUnitOfWork unitOfWork,
         IAuthService authService,
-        IFileService fileService) :
-        GenericService<
-            User,
-            UserDataRequestDto,
-            UpdateUserDataRequestDto,
-            UserResponseDto,
-            UserDataQuery
-        >(unitOfWork, authService), IUserService
+        IFileService fileService) : IUserService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
         private readonly IFileService _fileService = fileService;
 
-        public sealed override async Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserDataQuery query)
+        public async Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserDataQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _unitOfWork.Users.GetAllAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<UserResponseDto>>.Success(response);
         }
 
         public async Task<Result<UserResponseDto>> GetOneAsync(string id)
         {
-            var record = await ((IUserRepository)_repository).GetOneAsync(id);
+            var record = await _unitOfWork.Users.GetOneAsync(id);
             if (record == null)
                 return Result<UserResponseDto>.Failure(Error.NotFound);
 
@@ -78,37 +72,28 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (photoPostError != Error.None)
                 return Result<object>.Failure(photoPostError);
 
-            _unitOfWork.GetRepository<User>().Update(user);
+            _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();
 
             return Result<object>.Success();
         }
 
-        protected override Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
-        {
-            throw new NotImplementedException();
-        }
-        protected sealed override IEnumerable<UserResponseDto> MapAsDto(IEnumerable<User> records)
+        private IEnumerable<UserResponseDto> MapAsDto(IEnumerable<User> records)
         {
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<UserResponseDto>();
-                responseDto.UserRoles = entity.Roles.Select(role => role.Name).ToList();
+                responseDto.UserRoles = new List<string> { entity.Role };
                 responseDto.EmailAddress = entity.Email!;
                 responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";
                 return responseDto;
             });
         }
 
-        protected sealed override UserResponseDto MapAsDto(User entity)
+        private UserResponseDto MapAsDto(User entity)
         {
             var responseDto = entity.AsDto<UserResponseDto>();
-            responseDto.UserRoles = entity.Roles.Select(role => role.Name).ToList();
+            responseDto.UserRoles = new List<string> { entity.Role };
             responseDto.EmailAddress = entity.Email!;
             responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";
             responseDto.AllReservationsCount = entity.Reservations.Count;

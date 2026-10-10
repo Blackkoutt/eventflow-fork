@@ -276,7 +276,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<Result<BlobResponseDto>> GetUserPhoto(string id)
         {
-            var entity = await ((IUserRepository)_unitOfWork.GetRepository<User>()).GetOneAsync(id);
+            var entity = await _unitOfWork.Users.GetOneAsync(id);
             if(entity == null)
                 return Result<BlobResponseDto>.Failure(Error.NotFound);
 

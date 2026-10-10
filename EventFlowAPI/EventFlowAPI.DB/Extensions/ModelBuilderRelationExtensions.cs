@@ -1,5 +1,4 @@
 ﻿using EventFlowAPI.DB.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Extensions
@@ -30,11 +29,6 @@ namespace EventFlowAPI.DB.Extensions
         }
         public static void AddManyToManyRelations(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-             .HasMany(e => e.Roles)
-             .WithMany(e => e.Users)
-             .UsingEntity<IdentityUserRole<string>>();
-
             modelBuilder.Entity<Festival>()
                .HasMany(e => e.Organizers)
                .WithMany(e => e.Festivals)

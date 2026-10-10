@@ -3,7 +3,6 @@ using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Enums;
 using EventFlowAPI.Logic.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -12,14 +11,6 @@ namespace EventFlowAPI.Extensions
 {
     public static class BuilderExtenstionsIdentity
     {
-        public static void AddIdentity(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddIdentity<User, Role>(options =>
-            {
-                options.Password = GetIdentityPasswordOptions();
-            })
-            .AddEntityFrameworkStores<APIContext>();
-        }
         public static void AddAuthentication(this WebApplicationBuilder builder, AuthConfiguration jwtSettingsSection)
         {
             var jwtSettings = builder.Configuration.GetSection(jwtSettingsSection.ToString());
@@ -60,18 +51,6 @@ namespace EventFlowAPI.Extensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                     .GetBytes(jwtSettingsSection.GetSection("securityKey").Value!)),
                 RoleClaimType = "userRoles"
-            };
-        }
-        private static PasswordOptions GetIdentityPasswordOptions()
-        {
-            return new PasswordOptions
-            {
-                RequireNonAlphanumeric = false,
-                RequireDigit = false,
-                RequireLowercase = false,
-                RequireUppercase = false,
-                RequiredUniqueChars = 0,
-                RequiredLength = 5
             };
         }
     }

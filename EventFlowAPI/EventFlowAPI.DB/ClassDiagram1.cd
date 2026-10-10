@@ -227,14 +227,6 @@
       <FileName>Entities\Reservation_TicketJPG.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EventFlowAPI.DB.Entities.Role" BaseTypeListCollapsed="true">
-    <Position X="40.5" Y="12.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Entities\Role.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
   <Class Name="EventFlowAPI.DB.Entities.Seat">
     <Position X="42.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
@@ -319,13 +311,6 @@
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>Extensions\ModelBuilderRelationExtensions.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.DB.Extensions.ModelBuilderSeedIdentityExtensions">
-    <Position X="32.75" Y="10.75" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAIAAAAEAAAAAAAAIAAAAAAAAAAAA=</HashCode>
-      <FileName>Extensions\ModelBuilderSeedIdentityExtensions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EventFlowAPI.DB.Extensions.ModelBuilderEntityExtenstions">

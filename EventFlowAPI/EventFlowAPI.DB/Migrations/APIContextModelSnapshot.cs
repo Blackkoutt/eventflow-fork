@@ -2979,52 +2979,6 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Role", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            Description = "Admin role",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            Description = "User role",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Seat", b =>
                 {
                     b.Property<int>("Id")
@@ -4345,50 +4299,22 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
 
                     b.Property<string>("PhotoName")
                         .IsRequired()
@@ -4397,138 +4323,83 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("RegisteredDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = "1",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "95ca56b0-be1b-4b9a-b9cb-77b705ab1bbc",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             Name = "Admin",
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN@GMAIL.COM",
                             PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
-                            PhoneNumberConfirmed = false,
                             PhotoName = "admin.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "b0fcb126-8927-42fb-8d13-13c4f1681351",
-                            Surname = "Admin",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@gmail.com"
+                            Role = "Admin",
+                            Surname = "Admin"
                         },
                         new
                         {
                             Id = "2",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "c79bc252-1135-418f-a752-59ea3ced3ad1",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk2@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             Name = "Mateusz2",
-                            NormalizedEmail = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
-                            NormalizedUserName = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
                             PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
-                            PhoneNumberConfirmed = false,
                             PhotoName = "user2.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "28db39ee-4875-4a8c-b689-02eabddb96aa",
-                            Surname = "Strapczuk2",
-                            TwoFactorEnabled = false,
-                            UserName = "mateusz.strapczuk2@gmail.com"
+                            Role = "User",
+                            Surname = "Strapczuk2"
                         },
                         new
                         {
                             Id = "3",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "fdf14307-4b05-422d-b5ae-a8571afd609d",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk3@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             Name = "Mateusz3",
-                            NormalizedEmail = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
-                            NormalizedUserName = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
                             PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
-                            PhoneNumberConfirmed = false,
                             PhotoName = "user3.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "959425f8-a938-433a-923e-d5d01925122c",
-                            Surname = "Strapczuk3",
-                            TwoFactorEnabled = false,
-                            UserName = "mateusz.strapczuk3@gmail.com"
+                            Role = "User",
+                            Surname = "Strapczuk3"
                         },
                         new
                         {
                             Id = "4",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "cbbf0722-3f05-411d-b87f-a05fe3726e3c",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk4@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             Name = "Mateusz4",
-                            NormalizedEmail = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
-                            NormalizedUserName = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
                             PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
-                            PhoneNumberConfirmed = false,
                             PhotoName = "user4.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "9bd8c1e8-5875-4e50-876d-3a69c2fdc470",
-                            Surname = "Strapczuk4",
-                            TwoFactorEnabled = false,
-                            UserName = "mateusz.strapczuk4@gmail.com"
+                            Role = "User",
+                            Surname = "Strapczuk4"
                         },
                         new
                         {
                             Id = "5",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "1a9d5c0a-7f87-4f87-bbfe-ea099479ac03",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
                             Name = "Mateusz",
-                            NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
-                            PhoneNumberConfirmed = false,
                             PhotoName = "user5.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f1e975b0-0b98-4b68-8f3b-fbcb7a0c22f4",
-                            Surname = "Strapczuk",
-                            TwoFactorEnabled = false,
-                            UserName = "mateusz.strapczuk1@gmail.com"
+                            Role = "User",
+                            Surname = "Strapczuk"
                         });
                 });
 
@@ -4604,139 +4475,6 @@ namespace EventFlowAPI.DB.Migrations
                             Street = "Słoneczna",
                             ZipCode = "14-453"
                         });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "1"
-                        },
-                        new
-                        {
-                            UserId = "2",
-                            RoleId = "2"
-                        },
-                        new
-                        {
-                            UserId = "3",
-                            RoleId = "2"
-                        },
-                        new
-                        {
-                            UserId = "4",
-                            RoleId = "2"
-                        },
-                        new
-                        {
-                            UserId = "5",
-                            RoleId = "2"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
@@ -5069,57 +4807,6 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
