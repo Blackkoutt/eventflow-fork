@@ -481,7 +481,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
                         messageType={MessageType.Error}
                         fontSize={14}
                         iconSize={14}
-                        text={`Zmiana nr sali spowoduje wysłanie powiadomienia do wszytskich użytkowników posiadających aktywne rezerwacje na wydarzenia organizowane w tej sali. Ta operacja może chwilę potrwać..`}
+                        text={`Zmiana nr sali spowoduje aktualizację biletów wszystkich użytkowników posiadających aktywne rezerwacje na wydarzenia organizowane w tej sali. Ta operacja może chwilę potrwać..`}
                       />
                     </article>
                   </div>

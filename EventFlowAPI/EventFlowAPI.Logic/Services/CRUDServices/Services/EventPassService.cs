@@ -27,7 +27,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         IFileService fileService,
         IAuthService authService,
-        IEmailSenderService emailSender,
         IHttpContextAccessor httpContextAccessor) :
         GenericService<
             EventPass,
@@ -40,7 +39,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly IEmailSenderService _emailSender = emailSender;
 
         public sealed override async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(EventPassQuery query)
         {
@@ -131,13 +129,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!pdfResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(pdfResult.Error);
 
-            var pdfBitmap = pdfResult.Value;
-
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Create, user.EmailAddress, attachmentData: pdfBitmap);
-            if (sendError != Error.None)
-                return Result<EventPassResponseDto>.Failure(sendError);
-            //await _emailSender.SendEventPassPDFAsync(eventPassEntity, pdfBitmap);
-
             var eventPassDto = MapAsDto(eventPass);
 
             return Result<EventPassResponseDto>.Success(eventPassDto);
@@ -186,11 +177,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, oldEventPassType, isUpdate: true);
             if (!pdfResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(pdfResult.Error);
-
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Update, user.EmailAddress, attachmentData: pdfResult.Value);
-            if (sendError != Error.None)
-                return Result<EventPassResponseDto>.Failure(sendError);
-            //await _emailSender.SendEventPassRenewPDFAsync(eventPass, pdfResult.Value);
 
             var newEventPassDto = MapAsDto(eventPass);
             return Result<EventPassResponseDto>.Success(newEventPassDto);
@@ -246,12 +232,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(reservationDeleteError);
 
             await _unitOfWork.SaveChangesAsync();
-
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, eventPass.User.Email!);
-            if (sendError != Error.None)
-                return Result<object>.Failure(sendError);
-
-            //await _emailSender.SendInfoAboutCanceledEventPass(eventPass);
 
             return Result<object>.Success();
         }

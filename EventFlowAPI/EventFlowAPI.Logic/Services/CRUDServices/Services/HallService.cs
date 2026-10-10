@@ -25,7 +25,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IAuthService authService,
         ISeatService seatService,
         IReservationService reservationService,
-        IEmailSenderService emailSender, 
         IFestivalService festivalService,
         ITicketService ticketService,
         IHallRentService hallRentService,
@@ -42,7 +41,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly ISeatService _seatService = seatService;
         private readonly IReservationService _reservationService = reservationService;
-        private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IFestivalService _festivalService = festivalService;
         private readonly ITicketService _ticketService = ticketService;
         private readonly IHallRentService _hallRentService = hallRentService;
@@ -382,9 +380,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                 hr.EndDate > DateTime.Now));
             if (allActiveHallRents.Any())
             {
-                var sendMailError = await _hallRentService.SendMailsAboutUpdatedHallRents(allActiveHallRents, oldHallEntity);
-                if (sendMailError != Error.None)
-                    return sendMailError;
+                var updateError = await _hallRentService.UpdateHallRentsFiles(allActiveHallRents);
+                if (updateError != Error.None)
+                {
+                    return updateError;
+                }
             }
             return Error.None;
         }
@@ -409,9 +409,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         return eventHallViewFileNameResult.Error;
                 }
 
-                var sendMailError = await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations, oldHallEntity, hallEntity);
-                if (sendMailError != Error.None)
-                    return sendMailError;
+                var updateError = await _reservationService.UpdateReservationsTickets(allActiveReservations);
+                if (updateError != Error.None)
+                {
+                    return updateError;
+                }
             }
             return Error.None;
         }
@@ -457,20 +459,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
             await _unitOfWork.SaveChangesAsync();
             
-            // Send info about canceled Hall Rents
-            var hallRentsGroupByUser = hallRentsToDelete.GroupBy(r => r.UserId)
-                                            .Select(g => new
-                                            {
-                                                UserId = g.Key,
-                                                HallRents = g.ToList(),
-                                            });
-
-            foreach(var group in hallRentsGroupByUser)
-            {
-                var userHallRents = group.HallRents;
-                await _emailSender.SendInfoAboutCanceledHallRents(userHallRents);
-            }
-
             return Error.None;
         }
 

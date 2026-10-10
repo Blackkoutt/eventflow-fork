@@ -19,7 +19,6 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "admin@gmail.com".ToUpper(),
                 NormalizedUserName = "admin@gmail.com".ToUpper(),
                 PhotoName = "admin.jpg",
-                IsVerified = true,
                 EmailConfirmed = true,
                 RegisteredDate = today,
                 DateOfBirth = new DateTime(2000, 4, 3)
@@ -36,7 +35,6 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "mateusz.strapczuk2@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk2@gmail.com".ToUpper(),
                 PhotoName = "user2.jpg",
-                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1985, 2, 1)
@@ -53,7 +51,6 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
                 PhotoName = "user3.jpg",
-                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
@@ -70,7 +67,6 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "mateusz.strapczuk4@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk4@gmail.com".ToUpper(),
                 PhotoName = "user4.jpg",
-                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
@@ -87,7 +83,6 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "mateusz.strapczuk1@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk1@gmail.com".ToUpper(),
                 PhotoName = "user5.jpg",
-                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)

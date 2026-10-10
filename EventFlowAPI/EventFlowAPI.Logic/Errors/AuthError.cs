@@ -6,7 +6,6 @@ namespace EventFlowAPI.Logic.Errors
     {
         public static readonly Error EmailAlreadyTaken = new(new BadRequestResponse("Adres e-mail jest już zajęty. Użyj innego."));
         public static readonly Error UserHaventIdClaim = new(new BadRequestResponse("Użytkownik nie ma ID w claims"));
-        public static readonly Error UserNotVerified = new(new BadRequestResponse("Użytkownik nie jest zweryfikowany."));
         public readonly Error ErrorsWhileCreatingUser = new(new BadRequestResponse(errors));
         public static readonly Error InvalidEmailOrPassword = new(new UnauthorizedResponse("Nieprawidłowy login lub hasło."));
         public static readonly Error CanNotConfirmIdentity = new(new UnauthorizedResponse("Nie można potwierdzić tożsamości."));

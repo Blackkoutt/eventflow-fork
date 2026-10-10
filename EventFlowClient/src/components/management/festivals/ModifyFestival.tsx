@@ -21,8 +21,6 @@ import { EventFestivalTicketRequest } from "../../../models/create_schemas/Event
 import AddEventTicket from "../tickets/AddEventTicket";
 import { EventTicketContext } from "../../../context/EventTicketContext";
 import { toast } from "react-toastify";
-import MessageText from "../../common/MessageText";
-import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 import {
   FestivalUpdateRequest,
   FestivalUpdateSchema,
@@ -351,13 +349,6 @@ const ModifyFestival = forwardRef<HTMLDialogElement, ModifyFestivalProps>(
               <AddEventTicket />
             </EventTicketContext.Provider>
           </div>
-        </div>
-        <div className="flex flex-col self-start gap-2 py-2">
-          <MessageText
-            maxWidth={900}
-            messageType={MessageType.Error}
-            text={`Zmiana nazwy lub wydarzeń festiwalu sprawi, że wszyscy użytkownicy posiadający rezerwacje na ten festiwal zostaną o tym fakcie poinformowani drogą mailową.`}
-          />
         </div>
         <div className="flex flex-row justify-center items-center gap-2 mt-2">
           <Button

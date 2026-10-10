@@ -10,8 +10,6 @@ import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
 import { toast } from "react-toastify";
-import MessageText from "../../common/MessageText";
-import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface CancelEventPassDialogProps {
   eventPass?: EventPass;
@@ -103,13 +101,6 @@ const CancelEventPassDialog = forwardRef<HTMLDialogElement, CancelEventPassDialo
                   labelWidth={150}
                   text={`${eventPass.paymentAmount} zł`}
                   gap={10}
-                />
-              </div>
-              <div className="flex flex-col justify-center items-center gap-2">
-                <MessageText
-                  messageType={MessageType.Info}
-                  text={`Po anulowaniu karnetu użytkownik otrzyma wiadomość email z potwierdzeniem
-                  anulowania karnetu. `}
                 />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">

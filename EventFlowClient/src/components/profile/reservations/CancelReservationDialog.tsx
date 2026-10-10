@@ -178,16 +178,14 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                 {!isAdminCancel && (
                   <MessageText
                     messageType={MessageType.Info}
-                    text={`Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
-                  anulowania, a środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na
+                    text={`Po anulowaniu rezerwacji środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na
                   twoje konto w przeciągu kilku następnych dni roboczych.`}
                   />
                 )}
                 {isAdminCancel && (
                   <MessageText
                     messageType={MessageType.Info}
-                    text={`Po anulowaniu rezerwacji użytkownik ${reservation.user?.name} ${reservation.user?.surname} otrzyma wiadomość email z potwierdzeniem jej
-                      anulowania, a środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na jego
+                    text={`Po anulowaniu rezerwacji użytkownika ${reservation.user?.name} ${reservation.user?.surname} środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na jego
                       konto w przeciągu kilku następnych dni roboczych.`}
                   />
                 )}

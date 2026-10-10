@@ -129,8 +129,7 @@ const CancelHallRentDialog = forwardRef<HTMLDialogElement, CancelHallRentDialogP
               <div className="flex flex-col justify-center items-center gap-2">
                 <MessageText
                   messageType={MessageType.Info}
-                  text={`Po anulowaniu rezerwacji sali otrzymasz wiadomość email z potwierdzeniem
-                  jej anulowania, a środki wysokości ${hallRent.paymentAmount} zł zostaną zwrócone na
+                  text={`Po anulowaniu rezerwacji sali środki wysokości ${hallRent.paymentAmount} zł zostaną zwrócone na
                   twoje konto w przeciągu kilku następnych dni roboczych.`}
                 />
               </div>

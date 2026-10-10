@@ -13,7 +13,6 @@ namespace EventFlowAPI.DB.Entities
         [MaxLength(40)]
         public string Surname { get; set; } = string.Empty;
         public DateTime RegisteredDate { get; set; }
-        public bool IsVerified { get; set; }
         public string PhotoName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public UserData? UserData { get; set; }

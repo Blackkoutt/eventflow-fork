@@ -6,7 +6,6 @@ export type User = {
   name: string;
   surname: string;
   emailAddress: string;
-  isVerified: boolean;
   dateOfBirth: string;
   registeredDate: string;
   photoEndpoint?: string;

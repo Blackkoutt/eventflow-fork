@@ -30,8 +30,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         ICopyMakerService copyMaker,
         ICollisionCheckerService collisionChecker,
         IFileService fileService,
-        IHttpContextAccessor httpContextAccessor,
-        IEmailSenderService emailSender) :
+        IHttpContextAccessor httpContextAccessor) :
         GenericService<
             HallRent,
             HallRentRequestDto,
@@ -45,7 +44,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly IEmailSenderService _emailSender = emailSender;
 
         public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
         {
@@ -135,20 +133,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!hallRentFileNameResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(hallRentFileNameResult.Error);
             var hallRentPDFFileName = hallRentFileNameResult.Value.FileName;
-            var hallRentPDFFile = hallRentFileNameResult.Value.PDFFile;
             hallRent.HallRentPDFName = hallRentPDFFileName;
 
             _repository.Update(hallRent);
             await _unitOfWork.SaveChangesAsync();
 
             var response = MapAsDto(hallRent);
-
-            // Hall Rent Email
-            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Create, user.EmailAddress, attachmentData: hallRentPDFFile);
-            if (sendError != Error.None)
-                return Result<HallRentResponseDto>.Failure(sendError);
-           
-            // await _emailSender.SendHallRentPDFAsync(hallRent, hallRentPDFFile, hallRentPDFFileName);
 
             return Result<HallRentResponseDto>.Success(response);
         }
@@ -168,63 +158,30 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            // Send info about canceled hall Rent
-            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Cancel, hallRent.User.Email!);
-            if (sendError != Error.None)
-                return Result<object>.Failure(sendError);
-
-            //await _emailSender.SendInfoAboutCanceledHallRent(reservation);
-
             return Result<object>.Success();
         }
 
-        public async Task<Error> SendMailsAboutUpdatedHallRents(IEnumerable<HallRent> activeHallRents, Hall hallEntity)
+        public async Task<Error> UpdateHallRentsFiles(IEnumerable<HallRent> activeHallRents)
         {
-            var hallRentsGroupByUser = activeHallRents.GroupBy(r => r.UserId)
-                                            .Select(g => new
-                                            {
-                                                UserId = g.Key,
-                                                HallRents = g.ToList(),
-                                            });
-
-            foreach (var group in hallRentsGroupByUser)
-            {
-                var userRents = group.HallRents;
-                var updateAndSendError = await UpdateHallRentsAndSendByMailAsync(userRents, hallEntity);
-                if (updateAndSendError != Error.None)
-                    return updateAndSendError;
-            }
-            return Error.None;
-        }
-
-        private async Task<Error> UpdateHallRentsAndSendByMailAsync(List<HallRent> userRents, Hall oldHall)
-        {
-            if (userRents.Count == 0)
-                return HallRentError.HallRentListIsEmpty;
-
-            List<(HallRent, byte[])> userUpdatedRentPDFs = [];
-
-            foreach (var hallRent in userRents)
+            foreach (var hallRent in activeHallRents)
             {
                 var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallRent.Hall, hallRent, null, isUpdate: true);
                 if (!hallViewFileNameResult.IsSuccessful)
+                {
                     return hallViewFileNameResult.Error;
-                var hallViewFileName = hallViewFileNameResult.Value;
+                }
 
                 var hallRentFileNameResult = await _fileService.CreateHallRentPDF(hallRent, isUpdate: true);
                 if (!hallRentFileNameResult.IsSuccessful)
+                {
                     return hallRentFileNameResult.Error;
-                var hallRentPDFFile = hallRentFileNameResult.Value.PDFFile;
+                }
 
-                hallRent.Hall.HallViewFileName = hallViewFileName;
+                hallRent.Hall.HallViewFileName = hallViewFileNameResult.Value;
                 hallRent.HallRentPDFName = hallRentFileNameResult.Value.FileName;
                 _unitOfWork.GetRepository<HallRent>().Update(hallRent);
-
-                userUpdatedRentPDFs.Add((hallRent, hallRentPDFFile));
             }
             await _unitOfWork.SaveChangesAsync();
-
-            await _emailSender.SendUpdatedHallRentsAsync(userUpdatedRentPDFs, oldHall);
 
             return Error.None;
         }

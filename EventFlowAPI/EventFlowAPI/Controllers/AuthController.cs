@@ -15,15 +15,6 @@ namespace EventFlowAPI.Controllers
         private readonly IAuthService _authService = authService;
 
 
-        [HttpPatch("activate")]
-        [Authorize]
-        public async Task<IActionResult> ActivateUser()
-        {
-            var verifyError = await _authService.VerifyUser();
-            return verifyError == Error.None ? Ok() : BadRequest(verifyError);
-        }
-
-
         [HttpGet("validate")]
         [Authorize]
         public IActionResult ValidateUser()
@@ -36,7 +27,6 @@ namespace EventFlowAPI.Controllers
                 surname = userClaims.FirstOrDefault(c => c.Type == "surname")?.Value,
                 emailAddress = userClaims.FirstOrDefault(c => c.Type == "emailAddress")?.Value,
                 dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "dateOfBirth")?.Value,
-                isVerified = userClaims.FirstOrDefault(c => c.Type == "isVerified")?.Value,
                 userRoles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()
             });
         }

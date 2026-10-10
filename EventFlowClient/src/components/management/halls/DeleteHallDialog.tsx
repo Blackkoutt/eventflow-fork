@@ -68,7 +68,7 @@ const DeleteHallDialog = forwardRef<HTMLDialogElement, DeleteHallDialogProps>(
               <div className="flex flex-col justify-center items-center gap-2">
                 <MessageText
                   messageType={MessageType.Error}
-                  text={`[UWAGA] Tej operacji nie da się cofnąć. Usunięcie tej sali spowoduje odwołanie wszytskich aktywnych rezerwacji sal oraz wydarzeń powiązanych z tą salą. Użytkownicy zostaną poinformowani drogą mailową jeśli posiadali rezerwację dotyczącą wydarzenia organizowanego w tej sali. Operacja ta może chwilę potrwać.`}
+                  text={`[UWAGA] Tej operacji nie da się cofnąć. Usunięcie tej sali spowoduje odwołanie wszytskich aktywnych rezerwacji sal oraz wydarzeń powiązanych z tą salą. Operacja ta może chwilę potrwać.`}
                 />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">

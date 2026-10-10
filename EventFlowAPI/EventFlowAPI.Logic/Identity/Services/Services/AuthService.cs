@@ -24,12 +24,9 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
-        IEmailSenderService emailSender,
         IUnitOfWork unitOfWork,
         IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IAuthService
     {
-        private readonly IEmailSenderService _emailSender = emailSender;
-
         public async Task<Result<User>> GetCurrentUserAsEntity()
         {
             var currentUserIdResult = GetCurrentUserId();
@@ -79,32 +76,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             return Result<User>.Success(record);
         }
 
-        public async Task<Error> VerifyUser()
-        {
-            Log.Information("Veryfying1");
-            var currentUserIdResult = GetCurrentUserId();
-            if (!currentUserIdResult.IsSuccessful)
-                return currentUserIdResult.Error;
-
-            Log.Information("Veryfying3");
-
-            var userId = currentUserIdResult.Value;
-
-            Log.Information($"UserId {userId}");
-
-            var _userRepository = (IUserRepository)_unitOfWork.GetRepository<User>();
-
-            var user = await _userRepository.GetOneAsync(userId);
-            if (user is null)
-                return UserError.UserNotFound;
-
-            user.IsVerified = true;
-            _userRepository.Update(user);
-            await _unitOfWork.SaveChangesAsync();
-
-            return Error.None;
-        }
-        
         public async Task<Result<UserRegisterResponseDto>> RegisterUser(UserRegisterRequestDto? requestDto)
         {
             if(requestDto == null)
@@ -120,7 +91,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
             var user = requestDto.AsEntity<User>();
             user.RegisteredDate = DateTime.Now;
-            user.IsVerified = false;
 
             var result = await _userManager.CreateAsync(user, requestDto.Password);
             if (!result.Succeeded)
@@ -130,13 +100,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             }
 
             await _userManager.AddToRoleAsync(user, Roles.User.ToString());
-
-            var roles = new List<string>(){ Roles.User.ToString()};
-            var token = _jwtGeneratorService.GenerateToken(user, roles);
-
-            string activationLink = $"http://localhost:5173/sign-in/?confirm={Uri.EscapeDataString(token)}";
-
-            await _emailSender.SendVerificationEmail(user.Email!, user.Name, activationLink);
 
             return Result<UserRegisterResponseDto>.Success();
         }
@@ -149,9 +112,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             var user = await _userManager.FindByEmailAsync(requestDto.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, requestDto.Password))
                 return Result<LoginResponseDto>.Failure(AuthError.InvalidEmailOrPassword);
-
-            if (!user.IsVerified)
-                return Result<LoginResponseDto>.Failure(AuthError.UserNotVerified);
 
             var roles = await GetRolesForCurrentUser(user);
 

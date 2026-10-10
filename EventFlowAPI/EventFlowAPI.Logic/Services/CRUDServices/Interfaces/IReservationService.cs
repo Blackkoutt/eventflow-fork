@@ -22,9 +22,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
     {
         Task<IEnumerable<Reservation>> GetActiveReservationsForFestival(int festivalId);
         Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
-        Task<Error> SendMailsAboutUpdatedReservations<TEntity>(IEnumerable<Reservation> reservationsForEvent, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class;
+        Task<Error> UpdateReservationsTickets(IEnumerable<Reservation> reservations);
         Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId);
         Task<Error> SoftDeleteReservationAndFileTickets(Reservation reservation, bool deleteForFestival = false);
-        Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations, Event? eventEntity = null, Festival? festival = null);
+        Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations);
     }
 }

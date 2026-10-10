@@ -20,7 +20,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         >
     {
         Task<Result<HallRentResponseDto>> MakeRent(HallRentRequestDto? requestDto);
-        Task<Error> SendMailsAboutUpdatedHallRents(IEnumerable<HallRent> activeHallRents, Hall hallEntity);
+        Task<Error> UpdateHallRentsFiles(IEnumerable<HallRent> activeHallRents);
         Task<Error> SoftDeleteHallRent(HallRent hallRent);
     }
 }

@@ -34,7 +34,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         ISeatService seatService,
         IAuthService authService,
         IFileService fileService,
-        IEmailSenderService emailSender,
         IHttpContextAccessor httpContextAccessor
         ) :
         GenericService<
@@ -48,7 +47,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly ISeatService _seatService = seatService;
         private readonly IFileService _fileService = fileService;
-        private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITicketRepository _ticketRepository = (ITicketRepository)unitOfWork.GetRepository<Ticket>();
 
@@ -168,11 +166,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var responseDtoList = await AddAsync(reservationsList);
 
 
-            // Create and send Tickets
-            var eventTicketCreateAndSendError = await CreateTicketAndSendByMailAsync(reservationsList, festival, user, isUpdate: false);
+            // Create Tickets
+            var createTicketsError = await CreateTickets(reservationsList, festival);
 
-            if (eventTicketCreateAndSendError != Error.None)
-                return Result<IEnumerable<ReservationResponseDto>>.Failure(eventTicketCreateAndSendError);
+            if (createTicketsError != Error.None)
+                return Result<IEnumerable<ReservationResponseDto>>.Failure(createTicketsError);
 
 
             return Result<IEnumerable<ReservationResponseDto>>.Success(responseDtoList);
@@ -189,32 +187,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var reservation = validationResult.Value.Entity;
             
-            var user = validationResult.Value.User;
-
             var deleteError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: true);
             if (deleteError != Error.None)
                 return Result<object>.Failure(deleteError);
 
 
             await _unitOfWork.SaveChangesAsync();
-            //await _emailSender.SendInfoAboutCanceledReservation(reservation);
-
-            // Send info about canceled reservations
-            Log.Information($"{user.EmailAddress}");
-            var sendError = await _emailSender.SendInfo(reservation, EmailType.Cancel, reservation.User.Email!);
-            if (sendError != Error.None)
-                return Result<object>.Failure(sendError);
 
             return Result<object>.Success();
         }
 
 
-        private async Task<Error> UpdateTicketAndSendByMailAsync<TEntity>(List<Reservation> userReservations, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class
+        private async Task<Error> UpdateTickets(List<Reservation> userReservations)
         {
             if (userReservations.Count == 0)
                 return ReservationError.ReservationListIsEmpty;
-
-            List<(Reservation, byte[])> userUpdatedTicketsPDFs = [];
 
             var reservationList = userReservations.DistinctBy(r => r.ReservationGuid);
 
@@ -239,36 +226,30 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 Reservation reservationEntity = userReservations.First();
 
-                // Create Ticket PDF 
+                // Create Ticket PDF
                 var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmapAndEntity(reservationEntity, ticketJPGBitmaps, isUpdate: true);
                 if (!ticketPDFFileResult.IsSuccessful)
                     return ticketPDFFileResult.Error;
-
-                userUpdatedTicketsPDFs.Add((userReservation, ticketPDFFileResult.Value.Bitmap));
             }
-            // Send e-mail with updated tickets
-            await _emailSender.SendUpdatedTicketsAsync(userUpdatedTicketsPDFs, oldEntity, newEntity);
 
             return Error.None;
         }
 
-        public async Task<Error> SendMailsAboutUpdatedReservations<TEntity>(IEnumerable<Reservation> reservationsForEvent, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class
+        public async Task<Error> UpdateReservationsTickets(IEnumerable<Reservation> reservations)
         {
-            var reservationsGroupByUser = reservationsForEvent.GroupBy(r => r.UserId);
+            var reservationsGroupByUser = reservations.GroupBy(r => r.UserId);
 
-            // send mail about updated event 
             foreach (var group in reservationsGroupByUser)
             {
-                var userReservations = group.ToList();
-                var updateAndSendError = await UpdateTicketAndSendByMailAsync(userReservations, oldEntity, newEntity);
-                if(updateAndSendError != Error.None)
-                    return updateAndSendError;
+                var updateError = await UpdateTickets(group.ToList());
+                if (updateError != Error.None)
+                    return updateError;
             }
             return Error.None;
         }
 
 
-        public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations, Event? eventEntity = null, Festival? festival = null)
+        public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations)
         {
             var reservationsGroupByUser = reservations.GroupBy(r => r.UserId)
                                             .Select(g => new
@@ -302,7 +283,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                     deleteReservationsInfo.Add((reservation, deleteFestival));
                 }
-                await _emailSender.SendInfoAboutCanceledEvents(deleteReservationsInfo, eventEntity, festival);
             }
             return Error.None;
         }
@@ -383,7 +363,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        private async Task<Error> CreateTicketAndSendByMailAsync(List<Reservation> reservationsList, Festival? festival, UserResponseDto user, bool isUpdate = false)
+        private async Task<Error> CreateTickets(List<Reservation> reservationsList, Festival? festival, bool isUpdate = false)
         {
             if (reservationsList.Count == 0)
                 return ReservationError.ReservationListIsEmpty;
@@ -403,20 +383,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!ticketPDFFileResult.IsSuccessful)
                 return ticketPDFFileResult.Error;
 
-            var ticketPDFBitmap = ticketPDFFileResult.Value.Bitmap;
             var ticketPDFEntityList = new List<IFileEntity>() { ticketPDFFileResult.Value.FileEntity };
 
             // Update local database
             await UpdateReservationsAfterCreatingFile(ticketJPGEntityList, reservationsList, ContentType.JPEG);
             await UpdateReservationsAfterCreatingFile(ticketPDFEntityList, reservationsList, ContentType.PDF);
-
-            // Send email with pdf
-            //await _emailSender.SendTicketPDFAsync(reservationEntity, ticketPDFBitmap);
-
-            // Send tickets via email
-            var sendError = await _emailSender.SendInfo(reservation, EmailType.Create, user.EmailAddress, attachmentData: ticketPDFBitmap);
-            if (sendError != Error.None)
-                return sendError;
 
             return Error.None;
         }

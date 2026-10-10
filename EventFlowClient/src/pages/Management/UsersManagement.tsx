@@ -7,8 +7,6 @@ import { Column } from "primereact/column";
 import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
-import { faBan, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import DetailsUserDialog from "../../components/management/users/DetailsUserDialog";
@@ -60,30 +58,6 @@ const UsersManagement = () => {
       header: "Role",
       sortable: false,
       body: (rowData: User) => rowData.userRoles.join(", "),
-    },
-    {
-      field: "isVerified",
-      header: "Weryfikacja",
-      sortable: false,
-      body: (rowData: User) => {
-        return rowData.isVerified ? (
-          <div className="flex flex-col justify-center items-center cursor-pointer">
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              title="Zweryfikowany"
-              style={{ color: "#22c55e", fontSize: "22px" }}
-            />
-          </div>
-        ) : (
-          <div className="flex flex-col justify-center items-center cursor-pointer">
-            <FontAwesomeIcon
-              icon={faBan}
-              title="Nie zweryfikowany"
-              style={{ color: "#ef4444", fontSize: "22px" }}
-            />
-          </div>
-        );
-      },
     },
     {
       header: "Akcja",
