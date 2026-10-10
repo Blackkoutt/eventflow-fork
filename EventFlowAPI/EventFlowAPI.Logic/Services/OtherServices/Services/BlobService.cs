@@ -1,6 +1,4 @@
-﻿using Azure;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
+﻿using Microsoft.AspNetCore.StaticFiles;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Errors;
@@ -13,9 +11,10 @@ using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
-    public class BlobService(BlobServiceClient blobServiceClient) : IBlobService
+    public class BlobService(LocalStorageSettings storageSettings) : IBlobService
     {
-        private readonly BlobServiceClient _blobServiceClient = blobServiceClient;
+        private readonly string _rootPath = storageSettings.RootPath;
+        private static readonly FileExtensionContentTypeProvider ContentTypeProvider = new();
         private string ticketJPGFileNameTemplate = @$"eventflow_bilet_{{0}}_{{1}}.jpg";
         private string ticketPDFFileNameTemplate = @$"eventflow_bilet_{{0}}.pdf";
 
@@ -133,31 +132,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public async Task<Result<object>> UploadAsync(BlobRequestDto blob, bool isUpdate = false)
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: true);
-            if(blobError != Error.None)
+            if (blobError != Error.None)
                 return Result<object>.Failure(blobError);
 
-            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
-            using (Stream stream = new MemoryStream(blob.Data))
-            {
-                if (isUpdate)
-                {
-                    await blobClient.UploadAsync(
-                    content: stream,
-                    httpHeaders: new BlobHttpHeaders { ContentType = blob.ContentType },
-                    conditions: new BlobRequestConditions { IfNoneMatch = null }, // override file if exists
-                    cancellationToken: blob.CancellationToken);
-                }
-                else
-                {
-                    await blobClient.UploadAsync(
-                    content: stream,
-                    httpHeaders: new BlobHttpHeaders { ContentType = blob.ContentType },
-                    cancellationToken: blob.CancellationToken);
-                }
-                
-                return Result<object>.Success();    
-            }      
+            await File.WriteAllBytesAsync(filePath, blob.Data, blob.CancellationToken);
+            return Result<object>.Success();
         }
 
 
@@ -165,37 +147,36 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: false);
             if (blobError != Error.None)
-             return Result<BlobResponseDto>.Failure(blobError);
+                return Result<BlobResponseDto>.Failure(blobError);
 
-            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
-
-            Response<BlobDownloadResult> response;
-            try
+            var filePath = GetFilePath(blob.Container, blob.FileName);
+            if (!File.Exists(filePath))
             {
-                response = await blobClient.DownloadContentAsync(cancellationToken: blob.CancellationToken);
-            }
-            catch(RequestFailedException RFE)
-            {
-                var downloadError = new Error(new BadRequestResponse(RFE.Message));
+                var downloadError = new Error(new BadRequestResponse($"Plik '{blob.FileName}' nie istnieje w kontenerze '{blob.Container.ToLowerString()}'."));
                 return Result<BlobResponseDto>.Failure(downloadError);
             }
-            
-            var contentStream = response.Value.Content.ToStream();
+
+            var data = await File.ReadAllBytesAsync(filePath, blob.CancellationToken);
+            if (!ContentTypeProvider.TryGetContentType(filePath, out var contentType))
+                contentType = "application/octet-stream";
+
             var blobResponse = new BlobResponseDto
             {
                 FileName = blob.FileName,
-                Data = contentStream,
-                ContentType = response.Value.Details.ContentType.ToString(),
+                Data = new MemoryStream(data),
+                ContentType = contentType,
             };
 
             return Result<BlobResponseDto>.Success(blobResponse);
         }
 
 
-        public async Task DeleteAsync(BlobRequestDto blob)
+        public Task DeleteAsync(BlobRequestDto blob)
         {
-            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
-            await blobClient.DeleteIfExistsAsync(cancellationToken: blob.CancellationToken);
+            var filePath = GetFilePath(blob.Container, blob.FileName);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+            return Task.CompletedTask;
         }
 
         private async Task DeleteAllAddedBlobs(List<BlobRequestDto> blobs)
@@ -210,10 +191,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             if (string.IsNullOrEmpty(blob.Container.ToLowerString()))
                 return BlobError.ContainerIsNullOrEmpty;
-
-            var blobContainers = _blobServiceClient.GetBlobContainers().Select(x => x.Name);
-            if (!blobContainers.Contains(blob.Container.ToLowerString()))
-                return BlobError.ContainerDoesNotExist;
 
             if (string.IsNullOrEmpty(blob.FileName))
                 return BlobError.BlobNameIsNullOrEmpty;
@@ -230,11 +207,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        private BlobClient GetBlobClient(BlobContainer container, string blobName)
+        // Path.GetFileName strips any directory part, so a file name cannot escape its container folder
+        private string GetFilePath(BlobContainer container, string fileName)
         {
-            var containerName = container.ToLowerString();
-            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            return containerClient.GetBlobClient(blobName);
+            return Path.Combine(_rootPath, container.ToLowerString(), Path.GetFileName(fileName));
         }
     }
 }

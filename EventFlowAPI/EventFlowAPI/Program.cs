@@ -1,4 +1,4 @@
-using EventFlowAPI.Enums;
+﻿using EventFlowAPI.Enums;
 using EventFlowAPI.Extensions;
 using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Mapper.Profiles;
@@ -14,8 +14,8 @@ QuestPDF.Settings.License = LicenseType.Community;
 // Add connection to DB
 builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
 
-// Add connection to Azure Blob Storage
-builder.AddConnectionToAzureBlobStorage(ConnectionString.AzureBlobStorage);
+// Add local file storage (replaces Azure Blob Storage)
+builder.AddLocalFileStorage();
 
 // Add Identity
 builder.AddIdentity();

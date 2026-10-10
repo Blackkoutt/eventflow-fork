@@ -1,4 +1,4 @@
-﻿using Azure.Storage.Blobs;
+﻿using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Context;
 using EventFlowAPI.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +14,15 @@ namespace EventFlowAPI.Extensions
                 options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString.ToString()));
             });
         }
-        public static void AddConnectionToAzureBlobStorage(this WebApplicationBuilder builder, ConnectionString connectionString)
+        public static void AddLocalFileStorage(this WebApplicationBuilder builder)
         {
-            var accountKey = builder.Configuration.GetSection("Authentication:Azure")["AccountKey"]!;
-            var fullConnectionString = $"{builder.Configuration.GetConnectionString(connectionString.ToString())}AccountKey={accountKey};";
-          
-            builder.Services.AddSingleton(x => new BlobServiceClient(fullConnectionString));
+            var configuredPath = builder.Configuration.GetSection("LocalStorage")["RootPath"] ?? "Storage";
+            var rootPath = Path.IsPathRooted(configuredPath)
+                ? configuredPath
+                : Path.Combine(builder.Environment.ContentRootPath, configuredPath);
+
+            Directory.CreateDirectory(rootPath);
+            builder.Services.AddSingleton(new LocalStorageSettings(rootPath));
         }
     }
 }
