@@ -12,22 +12,35 @@ using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
-    public class BlobService(LocalStorageSettings storageSettings, IConfiguration configuration) : IBlobService
+    public class BlobService : IBlobService
     {
-        private readonly string _staticPath = storageSettings.StaticPath;
-        private readonly string _generatedPath = storageSettings.GeneratedPath;
+        private readonly IConfiguration _configuration;
+        private readonly string _staticPath;
+        private readonly string _generatedPath;
         private readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
 
         // File name templates come from the "FileNames" section of appsettings.json
-        private readonly string _ticketJPGFileNameTemplate = GetFileNameTemplate(configuration, "TicketJPG");
-        private readonly string _ticketPDFFileNameTemplate = GetFileNameTemplate(configuration, "TicketPDF");
+        private readonly string _ticketJPGFileNameTemplate;
+        private readonly string _ticketPDFFileNameTemplate;
 
-        private readonly string _eventPassJPGFileNameTemplate = GetFileNameTemplate(configuration, "EventPassJPG");
-        private readonly string _eventPassPDFFileNameTemplate = GetFileNameTemplate(configuration, "EventPassPDF");
+        private readonly string _eventPassJPGFileNameTemplate;
+        private readonly string _eventPassPDFFileNameTemplate;
+
+        public BlobService(LocalStorageSettings storageSettings, IConfiguration configuration)
+        {
+            _configuration = configuration;
+            _staticPath = storageSettings.StaticPath;
+            _generatedPath = storageSettings.GeneratedPath;
+
+            _ticketJPGFileNameTemplate = GetFileNameTemplate("TicketJPG");
+            _ticketPDFFileNameTemplate = GetFileNameTemplate("TicketPDF");
+            _eventPassJPGFileNameTemplate = GetFileNameTemplate("EventPassJPG");
+            _eventPassPDFFileNameTemplate = GetFileNameTemplate("EventPassPDF");
+        }
 
         public async Task<Result<string>> CreateEventPassBlob(EventPassBlobRequestDto request)
         {
-            if (request.ContentType is not (ContentType.PDF or ContentType.JPEG))
+            if (request.ContentType != ContentType.PDF && request.ContentType != ContentType.JPEG)
             {
                 return Result<string>.Failure(BlobError.UnsupportedContentType);
             }
@@ -110,7 +123,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<object>.Failure(blobError);
             }
 
-            var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             await File.WriteAllBytesAsync(filePath, blob.Data, blob.CancellationToken);
@@ -126,7 +139,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<BlobResponseDto>.Failure(blobError);
             }
 
-            var filePath = ResolveExistingFilePath(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName, useStaticFallback: true);
             if (!File.Exists(filePath))
             {
                 var downloadError = new Error(new BadRequestResponse($"Plik '{blob.FileName}' nie istnieje w kontenerze '{blob.Container.ToLowerString()}'."));
@@ -153,7 +166,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public Task DeleteAsync(BlobRequestDto blob)
         {
             // Only generated/uploaded files are deleted, static assets are never touched
-            var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
@@ -197,27 +210,24 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        // Path.GetFileName strips any directory part, so a file name cannot escape its container folder
-        private static string GetFilePath(string rootPath, BlobContainer container, string fileName)
+        // Generated (and newly uploaded) files live in the generated folder. With useStaticFallback, a file
+        // missing there is looked up among the static ones shipped with the repo.
+        // Path.GetFileName strips any directory part, so a file name cannot escape its container folder.
+        private string GetFilePath(BlobContainer container, string fileName, bool useStaticFallback = false)
         {
-            return Path.Combine(rootPath, container.ToLowerString(), Path.GetFileName(fileName));
+            var relativePath = Path.Combine(container.ToLowerString(), Path.GetFileName(fileName));
+            var generatedFilePath = Path.Combine(_generatedPath, relativePath);
+            if (useStaticFallback && !File.Exists(generatedFilePath))
+            {
+                return Path.Combine(_staticPath, relativePath);
+            }
+
+            return generatedFilePath;
         }
 
-        private string GetGeneratedFilePath(BlobContainer container, string fileName)
+        private string GetFileNameTemplate(string key)
         {
-            return GetFilePath(_generatedPath, container, fileName);
-        }
-
-        // Generated (and newly uploaded) files take precedence over the static ones shipped with the repo
-        private string ResolveExistingFilePath(BlobContainer container, string fileName)
-        {
-            var generatedPath = GetGeneratedFilePath(container, fileName);
-            return File.Exists(generatedPath) ? generatedPath : GetFilePath(_staticPath, container, fileName);
-        }
-
-        private static string GetFileNameTemplate(IConfiguration configuration, string key)
-        {
-            return configuration.GetSection("FileNames")[key]
+            return _configuration.GetSection("FileNames")[key]
                 ?? throw new InvalidOperationException($"Missing configuration value 'FileNames:{key}'.");
         }
     }

@@ -16,23 +16,19 @@ namespace EventFlowAPI.Extensions
         }
         public static void AddLocalFileStorage(this WebApplicationBuilder builder)
         {
-            var section = builder.Configuration.GetSection("LocalStorage");
-            var staticPath = ResolveFromContentRoot(builder, GetRequiredPath(section, "StaticPath"));
-            var generatedPath = ResolveFromContentRoot(builder, GetRequiredPath(section, "GeneratedPath"));
+            var contentRootPath = builder.Environment.ContentRootPath;
+            var staticPath = builder.Configuration["LocalStorage:StaticPath"]
+                ?? throw new InvalidOperationException("Missing configuration value 'LocalStorage:StaticPath'.");
+            var generatedPath = builder.Configuration["LocalStorage:GeneratedPath"]
+                ?? throw new InvalidOperationException("Missing configuration value 'LocalStorage:GeneratedPath'.");
 
-            Directory.CreateDirectory(generatedPath);
-            builder.Services.AddSingleton(new LocalStorageSettings(staticPath, generatedPath));
-        }
+            // Relative paths are resolved against the API project folder, so they work after cloning on any machine
+            var storageSettings = new LocalStorageSettings(
+                Path.GetFullPath(staticPath, contentRootPath),
+                Path.GetFullPath(generatedPath, contentRootPath));
 
-        private static string GetRequiredPath(IConfigurationSection section, string key)
-        {
-            return section[key] ?? throw new InvalidOperationException($"Missing configuration value 'LocalStorage:{key}'.");
-        }
-
-        // Relative paths are resolved against the API project folder, so they work after cloning on any machine
-        private static string ResolveFromContentRoot(WebApplicationBuilder builder, string path)
-        {
-            return Path.GetFullPath(path, builder.Environment.ContentRootPath);
+            Directory.CreateDirectory(storageSettings.GeneratedPath);
+            builder.Services.AddSingleton(storageSettings);
         }
     }
 }
