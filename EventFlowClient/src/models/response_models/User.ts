@@ -10,7 +10,6 @@ export type User = {
   dateOfBirth: string;
   registeredDate: string;
   photoEndpoint?: string;
-  provider: string;
   allReservationsCount: number;
   allHallRentsCount: number;
   isActiveEventPass: boolean;

@@ -11,10 +11,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error InvalidEmailOrPassword = new(new UnauthorizedResponse("Nieprawidłowy login lub hasło."));
         public static readonly Error CanNotConfirmIdentity = new(new UnauthorizedResponse("Nie można potwierdzić tożsamości."));
         public static readonly Error CanNotFoundUserInDB = new(new UnauthorizedResponse("Nie można znaleźć użytkownika w bazie danych."));
-        public static readonly Error GoogleTokenVerificationFailed = new(new UnauthorizedResponse("Weryfikacja tokenu Google nie powiodła się."));
-        public static readonly Error CannotExchangeCodeForToken = new(new UnauthorizedResponse("Nie można wymienić kodu na token Google Bearer."));
-        public static readonly Error FailedToGetUserData = new(new UnauthorizedResponse("Nie udało się pobrać danych użytkownika."));
-        public static readonly Error FailedToGetUserEmail = new(new UnauthorizedResponse("Nie udało się pobrać adresu e-mail użytkownika."));
 
         public static readonly Error UserDoesNotHaveSpecificRole = new(new ForbiddenResponse("Użytkownik nie ma odpowiedniej roli do dostępu do tego zasobu."));
         public static readonly Error UserDoesNotHavePremissionToResource = new(new ForbiddenResponse("Użytkownik nie ma uprawnień do dostępu do tego zasobu."));

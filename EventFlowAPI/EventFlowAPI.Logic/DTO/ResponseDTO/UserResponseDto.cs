@@ -12,7 +12,6 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public string EmailAddress { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public DateTime RegisteredDate { get; set; }
-        public string Provider { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
         public int AllReservationsCount { get; set; }
         public int AllHallRentsCount { get; set; }

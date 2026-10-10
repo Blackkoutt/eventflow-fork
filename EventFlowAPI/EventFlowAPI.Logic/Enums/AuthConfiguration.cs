@@ -2,8 +2,6 @@
 {
     public enum AuthConfiguration
     {
-        FacebookAuth,
-        GoogleAuth,
         JWTAuth
     }
 }

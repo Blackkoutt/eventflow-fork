@@ -4397,10 +4397,6 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Provider")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("RegisteredDate")
                         .HasColumnType("datetime2");
 
@@ -4448,7 +4444,6 @@ namespace EventFlowAPI.DB.Migrations
                             PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "admin.jpg",
-                            Provider = "APP",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "b0fcb126-8927-42fb-8d13-13c4f1681351",
                             Surname = "Admin",
@@ -4471,7 +4466,6 @@ namespace EventFlowAPI.DB.Migrations
                             PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user2.jpg",
-                            Provider = "APP",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "28db39ee-4875-4a8c-b689-02eabddb96aa",
                             Surname = "Strapczuk2",
@@ -4494,7 +4488,6 @@ namespace EventFlowAPI.DB.Migrations
                             PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user3.jpg",
-                            Provider = "APP",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "959425f8-a938-433a-923e-d5d01925122c",
                             Surname = "Strapczuk3",
@@ -4517,7 +4510,6 @@ namespace EventFlowAPI.DB.Migrations
                             PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user4.jpg",
-                            Provider = "APP",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "9bd8c1e8-5875-4e50-876d-3a69c2fdc470",
                             Surname = "Strapczuk4",
@@ -4540,7 +4532,6 @@ namespace EventFlowAPI.DB.Migrations
                             PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user5.jpg",
-                            Provider = "APP",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "f1e975b0-0b98-4b68-8f3b-fbcb7a0c22f4",
                             Surname = "Strapczuk",
