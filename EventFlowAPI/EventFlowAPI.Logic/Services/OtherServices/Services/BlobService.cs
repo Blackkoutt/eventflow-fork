@@ -16,49 +16,27 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
     {
         private readonly string _staticPath = storageSettings.StaticPath;
         private readonly string _generatedPath = storageSettings.GeneratedPath;
-        private static readonly FileExtensionContentTypeProvider ContentTypeProvider = new();
+        private readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
 
         // File name templates come from the "FileNames" section of appsettings.json
-        private readonly string ticketJPGFileNameTemplate = GetFileNameTemplate(configuration, "TicketJPG");
-        private readonly string ticketPDFFileNameTemplate = GetFileNameTemplate(configuration, "TicketPDF");
+        private readonly string _ticketJPGFileNameTemplate = GetFileNameTemplate(configuration, "TicketJPG");
+        private readonly string _ticketPDFFileNameTemplate = GetFileNameTemplate(configuration, "TicketPDF");
 
-        private readonly string eventPassJPGFileNameTemplate = GetFileNameTemplate(configuration, "EventPassJPG");
-        private readonly string eventPassPDFFileNameTemplate = GetFileNameTemplate(configuration, "EventPassPDF");
-
-        private static string GetFileNameTemplate(IConfiguration configuration, string key) =>
-            configuration.GetSection("FileNames")[key]
-                ?? throw new InvalidOperationException($"Missing configuration value 'FileNames:{key}'.");
-
-        public async Task<Result<object>> CreateBlob(BlobRequestDto blob)
-        {
-            var uploadResult = await UploadAsync(blob);
-            if (!uploadResult.IsSuccessful)
-                return Result<object>.Failure(uploadResult.Error);
-
-            return Result<object>.Success(blob.FileName);
-        }
+        private readonly string _eventPassJPGFileNameTemplate = GetFileNameTemplate(configuration, "EventPassJPG");
+        private readonly string _eventPassPDFFileNameTemplate = GetFileNameTemplate(configuration, "EventPassPDF");
 
         public async Task<Result<string>> CreateEventPassBlob(EventPassBlobRequestDto request)
         {
-            BlobContainer container;
-            string fileName = string.Empty; 
-            switch (request.ContentType)
+            if (request.ContentType is not (ContentType.PDF or ContentType.JPEG))
             {
-                case ContentType.PDF:
-                    container = BlobContainer.EventPassesPDF;
-                    fileName = string.Format(eventPassPDFFileNameTemplate, request.EventPassGuid);
-                    break;
-                case ContentType.JPEG:
-                    container = BlobContainer.EventPassesJPG;
-                    fileName = string.Format(eventPassJPGFileNameTemplate, request.EventPassGuid);
-                    break;
-                default:
-                    return Result<string>.Failure(BlobError.UnsupportedContentType);
+                return Result<string>.Failure(BlobError.UnsupportedContentType);
             }
+
+            var isPdf = request.ContentType == ContentType.PDF;
             var newBlob = new BlobRequestDto
             {
-                Container = container,
-                FileName = fileName,
+                Container = isPdf ? BlobContainer.EventPassesPDF : BlobContainer.EventPassesJPG,
+                FileName = string.Format(isPdf ? _eventPassPDFFileNameTemplate : _eventPassJPGFileNameTemplate, request.EventPassGuid),
                 ContentType = request.ContentType,
                 Data = request.Data
             };
@@ -68,7 +46,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<string>.Failure(uploadResult.Error);
             }
 
-            return Result<string>.Success(fileName);
+            return Result<string>.Success(newBlob.FileName);
         }
 
 
@@ -76,34 +54,27 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             List<IFileEntity> files = [];
             List<BlobRequestDto> addedBlobs = [];
-            IFileEntity file;
 
-            for (var i = 0; i < request.DataList.Count; i++)
+            var ticketNumber = 1;
+            foreach (var data in request.DataList)
             {
-                switch (request.ContentType)
+                IFileEntity? file = request.ContentType switch
                 {
-                    case ContentType.PDF:
-                        {
-                            file = new TicketPDF
-                            {
-                                FileName = string.Format(ticketPDFFileNameTemplate, request.ReservationGuid),
-                                ReservationGuid = request.ReservationGuid
-                            };
-                            break;
-                        }
-                    case ContentType.JPEG:
-                        {
-                            file = new TicketJPG
-                            {
-                                FileName = string.Format(ticketJPGFileNameTemplate, request.ReservationGuid, i + 1),
-                                ReservationGuid = request.ReservationGuid
-                            };
-                            break;
-                        }
-                    default:
-                        {
-                            return Result<List<IFileEntity>>.Failure(BlobError.UnsupportedContentType);
-                        }
+                    ContentType.PDF => new TicketPDF
+                    {
+                        FileName = string.Format(_ticketPDFFileNameTemplate, request.ReservationGuid),
+                        ReservationGuid = request.ReservationGuid
+                    },
+                    ContentType.JPEG => new TicketJPG
+                    {
+                        FileName = string.Format(_ticketJPGFileNameTemplate, request.ReservationGuid, ticketNumber),
+                        ReservationGuid = request.ReservationGuid
+                    },
+                    _ => null
+                };
+                if (file is null)
+                {
+                    return Result<List<IFileEntity>>.Failure(BlobError.UnsupportedContentType);
                 }
 
                 files.Add(file);
@@ -113,7 +84,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     Container = request.Container,
                     FileName = file.FileName,
                     ContentType = request.ContentType,
-                    Data = request.DataList[i]
+                    Data = data
                 };
                 addedBlobs.Add(newBlob);
 
@@ -123,6 +94,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     await DeleteAllAddedBlobs(addedBlobs);
                     return Result<List<IFileEntity>>.Failure(uploadResult.Error);
                 }
+
+                ticketNumber++;
             }
             return Result<List<IFileEntity>>.Success(files);
         }
@@ -133,7 +106,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: true);
             if (blobError != Error.None)
+            {
                 return Result<object>.Failure(blobError);
+            }
 
             var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
@@ -147,7 +122,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: false);
             if (blobError != Error.None)
+            {
                 return Result<BlobResponseDto>.Failure(blobError);
+            }
 
             var filePath = ResolveExistingFilePath(blob.Container, blob.FileName);
             if (!File.Exists(filePath))
@@ -157,8 +134,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             }
 
             var data = await File.ReadAllBytesAsync(filePath, blob.CancellationToken);
-            if (!ContentTypeProvider.TryGetContentType(filePath, out var contentType))
+            if (!_contentTypeProvider.TryGetContentType(filePath, out var contentType))
+            {
                 contentType = "application/octet-stream";
+            }
 
             var blobResponse = new BlobResponseDto
             {
@@ -176,7 +155,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             // Only generated/uploaded files are deleted, static assets are never touched
             var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
             if (File.Exists(filePath))
+            {
                 File.Delete(filePath);
+            }
             return Task.CompletedTask;
         }
 
@@ -191,18 +172,26 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private Error ValidateBlobRequest(BlobRequestDto blob, bool isUpload)
         {
             if (string.IsNullOrEmpty(blob.Container.ToLowerString()))
+            {
                 return BlobError.ContainerIsNullOrEmpty;
+            }
 
             if (string.IsNullOrEmpty(blob.FileName))
+            {
                 return BlobError.BlobNameIsNullOrEmpty;
+            }
 
             if (isUpload)
             {
                 if (blob.Data == null || blob.Data.Length == 0)
+                {
                     return BlobError.BlobDataIsNullOrEmpty;
+                }
 
                 if (string.IsNullOrEmpty(blob.ContentType))
+                {
                     return BlobError.BlobContentTypeIsNullOrEmpty;
+                }
             }
             return Error.None;
         }
@@ -214,14 +203,22 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Path.Combine(rootPath, container.ToLowerString(), Path.GetFileName(fileName));
         }
 
-        private string GetGeneratedFilePath(BlobContainer container, string fileName) =>
-            GetFilePath(_generatedPath, container, fileName);
+        private string GetGeneratedFilePath(BlobContainer container, string fileName)
+        {
+            return GetFilePath(_generatedPath, container, fileName);
+        }
 
         // Generated (and newly uploaded) files take precedence over the static ones shipped with the repo
         private string ResolveExistingFilePath(BlobContainer container, string fileName)
         {
             var generatedPath = GetGeneratedFilePath(container, fileName);
             return File.Exists(generatedPath) ? generatedPath : GetFilePath(_staticPath, container, fileName);
+        }
+
+        private static string GetFileNameTemplate(IConfiguration configuration, string key)
+        {
+            return configuration.GetSection("FileNames")[key]
+                ?? throw new InvalidOperationException($"Missing configuration value 'FileNames:{key}'.");
         }
     }
 }

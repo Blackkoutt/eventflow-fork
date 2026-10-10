@@ -24,11 +24,15 @@ namespace EventFlowAPI.Extensions
             builder.Services.AddSingleton(new LocalStorageSettings(staticPath, generatedPath));
         }
 
-        private static string GetRequiredPath(IConfigurationSection section, string key) =>
-            section[key] ?? throw new InvalidOperationException($"Missing configuration value 'LocalStorage:{key}'.");
+        private static string GetRequiredPath(IConfigurationSection section, string key)
+        {
+            return section[key] ?? throw new InvalidOperationException($"Missing configuration value 'LocalStorage:{key}'.");
+        }
 
         // Relative paths are resolved against the API project folder, so they work after cloning on any machine
-        private static string ResolveFromContentRoot(WebApplicationBuilder builder, string path) =>
-            Path.GetFullPath(path, builder.Environment.ContentRootPath);
+        private static string ResolveFromContentRoot(WebApplicationBuilder builder, string path)
+        {
+            return Path.GetFullPath(path, builder.Environment.ContentRootPath);
+        }
     }
 }

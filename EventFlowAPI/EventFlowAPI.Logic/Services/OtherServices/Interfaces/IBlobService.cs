@@ -12,7 +12,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<Result<object>> UploadAsync(BlobRequestDto blob);
         Task<Result<BlobResponseDto>> DownloadAsync(BlobRequestDto blob);
         Task DeleteAsync(BlobRequestDto blob);
-        Task<Result<object>> CreateBlob(BlobRequestDto blob);
 
 
     }
