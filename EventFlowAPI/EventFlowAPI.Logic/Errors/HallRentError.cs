@@ -14,6 +14,5 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error HallRentDoesNotExist = new(new BadRequestResponse("Taki wynajem sali nie istnieje lub został anulowany wcześniej."));
         public static readonly Error TooMuchActiveHallRentsInMonth = new(new BadRequestResponse("Użytkownik ma za dużo aktywnych wynajmów sali w tym miesiącu."));
         public static readonly Error HallRentListIsEmpty = new(new BadRequestResponse("Nie znaleziono wynajmów sali do zaktualizowania."));
-        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Nie można znaleźć danych transakcji i wynajmu sali."));
     }
 }

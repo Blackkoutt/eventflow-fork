@@ -3,7 +3,6 @@
     public enum ConnectionString
     {
         EventFlowDB,
-        MSSQLEventFlowDB,
-        AzureBlobStorage
+        MSSQLEventFlowDB
     }
 }

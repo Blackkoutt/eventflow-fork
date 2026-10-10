@@ -1,4 +1,4 @@
-﻿using Azure.Storage.Blobs;
+﻿using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Context;
 using EventFlowAPI.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +14,21 @@ namespace EventFlowAPI.Extensions
                 options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString.ToString()));
             });
         }
-        public static void AddConnectionToAzureBlobStorage(this WebApplicationBuilder builder, ConnectionString connectionString)
+        public static void AddLocalFileStorage(this WebApplicationBuilder builder)
         {
-            var accountKey = builder.Configuration.GetSection("Authentication:Azure")["AccountKey"]!;
-            var fullConnectionString = $"{builder.Configuration.GetConnectionString(connectionString.ToString())}AccountKey={accountKey};";
-          
-            builder.Services.AddSingleton(x => new BlobServiceClient(fullConnectionString));
+            var contentRootPath = builder.Environment.ContentRootPath;
+            var staticPath = builder.Configuration["LocalStorage:StaticPath"]
+                ?? throw new InvalidOperationException("Missing configuration value 'LocalStorage:StaticPath'.");
+            var generatedPath = builder.Configuration["LocalStorage:GeneratedPath"]
+                ?? throw new InvalidOperationException("Missing configuration value 'LocalStorage:GeneratedPath'.");
+
+            // Relative paths are resolved against the API project folder, so they work after cloning on any machine
+            var storageSettings = new LocalStorageSettings(
+                Path.GetFullPath(staticPath, contentRootPath),
+                Path.GetFullPath(generatedPath, contentRootPath));
+
+            Directory.CreateDirectory(storageSettings.GeneratedPath);
+            builder.Services.AddSingleton(storageSettings);
         }
     }
 }

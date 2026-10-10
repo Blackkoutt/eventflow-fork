@@ -4,7 +4,7 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.PayU;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
@@ -21,7 +21,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         >
     {
         Task<IEnumerable<Reservation>> GetActiveReservationsForFestival(int festivalId);
-        Task<Result<PayUCreatePaymentResponseDto>> CreateReservationPayment(ReservationRequestDto? requestDto);
         Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
         Task<Error> SendMailsAboutUpdatedReservations<TEntity>(IEnumerable<Reservation> reservationsForEvent, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class;
         Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId);

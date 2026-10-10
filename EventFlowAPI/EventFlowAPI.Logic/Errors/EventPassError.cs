@@ -12,6 +12,5 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error EventPassIsExpired = new(new BadRequestResponse("Karnet jest przedawniony."));
         public static readonly Error EventPassExpireBeforeEndOfEvent = new(new BadRequestResponse("Nie można dokonać rezerwacji na wydarzenie, ponieważ aktualny karnet wygasa przed zakończeniem wydarzenia."));
         public static readonly Error AdminCannotBuyOrRenewEventPass = new(new ForbiddenResponse("Administrator nie może kupić lub przedłużyć karnetu."));
-        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Nie można znaleźć danych dla transakcji i karnetu."));
     }
 }

@@ -73,24 +73,12 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateHallRent()
+        public async Task<IActionResult> CreateHallRent([FromBody] HallRentRequestDto? hallRentReqestDto)
         {
-            var result = await _hallRentService.MakeRent();
+            var result = await _hallRentService.MakeRent(hallRentReqestDto);
             return result.IsSuccessful 
                 ? CreatedAtAction(nameof(GetHallRentById), new { id = result.Value.Id }, result.Value) 
                 : HandleErrorResponse(result);
-        }
-
-        [Authorize]
-        [HttpPost("create-rent-transaction")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateRentTransaction([FromBody] HallRentRequestDto hallRentReqestDto)
-        {
-            var result = await _hallRentService.CreateRentPayment(hallRentReqestDto);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         /// <summary>

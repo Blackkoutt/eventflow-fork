@@ -8,7 +8,6 @@ import { HallRentRequest, HallRentSchema } from "../../models/create_schemas/Hal
 import MultiSelect from "../common/forms/MultiSelect";
 import DatePicker from "../common/forms/DatePicker";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
-import { PayUPaymentResponse } from "../../models/response_models/PayUPaymentResponse";
 import useApi from "../../hooks/useApi";
 import { SelectOption } from "../../helpers/SelectOptions";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -41,11 +40,7 @@ type HallRentDto = {
 
 const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
   ({ hall, onDialogClose, onDialogConfirm }: RentHallDialogProps, ref) => {
-    const {
-      data: paymentResponse,
-      statusCode: createPaymentStatusCode,
-      post: createRentPaymentTransaction,
-    } = useApi<PayUPaymentResponse, HallRentDto>(ApiEndpoint.HallRentCreateTransaction);
+    const { post: rentHall } = useApi<HallRent, HallRentDto>(ApiEndpoint.HallRent);
     const { data: services, get: getServices } = useApi<AdditionalServices>(
       ApiEndpoint.AdditionalServices
     );
@@ -160,22 +155,20 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
             startDate: DateFormatter.ToLocalISOString(data.startDate),
             endDate: DateFormatter.ToLocalISOString(data.endDate),
           };
-          await toast.promise(createRentPaymentTransaction({ body: requestData }), {
-            pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-            error: "Wystąpił błąd przekierowania do bramki płatniczej",
+          const request = rentHall({ body: requestData });
+          await toast.promise(request, {
+            pending: "Trwa przetwarzanie rezerwacji sali",
+            error: "Wystąpił błąd podczas rezerwacji sali",
           });
+          if ((await request) == HTTPStatusCode.Created) {
+            toast.success("Sala została zarezerwowana pomyślnie");
+            onDialogConfirm();
+          }
         } else {
           toast.error("Zaloguj się aby wynająć tę salę");
         }
       }
     };
-
-    useEffect(() => {
-      if (createPaymentStatusCode == HTTPStatusCode.Ok && paymentResponse.length == 1) {
-        const redirectUri = paymentResponse[0].redirectUri;
-        window.location.href = redirectUri;
-      }
-    }, [paymentResponse]);
 
     return (
       <div className="h-full">
@@ -228,7 +221,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
                           Podsumowanie rezerwacji:
                         </p>
                         <div className="flex flex-col justify-center items-center gap-2 -translate-x-[30px]">
-                          <LabelText labelWidth={163} label="Typ płatności:" text="PayU" gap={10} />
+                          <LabelText labelWidth={163} label="Typ płatności:" text="Płatność online" gap={10} />
                           <LabelText
                             label="Początek rezerwacji:"
                             labelWidth={163}

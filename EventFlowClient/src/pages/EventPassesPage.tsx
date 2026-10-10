@@ -1,5 +1,5 @@
 import pass_png from "../assets/pass_png.png";
-import { EventPass, EventPassType, isUserInRole } from "../models/response_models";
+import { EventPassType, isUserInRole } from "../models/response_models";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
 import { useEffect, useRef, useState } from "react";
@@ -9,19 +9,13 @@ import BuyEventPassDialog from "../components/eventpassespage/BuyEventPassDialog
 import { useAuth } from "../context/AuthContext";
 import { Roles } from "../helpers/enums/UserRoleEnum";
 import { toast } from "react-toastify";
-import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const EventPassesPage = () => {
   const { data: items, get: getItems } = useApi<EventPassType>(ApiEndpoint.EventPassType);
-  const { post: buyEventPass, statusCode: buyStatusCode } = useApi<EventPass>(
-    ApiEndpoint.EventPass
-  );
   const [lowestPrice, setLowestPrice] = useState<number | undefined>(undefined);
   const { currentUser, authenticated } = useAuth();
 
   const buyEventPassDialog = useRef<HTMLDialogElement>(null);
-  const hasSuccessRef = useRef(false);
-  const hasErrorRef = useRef(false);
   const [eventPassTypeToBuy, setEventPassTypeToBuy] = useState<EventPassType | undefined>(
     undefined
   );
@@ -33,43 +27,12 @@ const EventPassesPage = () => {
   }, [eventPassTypeToBuy]);
 
   useEffect(() => {
-    if (buyStatusCode == HTTPStatusCode.Created) {
-      toast.success("Karnet został zakupiony pomyślnie");
-    } else if (buyStatusCode != null) {
-      toast.error("Wystąpił błąd podczas kupna karnetu");
-    }
-  }, [buyStatusCode]);
-
-  useEffect(() => {
     const onInit = async () => {
       const queryParams = {
         sortBy: "Price",
         sortDirection: "ASC",
       };
       getItems({ id: undefined, queryParams: queryParams });
-
-      const searchParams = new URLSearchParams(window.location.search);
-      console.log("Error", searchParams.has("error"));
-      console.log("Query", searchParams.has("buy"));
-
-      if (searchParams.has("error") && !hasErrorRef.current) {
-        hasErrorRef.current = true;
-        toast.error("Transakcja została anulowana");
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("error");
-        url.searchParams.delete("buy");
-        window.history.replaceState({}, "", url.toString());
-      } else if (searchParams.has("buy") && !hasSuccessRef.current && !hasErrorRef.current) {
-        hasSuccessRef.current = true;
-        await toast.promise(buyEventPass({ id: undefined, body: undefined }), {
-          pending: "Wysyłanie żądania kupna karnetu",
-          success: "Karnet został zakupiony pomyślnie",
-          error: "Wystąpił błąd podczas kupna karnetu",
-        });
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("buy");
-        window.history.replaceState({}, "", url.toString());
-      }
     };
     onInit();
   }, []);

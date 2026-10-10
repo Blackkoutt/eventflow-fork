@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
-import { AdditionalServices, Hall, HallRent } from "../models/response_models";
+import { AdditionalServices, Hall } from "../models/response_models";
 import { useEffect, useRef, useState } from "react";
 import ApiClient from "../services/api/ApiClientService";
 import Button, { ButtonStyle } from "../components/buttons/Button";
@@ -20,10 +20,8 @@ import {
 import HallInfoElement from "../components/hallrentspage/HallInfoElement";
 import HallInfoSectionHeader from "../components/hallrentspage/HallInfoSectionHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { toast } from "react-toastify";
 import RentHallDialog from "../components/hallrentspage/RentHallDialog";
 import { useAuth } from "../context/AuthContext";
-import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const RentPage = () => {
   const { hallId } = useParams();
@@ -32,51 +30,11 @@ const RentPage = () => {
   const { data: services, get: getServices } = useApi<AdditionalServices>(
     ApiEndpoint.AdditionalServices
   );
-  const { post: rentHallRequest, statusCode: rentStatusCode } = useApi<HallRent>(
-    ApiEndpoint.HallRent
-  );
 
   const [hall, setHall] = useState<Hall>();
   //const [hallToRent, setHallToRent] = useState<HallRent | undefined>(undefined);
 
   const rentHallDialog = useRef<HTMLDialogElement>(null);
-  const hasRentRef = useRef(false);
-  const hasRentErrorRef = useRef(false);
-
-  useEffect(() => {
-    if (rentStatusCode == HTTPStatusCode.Created) {
-      toast.success("Rezerwacja sali została dokonana pomyślnie");
-    } else if (rentStatusCode != null) {
-      toast.error("Wystąpił błąd podczas rezerwacji sali");
-    }
-  }, [rentStatusCode]);
-
-  useEffect(() => {
-    const rentHall = async () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      console.log("Error", queryParams.has("error"));
-      console.log("Rent", queryParams.has("rent"));
-      if (queryParams.has("error") && !hasRentErrorRef.current) {
-        hasRentErrorRef.current = true;
-        toast.error("Transakcja została anulowana");
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("error");
-        url.searchParams.delete("rent");
-        window.history.replaceState({}, "", url.toString());
-      } else if (queryParams.has("rent") && !hasRentRef.current && !hasRentErrorRef.current) {
-        hasRentRef.current = true;
-        await toast.promise(rentHallRequest({ id: undefined, body: undefined }), {
-          pending: "Wysyłanie żądania rezerwacji sali",
-          success: "Sala została zarezerowana pomyślnie",
-          error: "Wystąpił błąd podczas rezerwacji sali",
-        });
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("rent");
-        window.history.replaceState({}, "", url.toString());
-      }
-    };
-    rentHall();
-  }, []);
 
   useEffect(() => {
     getHalls({ id: hallId, queryParams: undefined });

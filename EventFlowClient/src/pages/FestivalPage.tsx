@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Festival, Reservation } from "../models/response_models";
+import { Festival } from "../models/response_models";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { useEffect, useRef, useState } from "react";
@@ -10,16 +10,10 @@ import Button, { ButtonStyle } from "../components/buttons/Button";
 import FestivalIcon from "../assets/festival_icon.png";
 import { faShoppingBasket, faShoppingCart, faTicket } from "@fortawesome/free-solid-svg-icons";
 import FestivalReservationDialog from "../components/festivals/FestivalReservationDialog";
-import { toast } from "react-toastify";
-import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const FestivalPage = () => {
   const { data: items, get: getItems } = useApi<Festival>(ApiEndpoint.Festival);
   const [festival, setFestival] = useState<Festival>();
-  const { post: reservationRequest, statusCode: reservationStatusCode } = useApi<Reservation>(
-    ApiEndpoint.Reservation
-  );
-
   const reservationDialog = useRef<HTMLDialogElement>(null);
   const { festivalId } = useParams();
 
@@ -41,48 +35,6 @@ const FestivalPage = () => {
     return [];
   };
   const [dayOfWeek, date, timeLabel, time] = FormatFestivalDate();
-
-  const hasReservationRef = useRef(false);
-  const hasReservationErrorRef = useRef(false);
-
-  useEffect(() => {
-    if (reservationStatusCode == HTTPStatusCode.Ok) {
-      toast.success("Bilet został zakupiony pomyślnie");
-    } else if (reservationStatusCode != null) {
-      toast.error("Wystąpił błąd podczas kupna biletu");
-    }
-  }, [reservationStatusCode]);
-
-  useEffect(() => {
-    const buyTicket = async () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      console.log("Error", queryParams.has("error"));
-      console.log("Reservation", queryParams.has("reservation"));
-      if (queryParams.has("error") && !hasReservationErrorRef.current) {
-        hasReservationErrorRef.current = true;
-        toast.error("Transakcja została anulowana");
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("error");
-        url.searchParams.delete("reservation");
-        window.history.replaceState({}, "", url.toString());
-      } else if (
-        queryParams.has("reservation") &&
-        !hasReservationRef.current &&
-        !hasReservationErrorRef.current
-      ) {
-        hasReservationRef.current = true;
-        await toast.promise(reservationRequest({ id: undefined, body: undefined }), {
-          pending: "Wysyłanie żądania kupna biletu",
-          success: "Bilet został zakupiony pomyślnie",
-          error: "Wystąpił błąd podczas kupna biletu",
-        });
-        const url = new URL(window.location.toString());
-        url.searchParams.delete("reservation");
-        window.history.replaceState({}, "", url.toString());
-      }
-    };
-    buyTicket();
-  }, []);
 
   return (
     festival && (

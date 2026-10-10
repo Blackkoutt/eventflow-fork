@@ -51,9 +51,9 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateEventPass()
+        public async Task<IActionResult> CreateEventPass([FromBody] EventPassRequestDto? eventPassReqestDto)
         {
-            var result = await _eventPassService.BuyEventPass();
+            var result = await _eventPassService.BuyEventPass(eventPassReqestDto);
             return result.IsSuccessful 
                 ? CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value) 
                 : HandleErrorResponse(result);
@@ -72,42 +72,15 @@ namespace EventFlowAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("create-buy-transaction")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateBuyPassTransaction([FromBody] EventPassRequestDto eventPassReqestDto)
-        {
-            var result = await _eventPassService.CreateBuyEventPassPayment(eventPassReqestDto);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
-        }
-
-
-        [Authorize]
-        [HttpPost("{id:int}/create-renew-transaction")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateRenewPassTransaction([FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto)
-        {
-            var result = await _eventPassService.CreateRenewEventPassPayment(id , eventPassReqestDto);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
-        }
-
-
-        [Authorize]
-        //[HttpPut("{id:int}")]
-        [HttpPut]
+        [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RenewEventPass(/*[FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto*/)
+        public async Task<IActionResult> RenewEventPass([FromRoute] int id, [FromBody] UpdateEventPassRequestDto? eventPassReqestDto)
         {
-            var result = await _eventPassService.RenewEventPass();//.UpdateAsync(id, eventPassReqestDto);
+            var result = await _eventPassService.RenewEventPass(id, eventPassReqestDto);
             return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 

@@ -1,8 +1,7 @@
-import { forwardRef, useEffect } from "react";
-import { EventPassType } from "../../models/response_models";
+import { forwardRef } from "react";
+import { EventPass, EventPassType } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import { EventPassRequest } from "../../models/create_schemas/EventPassSchema";
-import { PayUPaymentResponse } from "../../models/response_models/PayUPaymentResponse";
 import useApi from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
@@ -21,30 +20,24 @@ interface BuyEventPassDialogProps {
 
 const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps>(
   ({ eventPassType, onDialogClose }: BuyEventPassDialogProps, ref) => {
-    const {
-      data: paymentResponse,
-      statusCode: createPaymentStatusCode,
-      post: createBuyPassPaymentTransaction,
-    } = useApi<PayUPaymentResponse, EventPassRequest>(ApiEndpoint.EventPassCreateBuyTransaction);
+    const { post: buyEventPass } = useApi<EventPass, EventPassRequest>(ApiEndpoint.EventPass);
 
     const onSubmit = async () => {
       if (eventPassType !== undefined) {
         const data: EventPassRequest = {
           passTypeId: eventPassType.id,
         };
-        await toast.promise(createBuyPassPaymentTransaction({ id: undefined, body: data }), {
-          pending: "Za chwile nastąpi przekierowanie do bramki płatniczej",
-          error: "Wystąpił błąd przekierowania do bramki płatniczej",
+        const request = buyEventPass({ body: data });
+        await toast.promise(request, {
+          pending: "Trwa przetwarzanie zakupu karnetu",
+          error: "Wystąpił błąd podczas kupna karnetu",
         });
+        if ((await request) == HTTPStatusCode.Created) {
+          toast.success("Karnet został zakupiony pomyślnie");
+          onDialogClose();
+        }
       }
     };
-
-    useEffect(() => {
-      if (createPaymentStatusCode == HTTPStatusCode.Ok && paymentResponse.length == 1) {
-        const redirectUri = paymentResponse[0].redirectUri;
-        window.location.href = redirectUri;
-      }
-    }, [paymentResponse]);
 
     return (
       <div>
@@ -75,7 +68,7 @@ const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps
                       )}
                       gap={10}
                     />
-                    <LabelText labelWidth={150} label="Typ płatności:" text="PayU" gap={10} />
+                    <LabelText labelWidth={150} label="Typ płatności:" text="Płatność online" gap={10} />
                     <LabelText
                       label="Typ karnetu:"
                       labelWidth={150}

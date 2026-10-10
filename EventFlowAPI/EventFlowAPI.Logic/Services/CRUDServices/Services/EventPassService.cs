@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -15,7 +16,7 @@ using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Helpers.PayU;
+
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using EventFlowAPI.Logic.Enums;
@@ -27,9 +28,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFileService fileService,
         IAuthService authService,
         IEmailSenderService emailSender,
-        IHttpContextAccessor httpContextAccessor,
-        IPaymentService paymentService
-        ) :
+        IHttpContextAccessor httpContextAccessor) :
         GenericService<
             EventPass,
             EventPassRequestDto,
@@ -41,7 +40,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly IPaymentService _paymentService = paymentService;
         private readonly IEmailSenderService _emailSender = emailSender;
 
         public sealed override async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(EventPassQuery query)
@@ -96,14 +94,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
         // Add Event Pass
-        public async Task<Result<EventPassResponseDto>> BuyEventPass()
+        public async Task<Result<EventPassResponseDto>> BuyEventPass(EventPassRequestDto? requestDto)
         {
-            var transactionStatusResult = await CheckBuyTransactionStatus();
-            if (!transactionStatusResult.IsSuccessful)
-                return Result<EventPassResponseDto>.Failure(transactionStatusResult.Error);
-
-            var requestDto = transactionStatusResult.Value;
-
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
                 return Result<EventPassResponseDto>.Failure(validationError);
@@ -151,185 +143,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<EventPassResponseDto>.Success(eventPassDto);
         }
 
-        private async Task<Result<EventPassRequestDto>> CheckBuyTransactionStatus()
-        {
-            var passTypeId = _httpContextAccessor.HttpContext!.Session.GetInt32("BuyPassTypeId");
-            if (passTypeId == null)
-                return Result<EventPassRequestDto>.Failure(EventPassError.SessionError);
-            else
-                _httpContextAccessor.HttpContext!.Session.Remove("BuyPassTypeId");
-
-            var isTransactionCompleteResult = await _paymentService.CheckTransactionStatus();
-            if (!isTransactionCompleteResult.IsSuccessful)
-                return Result<EventPassRequestDto>.Failure(isTransactionCompleteResult.Error);
-
-            var requestDto = new EventPassRequestDto
-            {
-                PassTypeId = (int)passTypeId
-            };
-
-            return Result<EventPassRequestDto>.Success(requestDto);
-        }
-
-        public async Task<Result<PayUCreatePaymentResponseDto>> CreateBuyEventPassPayment(EventPassRequestDto? requestDto)
-        {
-            var validationError = await ValidateEntity(requestDto, null);
-            if (validationError != Error.None)
-                return Result<PayUCreatePaymentResponseDto>.Failure(validationError);
-
-            var passType = await _unitOfWork.GetRepository<EventPassType>().GetOneAsync(requestDto!.PassTypeId);
-
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(userResult.Error);
-            var user = userResult.Value;
-
-            var paymentRequest = new PayURequestPaymentDto
-            {
-                Description = "Kupno karnetu EventFlow",
-                ContinueUrl = "http://localhost:5173/eventpasses?buy",
-                TotalAmount = (int)(passType!.Price * 100),
-                Products = new List<PayUProductDto>()
-                {
-                    new PayUProductDto
-                    {
-                        Name = "Karnet EventFlow",
-                        Price = (int)passType!.Price * 100,
-                        Quanitity = 1,
-                    }
-                },
-                Buyer = new PayUBuyerDto
-                {
-                    Email = user.EmailAddress,
-                    FirstName = user.Name,
-                    LastName = user.Surname,
-                }
-            };
-
-            var createPaymentResult = await _paymentService.CreatePayment(paymentRequest);
-            if (!createPaymentResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(createPaymentResult.Error);
-
-            var response = createPaymentResult.Value;
-            _httpContextAccessor.HttpContext!.Session.SetString("TransactionId", response.OrderId);
-            _httpContextAccessor.HttpContext!.Session.SetInt32("BuyPassTypeId", requestDto.PassTypeId);
-
-            return Result<PayUCreatePaymentResponseDto>.Success(response);
-        }
-
-
-        public async Task<Result<PayUCreatePaymentResponseDto>> CreateRenewEventPassPayment(int id, UpdateEventPassRequestDto? requestDto)
-        {
-            var validationError = await ValidateEntity(requestDto, id);
-            if (validationError != Error.None)
-                return Result<PayUCreatePaymentResponseDto>.Failure(validationError);
-
-            var eventPass = await _repository.GetOneAsync(id);
-            if (eventPass == null)
-                return Result<PayUCreatePaymentResponseDto>.Failure(Error.NotFound);
-
-            if (eventPass.IsExpired)
-                return Result<PayUCreatePaymentResponseDto>.Failure(EventPassError.EventPassIsExpired);
-
-            if (eventPass.IsDeleted)
-                return Result<PayUCreatePaymentResponseDto>.Failure(EventPassError.EventPassIsDeleted);
-
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(userResult.Error);
-
-            var user = userResult.Value;
-            if (user.IsInRole(Roles.User) && user.Id != eventPass.UserId)
-                return Result<PayUCreatePaymentResponseDto>.Failure(AuthError.UserDoesNotHavePremissionToResource);
-
-            var newPassType = await _unitOfWork.GetRepository<EventPassType>().GetOneAsync(requestDto!.PassTypeId);
-
-            var paymentAmount = Math.Round(newPassType!.Price - (newPassType.Price * (eventPass.PassType.RenewalDiscountPercentage / 100)), 2);
-            Log.Information("Price: {Price}, RenewalDiscountPercentage: {RenewalDiscountPercentage}, Calculated Amount: {CalculatedAmount}",
-                newPassType.Price,
-                eventPass.PassType.RenewalDiscountPercentage,
-                paymentAmount);
-
-            var paymentRequest = new PayURequestPaymentDto
-            {
-                Description = "Przedłużenie karnetu EventFlow",
-                ContinueUrl = "http://localhost:5173/profile/eventpasses?renew",
-                TotalAmount = (int)(paymentAmount * 100),
-                Products = new List<PayUProductDto>()
-                {
-                    new PayUProductDto
-                    {
-                        Name = "Przedłużenie karnetu EventFlow",
-                        Price = (int)paymentAmount * 100,
-                        Quanitity = 1,
-                    }
-                },
-                Buyer = new PayUBuyerDto
-                {
-                    Email = user.EmailAddress,
-                    FirstName = user.Name,
-                    LastName = user.Surname,
-                }
-            };
-
-            var createPaymentResult = await _paymentService.CreatePayment(paymentRequest);
-            if (!createPaymentResult.IsSuccessful)
-                return Result<PayUCreatePaymentResponseDto>.Failure(createPaymentResult.Error);
-
-            var response = createPaymentResult.Value;
-            _httpContextAccessor.HttpContext!.Session.SetInt32("RenewEventPassId", id);
-            _httpContextAccessor.HttpContext!.Session.SetInt32("RenewPassTypeId", requestDto.PassTypeId);
-            _httpContextAccessor.HttpContext!.Session.SetString("TransactionId", response.OrderId);
-
-            return Result<PayUCreatePaymentResponseDto>.Success(response);
-        }
-
-
-        private async Task<Result<(int Id, UpdateEventPassRequestDto RequestDto)>> CheckRenewTransactionStatus()
-        {
-            var id = _httpContextAccessor.HttpContext!.Session.GetInt32("RenewEventPassId");
-            var passTypeId = _httpContextAccessor.HttpContext!.Session.GetInt32("RenewPassTypeId");
-
-            if (id == null || passTypeId == null)
-            {
-                return Result<(int, UpdateEventPassRequestDto)>.Failure(EventPassError.SessionError);
-            }
-            else
-            {
-                _httpContextAccessor.HttpContext!.Session.Remove("RenewEventPassId");
-                _httpContextAccessor.HttpContext!.Session.Remove("RenewPassTypeId");
-            }
-
-            var isTransactionCompleteResult = await _paymentService.CheckTransactionStatus();
-            if(!isTransactionCompleteResult.IsSuccessful)
-                return Result<(int, UpdateEventPassRequestDto)>.Failure(isTransactionCompleteResult.Error);
-
-            var requestDto = new UpdateEventPassRequestDto
-            {
-                PassTypeId = (int)passTypeId
-            };
-
-            return Result<(int, UpdateEventPassRequestDto)>.Success(((int)id, requestDto));
-        }
-
         // Renew Event Pass
-        public async Task<Result<EventPassResponseDto>> RenewEventPass(/*int id, UpdateEventPassRequestDto? requestDto*/)
+        public async Task<Result<EventPassResponseDto>> RenewEventPass(int id, UpdateEventPassRequestDto? requestDto)
         {
-            Log.Information("Hello from renew");
-            var transactionStatusResult = await CheckRenewTransactionStatus();
-            if(!transactionStatusResult.IsSuccessful)
-                return Result<EventPassResponseDto>.Failure(transactionStatusResult.Error);
-
-            Log.Information("Hello from renew1");
-            var requestDto = transactionStatusResult.Value.RequestDto;
-            var id = transactionStatusResult.Value.Id;
-
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
                 return Result<EventPassResponseDto>.Failure(validationError);
 
             Log.Information("Hello from renew2");
-            var eventPass= await _repository.GetOneAsync((int)id);
+            var eventPass= await _repository.GetOneAsync(id);
             if (eventPass == null)
                 return Result<EventPassResponseDto>.Failure(Error.NotFound);
 

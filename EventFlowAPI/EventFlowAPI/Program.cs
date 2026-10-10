@@ -1,4 +1,4 @@
-using EventFlowAPI.Enums;
+﻿using EventFlowAPI.Enums;
 using EventFlowAPI.Extensions;
 using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Mapper.Profiles;
@@ -14,8 +14,8 @@ QuestPDF.Settings.License = LicenseType.Community;
 // Add connection to DB
 builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
 
-// Add connection to Azure Blob Storage
-builder.AddConnectionToAzureBlobStorage(ConnectionString.AzureBlobStorage);
+// Add local file storage (replaces Azure Blob Storage)
+builder.AddLocalFileStorage();
 
 // Add Identity
 builder.AddIdentity();
@@ -33,9 +33,7 @@ builder.Services.AddUnitOfWork();
 builder.Services.AddCorsPolicy();
 
 // App Services
-builder.Services.AddApplicationCRUDServices();
-builder.Services.AddApplicationAuthServices();
-builder.Services.AddApplicationOtherServices();
+builder.Services.AddApplicationServices();
 
 // Other Services
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -46,7 +44,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddAPISession();
 
 var app = builder.Build();
 
@@ -63,7 +60,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.AddApplicationMiddleware();
-app.UseSession();
 
 app.UseCors(CORSPolicy.AllowSpecificOrigins);
 
