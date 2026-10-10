@@ -56,12 +56,6 @@ const UsersManagement = () => {
       body: (rowData: User) => DateFormatter.FormatDate(rowData.dateOfBirth, DateFormat.Date),
     },
     {
-      field: "provider",
-      header: "Rejestracja poprzez",
-      sortable: false,
-      body: (rowData: User) => rowData.provider,
-    },
-    {
       field: "userRoles",
       header: "Role",
       sortable: false,
@@ -138,7 +132,6 @@ const UsersManagement = () => {
           "surname",
           "emailAddress",
           "dateOfBirth",
-          "provider",
           "userRoles",
         ]}
         emptyMessage="Brak użytkowników"

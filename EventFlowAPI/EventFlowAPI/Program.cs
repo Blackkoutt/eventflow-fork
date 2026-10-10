@@ -20,8 +20,8 @@ builder.AddLocalFileStorage();
 // Add Identity
 builder.AddIdentity();
 
-// Add JWT Token, Google Auth and Facebook Auth
-builder.AddAuthentication(AuthConfiguration.JWTAuth, AuthConfiguration.GoogleAuth, AuthConfiguration.FacebookAuth);
+// Add JWT Token
+builder.AddAuthentication(AuthConfiguration.JWTAuth);
 
 // Logger
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();

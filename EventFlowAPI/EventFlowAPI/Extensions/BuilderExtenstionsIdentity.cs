@@ -3,7 +3,6 @@ using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Enums;
 using EventFlowAPI.Logic.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -21,12 +20,9 @@ namespace EventFlowAPI.Extensions
             })
             .AddEntityFrameworkStores<APIContext>();
         }
-        public static void AddAuthentication(this WebApplicationBuilder builder,
-            AuthConfiguration jwtSettingsSection, AuthConfiguration googleAuthSection, AuthConfiguration facebookAuthSection)
+        public static void AddAuthentication(this WebApplicationBuilder builder, AuthConfiguration jwtSettingsSection)
         {
             var jwtSettings = builder.Configuration.GetSection(jwtSettingsSection.ToString());
-            var googleSettings = builder.Configuration.GetSection(googleAuthSection.ToString());
-            var facebookSettings = builder.Configuration.GetSection(facebookAuthSection.ToString());
 
             builder.Services.AddAuthentication(options =>
             {
@@ -48,17 +44,9 @@ namespace EventFlowAPI.Extensions
                         return Task.CompletedTask;
                     }
                 };
-            }).AddGoogle(options =>
-            {
-                options.GetOAuthOptions(googleSettings);
-                options.SaveTokens = true;
-            }) 
-            .AddFacebook(options =>
-            {
-                options.GetOAuthOptions(facebookSettings);
             });
         }
-        
+
         private static TokenValidationParameters GetJWTTokenOptions(IConfigurationSection jwtSettingsSection)
         {
             return new TokenValidationParameters
@@ -85,13 +73,6 @@ namespace EventFlowAPI.Extensions
                 RequiredUniqueChars = 0,
                 RequiredLength = 5
             };
-        }
-
-        private static OAuthOptions GetOAuthOptions(this OAuthOptions options, IConfigurationSection section)
-        {
-            options.ClientId = section["AppId"]!;
-            options.ClientSecret = section["AppSecret"]!;
-            return options;
         }
     }
 }

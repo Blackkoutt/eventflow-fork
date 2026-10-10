@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.DB.Extensions;
 using EventFlowAPI.DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Context
@@ -44,6 +45,9 @@ namespace EventFlowAPI.DB.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // External logins (Google, Facebook) are not supported
+            modelBuilder.Ignore<IdentityUserLogin<string>>();
 
             // Primary keys
             modelBuilder.AddEntitiesPrimaryKeys();

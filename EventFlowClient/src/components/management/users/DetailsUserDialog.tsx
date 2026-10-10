@@ -99,13 +99,6 @@ const DetailsUserDialog = forwardRef<HTMLDialogElement, DetailsUserDialogProps>(
                         negativeTitle="Nie zweryfikowany"
                       />
                     </div>
-
-                    <LabelText
-                      labelWidth={160}
-                      label="Rejestracja poprzez:"
-                      text={user?.provider}
-                      gap={10}
-                    />
                   </div>
                   <div className="flex flex-col justify-center items-center gap-2">
                     <LabelText

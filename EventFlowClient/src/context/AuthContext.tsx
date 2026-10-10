@@ -11,8 +11,6 @@ import {
   removeJWTTokenCookie,
   setJWTTokenCookie,
 } from "../helpers/cookies/JWTCookie";
-import { ExternalLoginRequest } from "../models/create_schemas/auth/ExternalLoginSchema";
-import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import { APIError } from "../models/error/APIError";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +18,6 @@ type AuthContextType = {
   authenticated?: boolean | null;
   currentUser?: User | null;
   handleLogin: (loginRequest: UserLoginRequest) => Promise<void>;
-  handleExternalLogin: (
-    request: ExternalLoginRequest,
-    provider: ExternalLoginProvider
-  ) => Promise<void>;
   performAuthentication: (token?: string, errorMessages?: APIError[]) => void;
   activateUser: () => void;
   handleLogout: () => void;
@@ -42,23 +36,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     ApiEndpoint.AuthLogin
   );
 
-  // External login in application via Google
-  const { data: loginGoogleResponse, post: loginGoogleUser } = useApi<
-    UserLogin,
-    ExternalLoginRequest
-  >(ApiEndpoint.AuthLoginGoogle);
-
-  // External login in application via Facebook
-  const { data: loginFacebookResponse, post: loginFacebookUser } = useApi<
-    UserLogin,
-    ExternalLoginRequest
-  >(ApiEndpoint.AuthLoginFacebook);
-
   // Activate User
-  const { statusCode: activateStatusCode, patch: patchActivateUser } = useApi<
-    UserLogin,
-    ExternalLoginRequest
-  >(ApiEndpoint.AuthActivate);
+  const { statusCode: activateStatusCode, patch: patchActivateUser } = useApi<UserLogin>(
+    ApiEndpoint.AuthActivate
+  );
 
   // Auth Validation
   const {
@@ -99,19 +80,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Set Cookie with JWT token if user is Authenticated
   useEffect(() => {
-    const loginResponses = [loginResponse, loginGoogleResponse, loginFacebookResponse];
-
-    let token: string | undefined = undefined;
-    for (const response of loginResponses) {
-      if (response.length > 0) {
-        token = response[0].token;
-        break;
-      }
-    }
+    const token = loginResponse.length > 0 ? loginResponse[0].token : undefined;
     console.log("token", token);
 
     performAuthentication(token);
-  }, [loginResponse, loginGoogleResponse, loginFacebookResponse]);
+  }, [loginResponse]);
 
   const performAuthentication = (token?: string) => {
     if (token !== undefined) {
@@ -144,20 +117,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await patchActivateUser({ id: undefined, body: undefined });
   };
 
-  const handleExternalLogin = async (
-    request: ExternalLoginRequest,
-    provider: ExternalLoginProvider
-  ) => {
-    switch (provider) {
-      case ExternalLoginProvider.Google:
-        await loginGoogleUser({ body: request });
-        break;
-      case ExternalLoginProvider.Facebook:
-        await loginFacebookUser({ body: request });
-        break;
-    }
-  };
-
   const handleLogout = () => {
     setAuthenticated(false);
     setCurrentUser(null);
@@ -170,7 +129,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         authenticated,
         currentUser,
         handleLogin,
-        handleExternalLogin,
         performAuthentication,
         activateUser,
         handleLogout,

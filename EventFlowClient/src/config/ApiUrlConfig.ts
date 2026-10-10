@@ -16,12 +16,6 @@ export const ApiUrlConfig = {
   [ApiEndpoint.AuthActivate]: {
     url: (id?: number | string) => "/auth/activate",
   },
-  [ApiEndpoint.AuthLoginGoogle]: {
-    url: (id?: number | string) => "/auth/google-login",
-  },
-  [ApiEndpoint.AuthLoginFacebook]: {
-    url: (id?: number | string) => "/auth/facebook-login",
-  },
   [ApiEndpoint.Equipment]: {
     url: (id?: number | string) => `/equipments${id ? `/${id}` : ""}`,
   },

@@ -1,6 +1,4 @@
-import { Chart } from "primereact/chart";
 import LabelText from "../../common/LabelText";
-import { usePieChart } from "../../../hooks/usePieChart";
 import { UserStatistics } from "../../../models/response_models/stats/UserStatistics";
 
 interface UserStatsProps {
@@ -8,17 +6,6 @@ interface UserStatsProps {
 }
 
 const EventsStats = ({ stats }: UserStatsProps) => {
-  const {
-    chartData: userRegisterProviderChartData,
-    chartOptions: userRegisterProviderChartOptions,
-  } = usePieChart(
-    Object.keys(stats.userRegisteredWithProviderDict),
-    Object.values(stats.userRegisteredWithProviderDict),
-    ["#962eeb", "#5a377d", "#4114a7", "#6e2391", "#8254e8"],
-    ["#a73ffc", "#6b388e", "#5225b8", "#7f34a2", "#9365f9"],
-    "Najczęściej wybierana forma rejestracji"
-  );
-
   return (
     stats && (
       <div className="flex flex-col justify-start items-start gap-2 mt-6">
@@ -43,17 +30,6 @@ const EventsStats = ({ stats }: UserStatsProps) => {
           label="Średnia wieku użytkowników: "
           text={stats.usersAgeAvg}
         />
-        <section
-          id="charts"
-          className="flex flex-col justify-center items-center gap-6 mt-6 w-full"
-        >
-          <Chart
-            type="pie"
-            data={userRegisterProviderChartData}
-            options={userRegisterProviderChartOptions}
-            className="w-[45%] h-[4%]"
-          />
-        </section>
       </div>
     )
   );

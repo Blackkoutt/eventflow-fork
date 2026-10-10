@@ -10,14 +10,9 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(
-        IAuthService authService,
-        IGoogleAuthService googleAuthService,
-        IFacebookAuthService facebookAuthService) : BaseController
+    public class AuthController(IAuthService authService) : BaseController
     {
         private readonly IAuthService _authService = authService;
-        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
-        private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
 
 
         [HttpPatch("activate")]
@@ -94,32 +89,6 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             var result = await _authService.Login(loginRequestDto);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
-        }
-
-        [HttpGet("signin-google")]
-        public IActionResult SiginGoogle() => Redirect(_googleAuthService.GetLinkToSigninPage());
-
-        [HttpGet("signin-facebook")]
-        public IActionResult SiginFacebook() => Redirect(_facebookAuthService.GetLinkToSigninPage());
-
-        [HttpPost("google-login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> LoginViaGoogle([FromBody] ExternalLoginRequest externalLoginRequest)
-        {
-            var result = await _googleAuthService.Login(externalLoginRequest);
-            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
-        }
-
-        [HttpPost("facebook-login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> LoginViaFacebook([FromBody] ExternalLoginRequest externalLoginRequest)
-        {
-            var result = await _facebookAuthService.Login(externalLoginRequest);
             return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
     }

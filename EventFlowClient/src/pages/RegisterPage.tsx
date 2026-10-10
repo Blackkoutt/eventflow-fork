@@ -5,15 +5,11 @@ import {
 } from "../models/create_schemas/auth/UserRegisterSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import registerHero from "../assets/registerHero.png";
-import ExternalLoginButton from "../components/loginpage/ExternalLoginButton";
-import googleLogo from "../assets/googleLogo.png";
-import fbLogo from "../assets/facebookLogo.png";
 import Input from "../components/common/forms/Input";
 import { faEnvelope, faKey, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "../components/common/forms/DatePicker";
 import FormButton from "../components/common/forms/FormButton";
-import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { FormEvent, useEffect } from "react";
@@ -141,27 +137,6 @@ const RegisterPage = () => {
             </form>
           </FormProvider>
           <div className="flex flex-col justify-center items-center gap-6 w-full">
-            <div className="flex flex-row justify-between items-center w-full">
-              <div className="bg-[#2F2F2F] min-h-[0.5px]" style={{ width: "43%" }}></div>
-              <p className="text-[#2F2F2F] text-base">LUB</p>
-              <div className="bg-[#2F2F2F] min-h-[0.5px]" style={{ width: "43%" }}></div>
-            </div>
-            <ExternalLoginButton
-              text="Zaloguj się za pomocą konta Google"
-              logo={googleLogo}
-              loginUrl="/signin-google"
-              onClick={() => {
-                localStorage.setItem("selectedProvider", ExternalLoginProvider.Google);
-              }}
-            />
-            <ExternalLoginButton
-              text="Zaloguj się za pomocą konta Facebook"
-              logo={fbLogo}
-              loginUrl="/signin-facebook"
-              onClick={() => {
-                localStorage.setItem("selectedProvider", ExternalLoginProvider.Facebook);
-              }}
-            />
             <div className="flex flex-row justify-center items-center gap-1">
               <p className="text-base text-[#2f2f2f]">Posiadasz już konto? </p>
               <Link to="/sign-in" className="text-[#6358DC] text-base">

@@ -368,14 +368,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="EventFlowAPI.Logic.Services.OtherServices.Services.PaymentService" BaseTypeListCollapsed="true">
-    <Position X="89.25" Y="10" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAQAAAAABAAgAAAAAAAAAAAAAAEAAgAAAEACBAAAAA=</HashCode>
-      <FileName>Services\OtherServices\Services\PaymentService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
   <Class Name="EventFlowAPI.Logic.Services.OtherServices.Services.PdfBuilderService" BaseTypeListCollapsed="true">
     <Position X="85.5" Y="9.75" Width="2.5" />
     <TypeIdentifier>
@@ -905,13 +897,6 @@
       <FileName>Query\UserDataQuery.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.DTO.RequestDto.ExternalLoginRequest">
-    <Position X="56.25" Y="34.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Identity\DTO\RequestDto\ExternalLoginRequest.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="EventFlowAPI.Logic.Identity.DTO.RequestDto.LoginRequestDto">
     <Position X="56.25" Y="36" Width="2" />
     <TypeIdentifier>
@@ -927,25 +912,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.DTO.ResponseDto.ExternalLoginUserResponse">
-    <Position X="58.75" Y="40" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAACAAAAACAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Identity\DTO\ResponseDto\ExternalLoginUserResponse.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="EventFlowAPI.Logic.Identity.DTO.ResponseDto.LoginResponseDto">
     <Position X="58.75" Y="34.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
       <FileName>Identity\DTO\ResponseDto\LoginResponseDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.DTO.ResponseDto.TokenResponse">
-    <Position X="58.75" Y="37" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAABAAACA=</HashCode>
-      <FileName>Identity\DTO\ResponseDto\TokenResponse.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EventFlowAPI.Logic.Identity.DTO.ResponseDto.UserRegisterResponseDto">
@@ -963,34 +934,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.Services.Services.BaseServices.BaseExternalAuthService">
-    <Position X="8" Y="27.5" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAQAAIAEAAAAAAQAoAAAAA=</HashCode>
-      <FileName>Identity\Services\Services\BaseServices\BaseExternalAuthService.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="EventFlowAPI.Logic.Identity.Services.Services.AuthService">
     <Position X="12" Y="27.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAQAACAgAAAAAAAAAACAAAAAAAEQAAAIAAA=</HashCode>
       <FileName>Identity\Services\Services\AuthService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.Services.Services.FacebookAuthService">
-    <Position X="6" Y="30.75" Width="3" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAoAAAAA=</HashCode>
-      <FileName>Identity\Services\Services\FacebookAuthService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Identity.Services.Services.GoogleAuthService">
-    <Position X="9.5" Y="30.75" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAQAAAAEAAAAAAAAoAAAAA=</HashCode>
-      <FileName>Identity\Services\Services\GoogleAuthService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -1804,55 +1752,6 @@
       <FileName>Helpers\StatisticsToPDFDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayUBuyerDto">
-    <Position X="68.25" Y="39" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAEAACCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
-      <FileName>Helpers\PayU\PayUBuyerDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayUCreatePaymentResponseDto">
-    <Position X="65.25" Y="36.75" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>EAAAAAAEAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Helpers\PayU\PayUCreatePaymentResponseDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayULoginResponseDto">
-    <Position X="65.25" Y="39" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQEAAAAQAAAAAAAAAAAgA=</HashCode>
-      <FileName>Helpers\PayU\PayULoginResponseDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayUProductDto">
-    <Position X="68.25" Y="41.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAAAAAAAAAQAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Helpers\PayU\PayUProductDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayURequestPaymentDto">
-    <Position X="62.75" Y="39" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAwAAAAAQAQAIAAAAAAAQAAAAAAAAAAAAQ=</HashCode>
-      <FileName>Helpers\PayU\PayURequestPaymentDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayUTransactionStatusCodeDto">
-    <Position X="65.25" Y="35" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>Helpers\PayU\PayUTransactionStatusCodeDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventFlowAPI.Logic.Helpers.PayU.PayUTransactionStatusDto">
-    <Position X="68.25" Y="35" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Helpers\PayU\PayUTransactionStatusDto.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="EventFlowAPI.Logic.Helpers.TicketOptions.DatePrintingOptions">
     <Position X="8.25" Y="49.5" Width="2" />
     <TypeIdentifier>
@@ -2207,13 +2106,6 @@
     <TypeIdentifier>
       <HashCode>BAAACAAAAgBAAAAAAIAAAAAgAAAAEAAABAAAAAABAAA=</HashCode>
       <FileName>Helpers\Enums\ImageFormat.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="EventFlowAPI.Logic.Helpers.Enums.PayUTransactionStatus">
-    <Position X="68.5" Y="51" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAACACAAACAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
-      <FileName>Helpers\Enums\PayUTransactionStatus.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="EventFlowAPI.Logic.Helpers.Enums.SortDirection">

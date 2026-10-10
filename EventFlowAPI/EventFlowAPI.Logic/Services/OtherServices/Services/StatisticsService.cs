@@ -100,10 +100,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             if(paymentStatistics != null)
                 AddPaymentPlots(paymentStatistics, statisticsToPdfDto.PaymentPlotsBitmaps);
 
-            var userStatistics = statisticsResponse.UserStatistics; 
-            if(userStatistics != null)
-                AddUserPlots(userStatistics, statisticsToPdfDto.UserPlotsBitmaps);
-
             return statisticsToPdfDto;      
         }
 
@@ -160,14 +156,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var scatterPlotBitmap = _plotService.GenerateScatterDateTimePlot(dailyIncomeDict, "Przychód w dniach", "Dni", "Przychód (PLN)", Color.FromHex("#7500f2"));
 
             plotList.Add((scatterPlotBitmap, PlotType.Scatter));
-        }
-
-        private void AddUserPlots(UserStatistics userStatistics, List<(byte[], PlotType)> plotList)
-        {
-            Color[] colors = { Color.FromHex("#552693"), Color.FromHex("#8f5bd8"), Color.FromHex("#7d42a5"), Color.FromHex("#4a03a8"), Color.FromHex("#9128c1") };
-            var registeredUserProviderPlotBitmap = _plotService.GeneratePieChart(userStatistics.UserRegisteredWithProviderDict, colors, "Najczęściej wybierana forma rejestracji", singularValueUnit: "użytkownik", pluralValueUnit: "użytkowników");
-            plotList.Add((registeredUserProviderPlotBitmap, PlotType.Pie));
-
         }
 
         private void AddPaymentPlots(PaymentStatistics paymentStatistics, List<(byte[], PlotType)> plotList)
@@ -297,19 +285,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var userAgeSum = allUsers.Select(u => (DateTime.Now - u.DateOfBirth).TotalDays / 365).Sum();
             var userAgeAvg = (int)(userAgeSum / allUsers.Count());
 
-            var userRegisteredWithProviderDict = allUsers.GroupBy(u => u.Provider)
-                                                    .ToDictionary(group => group.First().Provider, group => (double)group.Count())
-                                                    .OrderByDescending(x => x.Value)
-                                                    .OrderByDescending(x => x.Value)
-                                                    .Take(MAX_ELEMENTS_IN_PLOT)
-                                                    .ToDictionary();
-
             return new UserStatistics
             {
                 TotalUsersCount = totalUsersCount,
                 NewRegistredUsersCount = newUsersCount,
-                UsersAgeAvg = userAgeAvg,
-                UserRegisteredWithProviderDict = userRegisteredWithProviderDict
+                UsersAgeAvg = userAgeAvg
             };
         }
 
