@@ -13,7 +13,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
     public class BlobService(LocalStorageSettings storageSettings) : IBlobService
     {
-        private readonly string _rootPath = storageSettings.RootPath;
+        private readonly string _staticPath = storageSettings.StaticPath;
+        private readonly string _generatedPath = storageSettings.GeneratedPath;
         private static readonly FileExtensionContentTypeProvider ContentTypeProvider = new();
         private string ticketJPGFileNameTemplate = @$"eventflow_bilet_{{0}}_{{1}}.jpg";
         private string ticketPDFFileNameTemplate = @$"eventflow_bilet_{{0}}.pdf";
@@ -135,7 +136,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             if (blobError != Error.None)
                 return Result<object>.Failure(blobError);
 
-            var filePath = GetFilePath(blob.Container, blob.FileName);
+            var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             await File.WriteAllBytesAsync(filePath, blob.Data, blob.CancellationToken);
@@ -149,7 +150,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             if (blobError != Error.None)
                 return Result<BlobResponseDto>.Failure(blobError);
 
-            var filePath = GetFilePath(blob.Container, blob.FileName);
+            var filePath = ResolveExistingFilePath(blob.Container, blob.FileName);
             if (!File.Exists(filePath))
             {
                 var downloadError = new Error(new BadRequestResponse($"Plik '{blob.FileName}' nie istnieje w kontenerze '{blob.Container.ToLowerString()}'."));
@@ -173,7 +174,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public Task DeleteAsync(BlobRequestDto blob)
         {
-            var filePath = GetFilePath(blob.Container, blob.FileName);
+            // Only generated/uploaded files are deleted, static assets are never touched
+            var filePath = GetGeneratedFilePath(blob.Container, blob.FileName);
             if (File.Exists(filePath))
                 File.Delete(filePath);
             return Task.CompletedTask;
@@ -208,9 +210,19 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
 
         // Path.GetFileName strips any directory part, so a file name cannot escape its container folder
-        private string GetFilePath(BlobContainer container, string fileName)
+        private static string GetFilePath(string rootPath, BlobContainer container, string fileName)
         {
-            return Path.Combine(_rootPath, container.ToLowerString(), Path.GetFileName(fileName));
+            return Path.Combine(rootPath, container.ToLowerString(), Path.GetFileName(fileName));
+        }
+
+        private string GetGeneratedFilePath(BlobContainer container, string fileName) =>
+            GetFilePath(_generatedPath, container, fileName);
+
+        // Generated (and newly uploaded) files take precedence over the static ones shipped with the repo
+        private string ResolveExistingFilePath(BlobContainer container, string fileName)
+        {
+            var generatedPath = GetGeneratedFilePath(container, fileName);
+            return File.Exists(generatedPath) ? generatedPath : GetFilePath(_staticPath, container, fileName);
         }
     }
 }
