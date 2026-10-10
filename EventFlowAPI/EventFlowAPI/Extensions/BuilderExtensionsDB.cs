@@ -16,13 +16,16 @@ namespace EventFlowAPI.Extensions
         }
         public static void AddLocalFileStorage(this WebApplicationBuilder builder)
         {
-            var configuredPath = builder.Configuration.GetSection("LocalStorage")["RootPath"] ?? "Storage";
-            var rootPath = Path.IsPathRooted(configuredPath)
-                ? configuredPath
-                : Path.Combine(builder.Environment.ContentRootPath, configuredPath);
+            var section = builder.Configuration.GetSection("LocalStorage");
+            var staticPath = ResolveFromContentRoot(builder, section["StaticPath"] ?? "../EventFlowAPI.DB/Assets/static");
+            var generatedPath = ResolveFromContentRoot(builder, section["GeneratedPath"] ?? "../EventFlowAPI.DB/Assets/generated");
 
-            Directory.CreateDirectory(rootPath);
-            builder.Services.AddSingleton(new LocalStorageSettings(rootPath));
+            Directory.CreateDirectory(generatedPath);
+            builder.Services.AddSingleton(new LocalStorageSettings(staticPath, generatedPath));
         }
+
+        // Relative paths are resolved against the API project folder, so they work after cloning on any machine
+        private static string ResolveFromContentRoot(WebApplicationBuilder builder, string path) =>
+            Path.GetFullPath(path, builder.Environment.ContentRootPath);
     }
 }
