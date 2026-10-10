@@ -11,8 +11,6 @@ import RentsPage from "../pages/RentsPage";
 import AppLayout from "../layout/AppLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import ForgotPasswordPage from "../pages/ForgotPasswordPage";
-import VerificationEmailSent from "../pages/VerificationEmailSentPage";
 import ProtectedRoute from "../wrappers/ProtectedRoute";
 import UserProfile from "../pages/UserProfilePage";
 import Management from "../pages/ManagementPage";
@@ -57,7 +55,6 @@ import AccessibilityDeclarationPage from "../pages/AccessibilityDeclarationPage"
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
 import RodoPage from "../pages/RodoPage";
 import StatutePage from "../pages/StatutePage";
-import VerificationEmailSentPage from "../pages/VerificationEmailSentPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import ManagementPage from "../pages/ManagementPage";
 import RentPage from "../pages/RentPage";
@@ -143,14 +140,6 @@ export const router = createBrowserRouter([
       {
         path: "/sign-up",
         element: <RegisterPage />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: "/email-verification",
-        element: <VerificationEmailSentPage />,
       },
       {
         path: "/profile",

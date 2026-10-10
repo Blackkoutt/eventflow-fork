@@ -13,11 +13,8 @@ import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const {
-    currentUser,
     authenticated,
     handleLogin,
-    activateUser,
-    performAuthentication,
     handleLogout,
   } = useAuth();
 
@@ -29,20 +26,6 @@ const LoginPage = () => {
   const { handleSubmit, formState, watch } = methods;
   const { errors, isSubmitting } = formState;
 
-  useEffect(() => {
-    // Register Login - after click verification link in email
-    const loginAfterRegister = () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const token = queryParams.get("confirm");
-      console.log(token);
-      if (token !== null) {
-        performAuthentication(token);
-      }
-    };
-
-    loginAfterRegister();
-  }, []);
-
   // Login direct in application
   const onSubmit: SubmitHandler<UserLoginRequest> = async (data) => {
     await handleLogin(data);
@@ -51,10 +34,6 @@ const LoginPage = () => {
   // Redirect after authentication to main page
   useEffect(() => {
     if (authenticated) {
-      console.log("currentUser", currentUser);
-      if (!currentUser?.isVerified) {
-        activateUser();
-      }
       navigate("/");
     }
   }, [authenticated]);
@@ -107,9 +86,6 @@ const LoginPage = () => {
                   fontSize={16}
                   text="Zapamiętaj mnie"
                 />
-                <Link to="/forgot-password" className="text-[#6358DC] text-base">
-                  Zapomniałeś hasła?
-                </Link>
               </div>
               <FormButton isSubmitting={isSubmitting} text="Zaloguj się" />
               {/* {errors.root && <div className="text-red-500">{errors.email.message}</div>} */}

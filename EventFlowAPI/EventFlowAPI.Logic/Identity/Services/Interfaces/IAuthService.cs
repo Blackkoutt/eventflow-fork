@@ -12,7 +12,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Interfaces
     {
         Task<Result<User>> GetCurrentUserAsEntity();
         Task<Result<UserResponseDto>> GetCurrentUser();
-        Task<Error> VerifyUser();
         Task<Result<UserRegisterResponseDto>> RegisterUser(UserRegisterRequestDto? requestDto);
         Task<Result<LoginResponseDto>> Login(LoginRequestDto? requestDto);
     }

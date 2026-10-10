@@ -14,8 +14,6 @@ import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
 import LabelText from "../common/LabelText";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
-import MessageText from "../common/MessageText";
-import { MessageType } from "../../helpers/enums/MessageTypeEnum";
 import Button, { ButtonStyle } from "../buttons/Button";
 import FormButton from "../common/forms/FormButton";
 import { useAuth } from "../../context/AuthContext";
@@ -264,13 +262,6 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
                   </div>
 
                   <div className="flex flex-col justify-center items-center gap-3 w-full">
-                    <div className="flex flex-col justify-center items-center gap-2 py-3">
-                      <MessageText
-                        messageType={MessageType.Info}
-                        text={`Po dokonaniu transakcji otrzymasz wiadomość email z potwierdzeniem rezerwacji
-                          w formie pliku PDF.`}
-                      />
-                    </div>
                     <div className="flex flex-row justify-center items-center gap-2">
                       <Button
                         text="Anuluj"

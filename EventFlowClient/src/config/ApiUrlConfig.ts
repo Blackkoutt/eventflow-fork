@@ -13,9 +13,6 @@ export const ApiUrlConfig = {
   [ApiEndpoint.AuthLogin]: {
     url: (id?: number | string) => "/auth/login",
   },
-  [ApiEndpoint.AuthActivate]: {
-    url: (id?: number | string) => "/auth/activate",
-  },
   [ApiEndpoint.Equipment]: {
     url: (id?: number | string) => `/equipments${id ? `/${id}` : ""}`,
   },

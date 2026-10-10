@@ -45,8 +45,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 new Claim("name", user.Name!),
                 new Claim("surname", user.Surname!),
                 new Claim("emailAddress", user.Email!),
-                new Claim("dateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!),
-                new Claim("isVerified", user.IsVerified.ToString())
+                new Claim("dateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!)
             };
             if(roles != null)
             {

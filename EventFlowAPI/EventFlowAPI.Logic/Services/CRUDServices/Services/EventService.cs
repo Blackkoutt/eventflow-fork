@@ -25,7 +25,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         IReservationService reservationService,
         IAuthService authService,
-        IEmailSenderService emailSender,
         ICollisionCheckerService collisionChecker,
         ITicketService ticketService,
         IFileService fileService,
@@ -40,7 +39,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             >(unitOfWork, authService),
         IEventService
     {
-        private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IReservationService _reservationService = reservationService;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly ITicketService _ticketService = ticketService;
@@ -206,7 +204,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     newEventEntity!.StartDate != oldEventEntity.StartDate ||
                     newEventEntity!.EndDate != oldEventEntity.EndDate)
                 {
-                    var resUpdateError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvent, oldEventEntity, newEventEntity);
+                    var resUpdateError = await _reservationService.UpdateReservationsTickets(reservationsForEvent);
                     if (resUpdateError != Error.None)
                         return Result<EventResponseDto>.Failure(resUpdateError);
                 }             
@@ -234,7 +232,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             
             if (reservationsForEvent.Any())
             {
-                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForEvent, eventEntity);
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForEvent);
                 if (cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);
             }

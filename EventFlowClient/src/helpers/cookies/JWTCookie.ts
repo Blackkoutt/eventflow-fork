@@ -29,7 +29,6 @@ export const getUserFormCookie = () => {
     name: decodedToken.name,
     surname: decodedToken.surname,
     email: decodedToken.email,
-    isVerified: JSON.parse(`${decodedToken.isVerified}`.toLowerCase()),
     dateOfBirth: decodedToken.dateOfBirth,
     userRoles: decodedToken.userRoles,
   };

@@ -6,7 +6,6 @@ import EventList from "../components/homepage/EventList";
 import FestivalList from "../components/homepage/FestivalList";
 import FaqList from "../components/homepage/FaqList";
 import PartnerList from "../components/homepage/PartnerList";
-import Newsletter from "../components/homepage/Newsletter";
 import EventPassCTA from "../components/homepage/EventPassCTA";
 
 const HomePage = () => {
@@ -95,13 +94,6 @@ const HomePage = () => {
             <PartnerList />
           </div>
         </div>
-      </section>
-
-      <section
-        id="newsletter"
-        className="min-w-[125%] bg-[#F4F6FA] flex flex-column justify-center items-start"
-      >
-        <Newsletter />
       </section>
     </>
   );

@@ -7,8 +7,6 @@ import { toast } from "react-toastify";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
 import Dialog from "../common/Dialog";
 import LabelText from "../common/LabelText";
-import MessageText from "../common/MessageText";
-import { MessageType } from "../../helpers/enums/MessageTypeEnum";
 import Button, { ButtonStyle } from "../buttons/Button";
 import { faShoppingCart, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { format, addMonths } from "date-fns";
@@ -96,13 +94,6 @@ const BuyEventPassDialog = forwardRef<HTMLDialogElement, BuyEventPassDialogProps
                       gap={10}
                     />
                   </div>
-                </div>
-                <div className="flex flex-col justify-center items-center gap-2">
-                  <MessageText
-                    messageType={MessageType.Info}
-                    text={`Po zakupie karnetu otrzymasz wiadomość email z karnetem w
-                            formie pliku PDF wraz z potwierdzeniem płatności.`}
-                  />
                 </div>
                 <div className="flex flex-col gap-3 w-full">
                   <div className="bg-textPrimary w-full h-[1px]"></div>

@@ -3,7 +3,6 @@ export enum ApiEndpoint {
   AuthValidate,
   AuthRegister,
   AuthLogin,
-  AuthActivate,
   Equipment,
   EventCategory,
   Event,

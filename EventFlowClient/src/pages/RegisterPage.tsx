@@ -32,7 +32,7 @@ const RegisterPage = () => {
 
   useEffect(() => {
     if (registerStatusCode === HTTPStatusCode.Ok) {
-      navigate("/email-verification");
+      navigate("/sign-in");
     }
   }, [registerStatusCode]);
 

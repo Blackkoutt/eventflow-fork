@@ -86,19 +86,6 @@ const DetailsUserDialog = forwardRef<HTMLDialogElement, DetailsUserDialogProps>(
                       text={user?.userRoles.join(", ")}
                       gap={10}
                     />
-                    <div className="flex flex-row justify-start items-center self-start gap-2">
-                      <p
-                        style={{ fontSize: 16, minWidth: 160 }}
-                        className="font-bold text-end text-textPrimary hover:cursor-default"
-                      >
-                        Status weryfikacji:
-                      </p>
-                      <Status
-                        value={user?.isVerified}
-                        positiveTitle="Zweryfikowany"
-                        negativeTitle="Nie zweryfikowany"
-                      />
-                    </div>
                   </div>
                   <div className="flex flex-col justify-center items-center gap-2">
                     <LabelText

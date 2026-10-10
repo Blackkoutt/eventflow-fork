@@ -25,8 +25,6 @@ import {
   EventUpdateRequest,
   EventUpdateSchema,
 } from "../../../models/update_schemas/EventUpdateSchema";
-import MessageText from "../../common/MessageText";
-import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface ModifyEventProps {
   item?: EventEntity;
@@ -267,13 +265,6 @@ const ModifyEvent = forwardRef<HTMLDialogElement, ModifyEventProps>(
               <AddEventTicket />
             </EventTicketContext.Provider>
           </div>
-        </div>
-        <div className="flex flex-col self-start gap-2 py-2">
-          <MessageText
-            maxWidth={900}
-            messageType={MessageType.Error}
-            text={`Zmiana nazwy daty lub sali wydarzenia sprawi, że wszyscy użytkownicy posiadający rezerwacje na te wydarzenie zostaną o tym fakcie poinformowani drogą mailową.`}
-          />
         </div>
         <div className="flex flex-row justify-center items-center gap-2 mt-2">
           <Button

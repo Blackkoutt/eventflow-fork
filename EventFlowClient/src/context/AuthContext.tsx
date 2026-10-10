@@ -19,7 +19,6 @@ type AuthContextType = {
   currentUser?: User | null;
   handleLogin: (loginRequest: UserLoginRequest) => Promise<void>;
   performAuthentication: (token?: string, errorMessages?: APIError[]) => void;
-  activateUser: () => void;
   handleLogout: () => void;
 };
 
@@ -34,11 +33,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Login in application
   const { data: loginResponse, post: loginUser } = useApi<UserLogin, UserLoginRequest>(
     ApiEndpoint.AuthLogin
-  );
-
-  // Activate User
-  const { statusCode: activateStatusCode, patch: patchActivateUser } = useApi<UserLogin>(
-    ApiEndpoint.AuthActivate
   );
 
   // Auth Validation
@@ -71,7 +65,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         name: user.name,
         surname: user.surname,
         emailAddress: user.emailAddress,
-        isVerified: JSON.parse(`${user.isVerified}`.toLowerCase()),
         dateOfBirth: user.dateOfBirth,
         userRoles: user.userRoles,
       });
@@ -102,7 +95,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         name: userDecodedToken.name,
         surname: userDecodedToken.surname,
         emailAddress: userDecodedToken.emailAddress,
-        isVerified: JSON.parse(`${userDecodedToken.isVerified}`.toLowerCase()),
         dateOfBirth: userDecodedToken.dateOfBirth,
         userRoles: userDecodedToken.userRoles,
       });
@@ -111,10 +103,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleLogin = async (loginRequest: UserLoginRequest) => {
     await loginUser({ body: loginRequest });
-  };
-
-  const activateUser = async () => {
-    await patchActivateUser({ id: undefined, body: undefined });
   };
 
   const handleLogout = () => {
@@ -130,7 +118,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         currentUser,
         handleLogin,
         performAuthentication,
-        activateUser,
         handleLogout,
       }}
     >

@@ -104,7 +104,7 @@ const DeleteEvent = forwardRef<HTMLDialogElement, DeleteEventProps>(
               <MessageText
                 messageType={MessageType.Error}
                 maxWidth={600}
-                text={`Anulowanie wydarzenia sprawi, że wszyscy użytkownicy posiadający rezerwacje na te wydarzenie zostaną o tym fakcie poinformowani drogą mailową. Konieczny będzie zwrot kosztów wszystkich rezerwacji.`}
+                text={`Anulowanie wydarzenia sprawi, że wszystkie rezerwacje na to wydarzenie zostaną anulowane. Konieczny będzie zwrot kosztów wszystkich rezerwacji.`}
               />
             </div>
             <div className="flex flex-row justify-center items-center gap-2">

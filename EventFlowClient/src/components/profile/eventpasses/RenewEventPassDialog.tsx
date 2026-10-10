@@ -19,8 +19,6 @@ import {
 } from "../../../models/update_schemas/EventPassUpdateSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import MessageText from "../../common/MessageText";
-import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface RenewEventPassDialogProps {
   eventPass?: EventPass;
@@ -262,13 +260,6 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
                       </div>
                       <div className="bg-[#4c4c4c] h-[1px] w-full"></div>
 
-                      <div className="flex flex-col justify-center items-center gap-2">
-                        <MessageText
-                          messageType={MessageType.Info}
-                          text={`Po przedłużeniu karnetu otrzymasz wiadomość email z karnetem w
-                          formie pliku PDF wraz z potwierdzeniem płatności.`}
-                        />
-                      </div>
                       <div className="flex flex-row justify-center items-center gap-2">
                         <Button
                           text="Anuluj"

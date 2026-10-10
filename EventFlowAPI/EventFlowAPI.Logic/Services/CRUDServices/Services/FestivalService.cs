@@ -96,7 +96,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
 
-            bool needToSendMail = false;
+            bool needToUpdateTickets = false;
 
             var oldFestival = new Festival
             {
@@ -123,7 +123,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(festival.Name != requestDto!.Name)
             {
                 festival.Name = requestDto!.Name;
-                needToSendMail = true;  
+                needToUpdateTickets = true;  
             }
 
             if(festival.ShortDescription != requestDto!.ShortDescription)
@@ -144,21 +144,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     if (updateEventRequestData.Name != null && eventEntity!.Name != updateEventRequestData.Name)
                     {
                         updateRequest.Name = updateEventRequestData.Name;
-                        needToSendMail = true;
+                        needToUpdateTickets = true;
                     }
                     else updateRequest.Name = eventEntity!.Name;
 
                     if(updateEventRequestData.StartDate != null && eventEntity!.StartDate != updateEventRequestData.StartDate)
                     {
                         updateRequest.StartDate = (DateTime)updateEventRequestData.StartDate;
-                        needToSendMail = true;
+                        needToUpdateTickets = true;
                     }
                     else updateRequest.StartDate = eventEntity!.StartDate;
 
                     if (updateEventRequestData.EndDate != null && eventEntity!.EndDate != updateEventRequestData.EndDate)
                     {
                         updateRequest.EndDate = (DateTime)updateEventRequestData.EndDate;
-                        needToSendMail = true;
+                        needToUpdateTickets = true;
                     }
                     else updateRequest.EndDate = eventEntity!.EndDate;
 
@@ -177,7 +177,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     if (updateEventRequestData.HallId != null && eventEntity!.HallId != updateEventRequestData.HallId)
                     {
                         updateRequest.HallId = (int)updateEventRequestData.HallId;
-                        needToSendMail = true;
+                        needToUpdateTickets = true;
                     }
                     else updateRequest.HallId = eventEntity!.HallId;
 
@@ -218,7 +218,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var reservationForFestival = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.EndDate < DateTime.Now && !r.IsDeleted && r.Ticket.FestivalId == festival.Id));
             var distinctReservation = reservationForFestival.DistinctBy(r => r.ReservationGuid);
 
-            if (hasChanges) needToSendMail = true;
+            if (hasChanges) needToUpdateTickets = true;
 
             festival.Events = newFestivalEventList;
 
@@ -255,9 +255,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             _repository.Update(festival);
             await _unitOfWork.SaveChangesAsync();
 
-            if (needToSendMail)
+            if (needToUpdateTickets)
             {
-                var sendError = await _reservationService.SendMailsAboutUpdatedReservations(distinctReservation, oldFestival, festival);
+                var sendError = await _reservationService.UpdateReservationsTickets(distinctReservation);
                 if (sendError != Error.None)
                     return Result<FestivalResponseDto>.Failure(sendError);
             }
@@ -316,7 +316,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (reservationsForFestival.Any())
             {
-                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForFestival, null, festival);
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForFestival);
                 if (cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);
             }
