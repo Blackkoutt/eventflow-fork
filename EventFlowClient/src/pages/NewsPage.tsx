@@ -40,7 +40,6 @@ function NewsPage() {
                 articleSize={14}
                 shortText={true}
                 buttonSize={12}
-                objectTopMargin={-108}
               />
             ))}
           </div>

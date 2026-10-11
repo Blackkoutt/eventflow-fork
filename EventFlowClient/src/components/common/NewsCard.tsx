@@ -8,7 +8,6 @@ interface NewsCardProps {
   headerSize: number;
   articleSize: number;
   buttonSize: number;
-  objectTopMargin: number;
   shortText?: boolean;
 }
 const NewsCard = ({
@@ -17,7 +16,6 @@ const NewsCard = ({
   headerSize,
   articleSize,
   buttonSize,
-  objectTopMargin,
   shortText = false,
 }: NewsCardProps) => {
   const getShortDescription = (description: string) => {
@@ -32,21 +30,26 @@ const NewsCard = ({
       to={`/news/${news.id}`}
       className="shadow-xl flex flex-col justify-center items-center gap-2 h-full hover:bg-slate-50 hover:cursor-pointer"
     >
-      <img
-        className="object-cover w-full h-full"
-        src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}
-        alt={`Zdjęcie newsu ${news.title}`}
-      />
-      <div className="flex flex-row justify-start items-center gap-2">
+      <div className="relative w-full flex-1 aspect-video overflow-hidden">
+        <img
+          className="absolute inset-0 w-full h-full object-cover"
+          src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}
+          alt={`Zdjęcie newsu ${news.title}`}
+        />
+      </div>
+      <div className="relative w-full flex flex-row justify-start items-center gap-2">
         <div
-          className="bg-primaryPurple mt-[-150px] ml-3"
+          className="absolute bg-primaryPurple left-3"
           style={{
-            minWidth: `${objectSize}px`,
-            minHeight: `${objectSize}px`,
-            marginTop: `${objectTopMargin}px`,
+            width: `${objectSize}px`,
+            height: `${objectSize}px`,
+            top: `-${objectSize / 2}px`,
           }}
         ></div>
-        <article className="flex flex-col justify-start items-start gap-1 w-full pb-4 pr-5">
+        <article
+          className="flex flex-col justify-start items-start gap-1 w-full pb-4 pr-5 pt-4"
+          style={{ paddingLeft: `${objectSize + 28}px` }}
+        >
           <h3
             className="text-[24px] font-semibold text-[#4C4C4C]"
             style={{ fontSize: `${headerSize}px` }}

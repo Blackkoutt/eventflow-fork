@@ -21,7 +21,7 @@ const FestivalList = () => {
   return (
     <>
       {festivals[0] ? (
-        <div className="max-w-[75%]">
+        <div className="w-full max-w-[1400px]">
           <FestivalCard festival={festivals[0]} />
         </div>
       ) : (

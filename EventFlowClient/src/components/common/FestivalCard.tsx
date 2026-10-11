@@ -13,13 +13,15 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
   return (
     <Link
       to={`/festivals/${festival.id}`}
-      className="shadow-xl flex flex-row justify-center items-center w-full min-h-[500px] max-h-[600px] hover:bg-slate-50 hover:cursor-pointer"
+      className="shadow-xl flex flex-row justify-center items-stretch w-full min-h-[500px] overflow-hidden hover:bg-slate-50 hover:cursor-pointer"
     >
-      <img
-        className="object-cover min-w-[42%] max-w-[42%]"
-        src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
-        alt={`Zdjęcie festiwalu ${festival.title}`}
-      />
+      <div className="relative w-[42%] shrink-0">
+        <img
+          className="absolute inset-0 w-full h-full object-cover"
+          src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
+          alt={`Zdjęcie festiwalu ${festival.title}`}
+        />
+      </div>
       <div className="px-8 flex flex-col justify-center items-start gap-3 py-8 w-full">
         <div className="flex flex-col justify-center items-start gap-4">
           <div className="flex flex-col justify-center items-start gap-[10px]">

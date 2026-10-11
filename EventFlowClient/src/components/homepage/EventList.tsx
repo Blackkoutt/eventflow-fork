@@ -21,7 +21,7 @@ const EventList = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-6">
+      <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-6">
         {events.map((event) => (event ? <EventCard key={event.id} event={event} /> : null))}
       </div>
     </>

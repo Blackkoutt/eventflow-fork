@@ -23,9 +23,9 @@ const ConcreteNewsPage = () => {
 
   return (
     news && (
-      <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
+      <div className="flex flex-col w-[80%] max-w-[1400px] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
         <img
-          className="object-cover w-full min-h-[400px] max-h-[400px]"
+          className="object-cover w-full h-[400px]"
           src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}
           alt={`Zdjęcie newsu ${news.title}`}
         />

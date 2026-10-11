@@ -5,7 +5,7 @@ import hero from "../assets/hero_section_img.png";
 
 function AboutPage() {
   return (
-    <div className="py-10 w-[80%]">
+    <div className="py-10 w-[80%] max-w-[1400px]">
       <div className="flex flex-col gap-6 mt-6">
         <article className="w-full flex flex-col justify-center items-center">
           <h2 className="tracking-wide">

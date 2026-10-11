@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button, { ButtonStyle } from "../components/buttons/Button";
 import hero from "../assets/hero_section_img.png";
 import SectionHeader from "../components/common/SectionHeader";
@@ -26,14 +27,16 @@ const HomePage = () => {
               wydarzenie. Nie zwlekaj - zanurz się w wir fascynujących wydarzeń z EventFlow!
             </p>
           </article>
-          <Button
-            text="Sprawdź wydarzenia"
-            width={220}
-            height={60}
-            fontSize={16}
-            style={ButtonStyle.Primary}
-            action={() => {}}
-          />
+          <Link to="/events">
+            <Button
+              text="Sprawdź wydarzenia"
+              width={220}
+              height={60}
+              fontSize={16}
+              style={ButtonStyle.Primary}
+              action={() => {}}
+            />
+          </Link>
         </div>
         <img
           src={hero}
@@ -52,7 +55,7 @@ const HomePage = () => {
             subtitle="W tej sekcji znajdziesz zbliżające się wydarzenia z różnych kategorii: koncert,
               spektakl, film itd."
           />
-          <div className="flex flex-col justify-center items-center gap-6">
+          <div className="w-full flex flex-col justify-center items-center gap-6">
             <FestivalList />
             <EventList />
           </div>
@@ -89,7 +92,7 @@ const HomePage = () => {
         className="min-w-[125%] bg-[#F4F6FA] flex flex-col justify-center items-center"
       >
         <div className="mt-24 w-[80%]">
-          <div className="relative flex flex-col justify-center items-center gap-9">
+          <div className="relative w-full min-w-0 flex flex-col justify-center items-center gap-9">
             <SectionHeader title="Partnerzy" subtitle="Sprawdź z kim współpracujemy" />
             <PartnerList />
           </div>

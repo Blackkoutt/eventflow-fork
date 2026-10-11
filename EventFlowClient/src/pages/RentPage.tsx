@@ -47,7 +47,7 @@ const RentPage = () => {
 
   return (
     hall && (
-      <div className="flex flex-col w-[70%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
+      <div className="flex flex-col w-[70%] max-w-[1200px] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
         <RentHallDialog
           ref={rentHallDialog}
           hall={hall}
@@ -55,7 +55,7 @@ const RentPage = () => {
           onDialogConfirm={() => rentHallDialog.current?.close()}
         />
         <img
-          className="object-cover w-full max-h-[300px] shadow-md"
+          className="object-cover w-full h-[320px] shadow-md"
           src={ApiClient.GetPhotoEndpoint(hall.type?.photoEndpoint)}
           alt={`Zdjęcie sali nr ${hall.hallNr}`}
         />
