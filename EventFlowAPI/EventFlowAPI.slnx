@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
+  <Project Path="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj">
+    <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
+  </Project>
+  <Project Path="EventFlowAPI/EventFlowAPI.csproj">
+    <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
+    <BuildDependency Project="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj" />
+  </Project>
+</Solution>

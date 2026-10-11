@@ -47,7 +47,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
 
     const calendar = useCalendarApp({
       views: [createViewMonthGrid(), createViewWeek()],
-      selectedDate: DateFormatter.FormatDateForCalendar(new Date()),
+      selectedDate: DateFormatter.FormatDateForCalendar(new Date()).split(" ")[0],
       plugins: [createEventsServicePlugin()],
       locale: "pl-PL",
     });
