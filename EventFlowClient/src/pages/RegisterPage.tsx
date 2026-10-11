@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "../components/common/forms/DatePicker";
 import FormButton from "../components/common/forms/FormButton";
 import useApi from "../hooks/useApi";
+import { toast } from "react-toastify";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { FormEvent, useEffect } from "react";
 import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
@@ -32,14 +33,14 @@ const RegisterPage = () => {
 
   useEffect(() => {
     if (registerStatusCode === HTTPStatusCode.Ok) {
+      toast.success("Konto zostało utworzone. Możesz się teraz zalogować.");
       navigate("/sign-in");
     }
   }, [registerStatusCode]);
 
   // Register user in application
   const onSubmit: SubmitHandler<UserRegisterRequest> = async (data) => {
-    console.log(data);
-    //await registerUser({ body: data });
+    await registerUser({ body: data });
   };
 
   const validateNameOrSurname = (e: FormEvent<HTMLInputElement>) => {
