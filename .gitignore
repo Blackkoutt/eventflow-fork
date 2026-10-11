@@ -8,3 +8,6 @@ EventFlowAPI/EventFlowAPI.Logic/obj
 # Generated and user-uploaded files (tickets, passes, PDFs, new photos)
 EventFlowAPI/EventFlowAPI.DB/Assets/generated/*
 !EventFlowAPI/EventFlowAPI.DB/Assets/generated/.gitkeep
+
+# Locally generated JWT signing key (development)
+EventFlowAPI/EventFlowAPI/App_Data/

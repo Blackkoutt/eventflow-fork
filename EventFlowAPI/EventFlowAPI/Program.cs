@@ -18,6 +18,7 @@ builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
 builder.AddLocalFileStorage();
 
 // Add JWT Token
+builder.AddJwtSecurityKey(AuthConfiguration.JWTAuth);
 builder.AddAuthentication(AuthConfiguration.JWTAuth);
 
 // Logger

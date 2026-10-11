@@ -26,7 +26,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IJWTGeneratorService jwtGeneratorService,
         IPasswordHasherService passwordHasher) : BaseAuthService(httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IAuthService
     {
-        private const int MinPasswordLength = 5;
+        private readonly int _minPasswordLength = configuration.GetValue<int?>("Auth:MinPasswordLength")
+            ?? throw new InvalidOperationException("Missing configuration value 'Auth:MinPasswordLength'.");
         private readonly IPasswordHasherService _passwordHasher = passwordHasher;
 
         public async Task<Result<User>> GetCurrentUserAsEntity()
@@ -90,11 +91,11 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 return Result<UserRegisterResponseDto>.Failure(AuthError.EmailAlreadyTaken);
             }
 
-            if (requestDto.Password.Length < MinPasswordLength)
+            if (requestDto.Password.Length < _minPasswordLength)
             {
                 var errors = new Dictionary<string, string>
                 {
-                    { "PasswordTooShort", $"Passwords must be at least {MinPasswordLength} characters." }
+                    { "PasswordTooShort", $"Passwords must be at least {_minPasswordLength} characters." }
                 };
                 return Result<UserRegisterResponseDto>.Failure(new AuthError(errors).ErrorsWhileCreatingUser);
             }
