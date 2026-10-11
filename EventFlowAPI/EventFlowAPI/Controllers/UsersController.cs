@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Identity.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -21,6 +22,7 @@ namespace EventFlowAPI.Controllers
         private readonly IUserService _userService = userService;
         private readonly IFileService _fileService = fileService;
 
+        [Authorize(Roles = nameof(Roles.Admin))]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -30,6 +32,7 @@ namespace EventFlowAPI.Controllers
             return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
+        [Authorize(Roles = nameof(Roles.Admin))]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
