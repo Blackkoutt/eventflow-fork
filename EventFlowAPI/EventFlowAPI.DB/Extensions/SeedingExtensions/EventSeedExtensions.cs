@@ -18,7 +18,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(1) - today.AddMonths(1).AddDays(1).AddHours(1),
                     CategoryId = 1,
                     HallId = 6,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"),
                     PhotoName = "koncert_mystic_waves.png"
                 },
                 new Event
@@ -31,7 +31,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(2) - today.AddMonths(1).AddDays(2).AddHours(3),
                     CategoryId = 3,
                     HallId = 7,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"),
                     PhotoName = "cien_przeszlosci.png"
                 },
                 new Event
@@ -44,7 +44,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(3) - today.AddMonths(1).AddDays(3).AddHours(2),
                     CategoryId = 2,
                     HallId = 5,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"),
                     PhotoName = "krolestwo_planety_malp.png"
                 },
                 new Event
@@ -57,7 +57,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(4) - today.AddMonths(1).AddDays(4).AddHours(3),
                     CategoryId = 4,
                     HallId = 8,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"),
                     PhotoName = "nowe_inspiracje.png"
                 },
                 new Event
@@ -70,7 +70,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     CategoryId = 1,
                     HallId = 10,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"),
                     PhotoName = "new_era.png"
                 },
                 new Event
@@ -83,7 +83,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(3) - today.AddMonths(2).AddDays(3).AddHours(2),
                     CategoryId = 2,
                     HallId = 9,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"),
                     PhotoName = "gladiator.png"
                 },
                 new Event
@@ -96,7 +96,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3),
                     CategoryId = 4,
                     HallId = 11,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"),
                 },
                 new Event
                 {
@@ -108,7 +108,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(15).AddHours(2).AddMinutes(30) - today.AddMonths(2).AddDays(15),
                     CategoryId = 3,
                     HallId = 16,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"),
                     PhotoName = "cien_nad_miastem.png"
                 },
                 new Event
@@ -121,7 +121,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddDays(-1).AddHours(3) - today.AddDays(-1).AddHours(1),
                     CategoryId = 1,
                     HallId = 17,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"),
                     PhotoName = "jazz.png"
                 },
                 new Event
@@ -134,7 +134,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddDays(-2).AddHours(4) - today.AddDays(-2).AddHours(2),
                     CategoryId = 2,
                     HallId = 18,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"),
                     PhotoName = "interstellar.jpg"
                 },
                 new Event
@@ -147,7 +147,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddDays(-3).AddHours(5) - today.AddDays(-3).AddHours(3),
                     CategoryId = 3,
                     HallId = 19,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"),
                     PhotoName = "zatrzymac_przeznaczenie.jpg"
                 },
                 new Event
@@ -160,7 +160,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddDays(-4).AddHours(6) - today.AddDays(-4).AddHours(4),
                     CategoryId = 4,
                     HallId = 20,
-                    EventGuid = Guid.NewGuid(),
+                    EventGuid = new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"),
                     PhotoName = "nowe_perspektywy.jpg"
                 }
             );

@@ -17,7 +17,7 @@ namespace EventFlowAPI.DB.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -4437,7 +4437,7 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGuGsnP/NPzhnWuATv9aP1dULQrjmPSUU5Lnaftfuse3AiOfXJXbIF7N3Cad2JluJQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "admin.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -4458,7 +4458,7 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz2",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENRzXjomXhbu4D9ZcYubXQOOyo5yl/gp6gjzTvWYGyFWB4zpo6txFqMrRYmWzxh/ow==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user2.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -4479,7 +4479,7 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz3",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE4HQIVivtuLYM4Fwd7P462tG2SscYZwnvDj07rYCz755XCB3O7mDcjtHBT+fdeSrQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user3.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -4500,7 +4500,7 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz4",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEsid3fU3R/GHG+IT0hkHQLU1yIbx7kE6ZQ2IMX7/ZGpkmvhNZ4UojrRpKJALHM1Aw==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user4.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -4521,7 +4521,7 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO8tEn3je5QrqtBhReVLDGGi49kxRWDYNbrMJVhZ7nwzH3X1XYcNckGnHN7p5NnTqg==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user5.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),

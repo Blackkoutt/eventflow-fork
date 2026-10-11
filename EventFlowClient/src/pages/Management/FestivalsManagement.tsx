@@ -29,7 +29,7 @@ const FestivalsManagement = () => {
 
   const calendar = useCalendarApp({
     views: [createViewMonthGrid(), createViewWeek()],
-    selectedDate: DateFormatter.FormatDateForCalendar(new Date()),
+    selectedDate: DateFormatter.FormatDateForCalendar(new Date()).split(" ")[0],
     callbacks: {
       onEventClick(calendarEvent) {
         onModify(calendarEvent as Festival);
