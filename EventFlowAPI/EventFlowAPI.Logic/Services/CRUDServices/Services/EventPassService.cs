@@ -4,7 +4,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;

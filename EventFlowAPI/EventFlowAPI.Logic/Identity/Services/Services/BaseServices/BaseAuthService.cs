@@ -5,20 +5,17 @@ using EventFlowAPI.Logic.Identity.Services.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
 {
     public abstract class BaseAuthService(
-        UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
         IJWTGeneratorService jwtGeneratorService) : IBaseAuthService
     {
-        protected readonly UserManager<User> _userManager = userManager;
         protected readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         protected readonly IJWTGeneratorService _jwtGeneratorService = jwtGeneratorService;
         protected readonly IConfiguration _configuration = configuration;
@@ -40,6 +37,9 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
 
             return Result<string>.Success(userId);
         }
-        public async Task<IList<string>?> GetRolesForCurrentUser(User user) => await _userManager.GetRolesAsync(user);
+        public IList<string>? GetRolesForCurrentUser(User user)
+        {
+            return new List<string> { user.Role.ToString() };
+        }
     }
 }

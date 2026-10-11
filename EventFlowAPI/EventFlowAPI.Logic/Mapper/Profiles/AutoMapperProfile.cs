@@ -142,8 +142,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UserData, UserDataResponseDto>();
 
             CreateMap<User, User>();
-            CreateMap<UserRegisterRequestDto, User>()
-                .ForMember(u => u.UserName, opt => opt.MapFrom(dto => dto.Email));
+            CreateMap<UserRegisterRequestDto, User>();
             CreateMap<User, UserResponseDto>();
         }
     }

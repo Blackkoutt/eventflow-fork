@@ -70,6 +70,8 @@ namespace EventFlowAPI.Logic.UnitOfWork
             GC.SuppressFinalize(this);
         }
 
+        public IUserRepository Users { get { return _users; } }
+
         public APIContext Context { get { return _context; } }
 
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
@@ -99,7 +101,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(Sponsor), _sponsors },
                 { typeof(TicketType), _ticketTypes },
                 { typeof(UserData), _usersData },
-                { typeof(User), _users},
                 { typeof(TicketJPG), _ticketJPGs},
                 { typeof(TicketPDF), _ticketPDFs},
                 { typeof(Reservation_Seat), _reservation_Seats},

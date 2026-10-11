@@ -277,7 +277,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private async Task<UserStatistics> GenerateStatisticsAboutUsers(DateTime startDate, DateTime endDate)
         {
-            var allUsers = await _unitOfWork.GetRepository<User>().GetAllAsync();
+            var allUsers = await _unitOfWork.Users.GetAllAsync();
             var totalUsersCount = allUsers.Count();
 
             var newUsersCount = allUsers.Where(u => u.RegisteredDate >= startDate && u.RegisteredDate <= endDate).Count();

@@ -10,7 +10,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;

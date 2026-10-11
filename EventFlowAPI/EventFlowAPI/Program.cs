@@ -17,10 +17,8 @@ builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
 // Add local file storage (replaces Azure Blob Storage)
 builder.AddLocalFileStorage();
 
-// Add Identity
-builder.AddIdentity();
-
 // Add JWT Token
+builder.AddJwtSecurityKey(AuthConfiguration.JWTAuth);
 builder.AddAuthentication(AuthConfiguration.JWTAuth);
 
 // Logger

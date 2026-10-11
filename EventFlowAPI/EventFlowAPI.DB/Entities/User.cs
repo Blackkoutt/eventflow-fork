@@ -1,11 +1,19 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
-using Microsoft.AspNetCore.Identity;
+using EventFlowAPI.DB.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class User : IdentityUser, IEntity, IPhotoEntity, IUser
+    public class User : IEntity, IPhotoEntity, IUser
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        [MaxLength(256)]
+        public string Email { get; set; } = string.Empty;
+
+        public string PasswordHash { get; set; } = string.Empty;
+
+        public Roles Role { get; set; }
 
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;
@@ -20,7 +28,5 @@ namespace EventFlowAPI.DB.Entities
         public ICollection<Reservation> Reservations { get; set; } = [];
         public ICollection<EventPass> EventPasses { get; set; } = [];
         public ICollection<HallRent> HallRents { get; set; } = [];
-
-        public ICollection<Role> Roles { get; set; } = [];
     }
 }

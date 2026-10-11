@@ -2,7 +2,7 @@
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;

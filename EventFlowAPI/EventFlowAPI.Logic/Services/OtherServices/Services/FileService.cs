@@ -6,7 +6,7 @@ using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -276,7 +276,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<Result<BlobResponseDto>> GetUserPhoto(string id)
         {
-            var entity = await ((IUserRepository)_unitOfWork.GetRepository<User>()).GetOneAsync(id);
+            var entity = await _unitOfWork.Users.GetOneAsync(id);
             if(entity == null)
                 return Result<BlobResponseDto>.Failure(Error.NotFound);
 

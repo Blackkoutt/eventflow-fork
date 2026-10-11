@@ -1,7 +1,7 @@
 ﻿using EventFlowAPI.Controllers.BaseControllers;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

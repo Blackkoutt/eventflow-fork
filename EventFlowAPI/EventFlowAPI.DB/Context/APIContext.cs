@@ -1,11 +1,10 @@
 ﻿using EventFlowAPI.DB.Extensions;
 using EventFlowAPI.DB.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Context
 {
-    public class APIContext(DbContextOptions<APIContext> options) : IdentityDbContext<User, Role, string>(options)
+    public class APIContext(DbContextOptions<APIContext> options) : DbContext(options)
     {
         public DbSet<AdditionalServices> AdditionalServices { get; set; }
         public DbSet<Equipment> Equipment{ get; set; }
@@ -40,6 +39,7 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Reservation_Seat> Reservation_Seat { get; set; }
         public DbSet<Reservation_TicketJPG> Reservation_TicketJPG { get; set; }
         public DbSet<UserData> UserData { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
