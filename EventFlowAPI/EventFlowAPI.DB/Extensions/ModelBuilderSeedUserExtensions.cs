@@ -8,6 +8,7 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void SeedUsers(this ModelBuilder modelBuilder, DateTime today)
         {
+            var passwordHasher = new SeedPasswordHasher();
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
@@ -15,7 +16,7 @@ namespace EventFlowAPI.DB.Extensions
                     Name = "Admin",
                     Surname = "Admin",
                     Email = "admin@gmail.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
+                    PasswordHash = passwordHasher.Hash("1", "admin123"),
                     Role = Roles.Admin,
                     PhotoName = "admin.jpg",
                     RegisteredDate = today,
@@ -27,7 +28,7 @@ namespace EventFlowAPI.DB.Extensions
                     Name = "Mateusz2",
                     Surname = "Strapczuk2",
                     Email = "mateusz.strapczuk2@gmail.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
+                    PasswordHash = passwordHasher.Hash("2", "789456123qaz"),
                     Role = Roles.User,
                     PhotoName = "user2.jpg",
                     RegisteredDate = today,
@@ -39,7 +40,7 @@ namespace EventFlowAPI.DB.Extensions
                     Name = "Mateusz3",
                     Surname = "Strapczuk3",
                     Email = "mateusz.strapczuk3@gmail.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
+                    PasswordHash = passwordHasher.Hash("3", "qwe123QWE!@#"),
                     Role = Roles.User,
                     PhotoName = "user3.jpg",
                     RegisteredDate = today,
@@ -51,7 +52,7 @@ namespace EventFlowAPI.DB.Extensions
                     Name = "Mateusz4",
                     Surname = "Strapczuk4",
                     Email = "mateusz.strapczuk4@gmail.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
+                    PasswordHash = passwordHasher.Hash("4", "qwe123QWE!@#"),
                     Role = Roles.User,
                     PhotoName = "user4.jpg",
                     RegisteredDate = today,
@@ -63,7 +64,7 @@ namespace EventFlowAPI.DB.Extensions
                     Name = "Mateusz",
                     Surname = "Strapczuk",
                     Email = "mateusz.strapczuk1@gmail.com",
-                    PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
+                    PasswordHash = passwordHasher.Hash("5", "qazzaq1@WSX"),
                     Role = Roles.User,
                     PhotoName = "user5.jpg",
                     RegisteredDate = today,

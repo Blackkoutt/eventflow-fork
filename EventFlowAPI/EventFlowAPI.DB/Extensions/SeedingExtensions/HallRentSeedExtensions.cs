@@ -7,10 +7,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
     {
         public static void Seed(this EntityTypeBuilder<HallRent> entityBuilder, DateTime today)
         {
-            var hrGuid1 = Guid.NewGuid();
-            var hrGuid2 = Guid.NewGuid();
-            var hrGuid3 = Guid.NewGuid();
-            var hrGuid4 = Guid.NewGuid();
+            var hrGuid1 = new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08");
+            var hrGuid2 = new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c");
+            var hrGuid3 = new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5");
+            var hrGuid4 = new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b");
 
             entityBuilder.HasData(
                 new HallRent

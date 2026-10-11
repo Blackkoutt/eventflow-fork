@@ -13,6 +13,16 @@ namespace EventFlowAPI.DB.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("UPDATE AspNetUsers SET PasswordHash = 'AQAAAAIAAYagAAAAEGuGsnP/NPzhnWuATv9aP1dULQrjmPSUU5Lnaftfuse3AiOfXJXbIF7N3Cad2JluJQ==' WHERE Id = '1'");
+
+            migrationBuilder.Sql("UPDATE AspNetUsers SET PasswordHash = 'AQAAAAIAAYagAAAAENRzXjomXhbu4D9ZcYubXQOOyo5yl/gp6gjzTvWYGyFWB4zpo6txFqMrRYmWzxh/ow==' WHERE Id = '2'");
+
+            migrationBuilder.Sql("UPDATE AspNetUsers SET PasswordHash = 'AQAAAAIAAYagAAAAEE4HQIVivtuLYM4Fwd7P462tG2SscYZwnvDj07rYCz755XCB3O7mDcjtHBT+fdeSrQ==' WHERE Id = '3'");
+
+            migrationBuilder.Sql("UPDATE AspNetUsers SET PasswordHash = 'AQAAAAIAAYagAAAAEEsid3fU3R/GHG+IT0hkHQLU1yIbx7kE6ZQ2IMX7/ZGpkmvhNZ4UojrRpKJALHM1Aw==' WHERE Id = '4'");
+
+            migrationBuilder.Sql("UPDATE AspNetUsers SET PasswordHash = 'AQAAAAIAAYagAAAAEO8tEn3je5QrqtBhReVLDGGi49kxRWDYNbrMJVhZ7nwzH3X1XYcNckGnHN7p5NnTqg==' WHERE Id = '5'");
+
             migrationBuilder.AddColumn<string>(
                 name: "Role",
                 table: "AspNetUsers",

@@ -12,7 +12,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                {
                    Id = 1,
                    Title = "Finał konkursu artystycznego",
-                   NewsGuid = Guid.NewGuid(),
+                   NewsGuid = new Guid("c771ea3f-aa24-45c9-9fde-76695d5eab1d"),
                    PublicationDate = today,
                    ShortDescription = "Z radością ogłaszamy finał naszego konkursu artystycznego, w którym uczestnicy" +
                    " rywalizowali w różnych kategoriach. Wydarzenie przyciągnęło wielu utalentowanych artystów." +
@@ -30,7 +30,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
               {
                   Id = 2,
                   Title = "Relacja z koncertu zespołu Lunar Vibes",
-                  NewsGuid = Guid.NewGuid(),
+                  NewsGuid = new Guid("94ab03cd-63d8-4516-a45b-990351680077"),
                   PublicationDate = today,
                   ShortDescription = "Zespół Lunar Vibes zachwycił publiczność podczas swojego koncertu w naszej sali" +
                   " koncertowej. Przenoszący w inny wymiar dźwięk, energetyzujący występ, który zapisał się na stałe" +
@@ -49,7 +49,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
               {
                   Id = 3,
                   Title = "Modernizacja sali koncertowej",
-                  NewsGuid = Guid.NewGuid(),
+                  NewsGuid = new Guid("253bc760-25d9-43ef-89dc-28453c96ef9a"),
                   PublicationDate = today,
                   ShortDescription = "Nasza sala koncertowa zyskała nowy wygląd i nowoczesne wyposażenie, które pozwoli" +
                   " na organizację jeszcze lepszych wydarzeń muzycznych. Zapraszamy do odwiedzenia odnowionego wnętrza.",
@@ -67,7 +67,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                {
                    Id = 4,
                    Title = "Zniżka 20% na zakup karnetów",
-                   NewsGuid = Guid.NewGuid(),
+                   NewsGuid = new Guid("457bb9e7-2489-4854-952c-b92c452a7e63"),
                    PublicationDate = today,
                    ShortDescription = "Zachęcamy do zakupu karnetów na nadchodzące wydarzenia w naszym centrum." +
                    " Tylko teraz oferujemy 20% zniżki na wszystkie karnety. To doskonała okazja, by nie przegapić" +
@@ -85,7 +85,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                {
                    Id = 5,
                    Title = "Noc Filmowa z Klasykami Kina",
-                   NewsGuid = Guid.NewGuid(),
+                   NewsGuid = new Guid("57da63cb-91af-4afb-9b3b-092f72620f75"),
                    PublicationDate = today,
                    ShortDescription = "Zapraszamy na wyjątkowy wieczór z klasykami kina. Noc Filmowa to doskonała okazja," +
                    " by obejrzeć kultowe filmy na dużym ekranie w towarzystwie innych miłośników kina.",
@@ -102,7 +102,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                {
                    Id = 6,
                    Title = "Wernisaż: Nowe inspiracje",
-                   NewsGuid = Guid.NewGuid(),
+                   NewsGuid = new Guid("8bb51e9e-1807-48b8-b48b-5eb6cfa04980"),
                    PublicationDate = today,
                    ShortDescription = "Zapraszamy na wernisaż wystawy 'Nowe inspiracje'. Artyści z różnych dziedzin sztuki" +
                    " zaprezentują swoje najnowsze prace. To doskonała okazja, by odkryć świeże spojrzenie na współczesną sztukę.",

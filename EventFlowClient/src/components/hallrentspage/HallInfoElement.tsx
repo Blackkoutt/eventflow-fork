@@ -1,10 +1,11 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ReactNode } from "react";
 
 interface HallInfoElementProps {
   text: string;
   icon: IconProp;
-  value: string | number | undefined | JSX.Element;
+  value: ReactNode;
 }
 
 const HallInfoElement = ({ text, icon, value }: HallInfoElementProps) => {

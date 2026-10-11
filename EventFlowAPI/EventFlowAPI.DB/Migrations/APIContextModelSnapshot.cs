@@ -17,7 +17,7 @@ namespace EventFlowAPI.DB.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -4347,7 +4347,7 @@ namespace EventFlowAPI.DB.Migrations
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             Name = "Admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGuGsnP/NPzhnWuATv9aP1dULQrjmPSUU5Lnaftfuse3AiOfXJXbIF7N3Cad2JluJQ==",
                             PhotoName = "admin.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "Admin",
@@ -4359,7 +4359,7 @@ namespace EventFlowAPI.DB.Migrations
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk2@gmail.com",
                             Name = "Mateusz2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENRzXjomXhbu4D9ZcYubXQOOyo5yl/gp6gjzTvWYGyFWB4zpo6txFqMrRYmWzxh/ow==",
                             PhotoName = "user2.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "User",
@@ -4371,7 +4371,7 @@ namespace EventFlowAPI.DB.Migrations
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk3@gmail.com",
                             Name = "Mateusz3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE4HQIVivtuLYM4Fwd7P462tG2SscYZwnvDj07rYCz755XCB3O7mDcjtHBT+fdeSrQ==",
                             PhotoName = "user3.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "User",
@@ -4383,7 +4383,7 @@ namespace EventFlowAPI.DB.Migrations
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk4@gmail.com",
                             Name = "Mateusz4",
-                            PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEsid3fU3R/GHG+IT0hkHQLU1yIbx7kE6ZQ2IMX7/ZGpkmvhNZ4UojrRpKJALHM1Aw==",
                             PhotoName = "user4.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "User",
@@ -4395,7 +4395,7 @@ namespace EventFlowAPI.DB.Migrations
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             Name = "Mateusz",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO8tEn3je5QrqtBhReVLDGGi49kxRWDYNbrMJVhZ7nwzH3X1XYcNckGnHN7p5NnTqg==",
                             PhotoName = "user5.jpg",
                             RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = "User",

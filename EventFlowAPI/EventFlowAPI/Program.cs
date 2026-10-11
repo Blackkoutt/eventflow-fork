@@ -40,7 +40,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddAutoMapper(configuration =>
+{
+    configuration.LicenseKey = builder.Configuration["AutoMapper:LicenseKey"];
+}, typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
