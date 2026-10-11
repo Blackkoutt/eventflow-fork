@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
@@ -12,8 +13,7 @@ namespace EventFlowAPI.DB.Entities
 
         public string PasswordHash { get; set; } = string.Empty;
 
-        [MaxLength(20)]
-        public string Role { get; set; } = string.Empty;
+        public Roles Role { get; set; }
 
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;

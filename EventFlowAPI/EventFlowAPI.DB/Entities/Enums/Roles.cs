@@ -1,4 +1,4 @@
-﻿namespace EventFlowAPI.Logic.Identity.Helpers
+﻿namespace EventFlowAPI.DB.Entities.Enums
 {
     public enum Roles
     {

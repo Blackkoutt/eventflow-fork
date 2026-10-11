@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Extensions
@@ -15,7 +16,7 @@ namespace EventFlowAPI.DB.Extensions
                     Surname = "Admin",
                     Email = "admin@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
-                    Role = "Admin",
+                    Role = Roles.Admin,
                     PhotoName = "admin.jpg",
                     RegisteredDate = today,
                     DateOfBirth = new DateTime(2000, 4, 3)
@@ -27,7 +28,7 @@ namespace EventFlowAPI.DB.Extensions
                     Surname = "Strapczuk2",
                     Email = "mateusz.strapczuk2@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
-                    Role = "User",
+                    Role = Roles.User,
                     PhotoName = "user2.jpg",
                     RegisteredDate = today,
                     DateOfBirth = new DateTime(1985, 2, 1)
@@ -39,7 +40,7 @@ namespace EventFlowAPI.DB.Extensions
                     Surname = "Strapczuk3",
                     Email = "mateusz.strapczuk3@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
-                    Role = "User",
+                    Role = Roles.User,
                     PhotoName = "user3.jpg",
                     RegisteredDate = today,
                     DateOfBirth = new DateTime(1979, 12, 11)
@@ -51,7 +52,7 @@ namespace EventFlowAPI.DB.Extensions
                     Surname = "Strapczuk4",
                     Email = "mateusz.strapczuk4@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
-                    Role = "User",
+                    Role = Roles.User,
                     PhotoName = "user4.jpg",
                     RegisteredDate = today,
                     DateOfBirth = new DateTime(1979, 12, 11)
@@ -63,7 +64,7 @@ namespace EventFlowAPI.DB.Extensions
                     Surname = "Strapczuk",
                     Email = "mateusz.strapczuk1@gmail.com",
                     PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
-                    Role = "User",
+                    Role = Roles.User,
                     PhotoName = "user5.jpg",
                     RegisteredDate = today,
                     DateOfBirth = new DateTime(1979, 12, 11)

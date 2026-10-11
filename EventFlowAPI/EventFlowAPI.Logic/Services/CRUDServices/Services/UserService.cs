@@ -83,7 +83,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<UserResponseDto>();
-                responseDto.UserRoles = new List<string> { entity.Role };
+                responseDto.UserRoles = new List<string> { entity.Role.ToString() };
                 responseDto.EmailAddress = entity.Email!;
                 responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";
                 return responseDto;
@@ -93,7 +93,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private UserResponseDto MapAsDto(User entity)
         {
             var responseDto = entity.AsDto<UserResponseDto>();
-            responseDto.UserRoles = new List<string> { entity.Role };
+            responseDto.UserRoles = new List<string> { entity.Role.ToString() };
             responseDto.EmailAddress = entity.Email!;
             responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";
             responseDto.AllReservationsCount = entity.Reservations.Count;

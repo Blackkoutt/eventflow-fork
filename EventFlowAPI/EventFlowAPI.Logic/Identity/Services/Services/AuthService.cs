@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
 using EventFlowAPI.Logic.Mapper.Extensions;
@@ -61,7 +61,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             userDto.EmailAddress = entity.Email!;
             userDto.UserData = entity.UserData?.AsDto<UserDataResponseDto>();
             userDto.PhotoEndpoint = $"/Users/info/image";
-            userDto.UserRoles = new List<string> { entity.Role };
+            userDto.UserRoles = new List<string> { entity.Role.ToString() };
             return userDto;
         }
 
@@ -101,7 +101,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
             var user = requestDto.AsEntity<User>();
             user.RegisteredDate = DateTime.Now;
-            user.Role = Roles.User.ToString();
+            user.Role = Roles.User;
             user.PasswordHash = _passwordHasher.Hash(user, requestDto.Password);
 
             await _unitOfWork.Users.AddAsync(user);

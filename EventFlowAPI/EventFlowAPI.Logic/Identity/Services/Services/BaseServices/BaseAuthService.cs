@@ -39,7 +39,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
         }
         public IList<string>? GetRolesForCurrentUser(User user)
         {
-            return new List<string> { user.Role };
+            return new List<string> { user.Role.ToString() };
         }
     }
 }

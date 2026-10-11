@@ -45,6 +45,7 @@ namespace EventFlowAPI.DB.Extensions
         public static void AddEntitiesConstraints(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
+            modelBuilder.Entity<User>().Property(x => x.Role).HasConversion<string>().HasMaxLength(20);
 
             
             /*modelBuilder.Entity<Hall>()
