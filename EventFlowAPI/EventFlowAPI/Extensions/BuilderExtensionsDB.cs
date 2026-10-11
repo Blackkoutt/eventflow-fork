@@ -2,7 +2,6 @@
 using EventFlowAPI.DB.Context;
 using EventFlowAPI.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace EventFlowAPI.Extensions
 {
@@ -12,8 +11,7 @@ namespace EventFlowAPI.Extensions
         {
             builder.Services.AddDbContext<APIContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString.ToString()))
-                    .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+                options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString.ToString()));
             });
         }
         public static void AddLocalFileStorage(this WebApplicationBuilder builder)
