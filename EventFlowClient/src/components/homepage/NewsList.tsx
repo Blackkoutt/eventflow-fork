@@ -25,15 +25,16 @@ const NewsList = () => {
   const newsGroups = useMemo(() => GetNewsInGroups(news), [news]);
 
   return (
-    <div className="flex flex-col justify-center items-center gap-8">
-      <div className="grid grid-cols-12 gap-8">
-        <div className="col-span-7 h-full">
+    <div className="w-full max-w-[1400px] flex flex-col justify-center items-center gap-8">
+      <div className="w-full grid grid-cols-12 gap-8">
+        <div className="col-span-7">
           {newsGroups[0]?.map((news) =>
             news ? (
               <NewsCard
                 key={news.id}
                 news={news}
                 objectSize={70}
+                imageAspect="aspect-[4/3]"
                 headerSize={24}
                 articleSize={16}
                 buttonSize={14}
@@ -48,6 +49,7 @@ const NewsList = () => {
                 key={news.id}
                 news={news}
                 objectSize={50}
+                imageAspect="aspect-[5/2]"
                 headerSize={20}
                 articleSize={14}
                 buttonSize={12}
@@ -56,7 +58,7 @@ const NewsList = () => {
           )}
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-8">
+      <div className="w-full grid grid-cols-3 gap-8">
         {newsGroups[2]?.map((news) =>
           news ? (
             <div key={news.id}>

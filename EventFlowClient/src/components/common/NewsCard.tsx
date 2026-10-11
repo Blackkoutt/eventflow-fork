@@ -8,6 +8,7 @@ interface NewsCardProps {
   headerSize: number;
   articleSize: number;
   buttonSize: number;
+  imageAspect?: string;
   shortText?: boolean;
 }
 const NewsCard = ({
@@ -16,6 +17,7 @@ const NewsCard = ({
   headerSize,
   articleSize,
   buttonSize,
+  imageAspect = "aspect-video",
   shortText = false,
 }: NewsCardProps) => {
   const getShortDescription = (description: string) => {
@@ -30,7 +32,7 @@ const NewsCard = ({
       to={`/news/${news.id}`}
       className="shadow-xl flex flex-col justify-center items-center gap-2 h-full hover:bg-slate-50 hover:cursor-pointer"
     >
-      <div className="relative w-full flex-1 aspect-video overflow-hidden">
+      <div className={`relative w-full overflow-hidden ${imageAspect}`}>
         <img
           className="absolute inset-0 w-full h-full object-cover"
           src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}

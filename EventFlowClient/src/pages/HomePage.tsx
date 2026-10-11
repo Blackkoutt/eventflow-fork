@@ -55,7 +55,7 @@ const HomePage = () => {
             subtitle="W tej sekcji znajdziesz zbliżające się wydarzenia z różnych kategorii: koncert,
               spektakl, film itd."
           />
-          <div className="w-full flex flex-col justify-center items-center gap-6">
+          <div className="w-full max-w-[1400px] flex flex-col justify-center items-center gap-6">
             <FestivalList />
             <EventList />
           </div>

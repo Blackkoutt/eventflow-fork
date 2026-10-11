@@ -38,18 +38,20 @@ const FestivalPage = () => {
 
   return (
     festival && (
-      <div className="flex flex-row w-[80%] justify-start items-start my-10 rounded-md shadow-xl overflow-hidden">
+      <div className="flex flex-row w-[80%] max-w-[1200px] justify-start items-stretch my-10 rounded-md shadow-xl overflow-hidden">
         <FestivalReservationDialog
           ref={reservationDialog}
           festival={festival}
           onDialogClose={() => reservationDialog.current?.close()}
           onDialogConfirm={() => reservationDialog.current?.close()}
         />
-        <img
-          className="object-cover min-w-[42%] max-w-[42%] min-h-[550px]"
-          src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
-          alt={`Zdjęcie festiwalu ${festival.title}`}
-        />
+        <div className="relative self-stretch aspect-[3/4] shrink-0 min-h-[550px]">
+          <img
+            className="absolute inset-0 w-full h-full object-cover"
+            src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
+            alt={`Zdjęcie festiwalu ${festival.title}`}
+          />
+        </div>
         <div className="px-8 flex flex-col justify-center items-start gap-3 py-8 w-full">
           <div className="flex flex-col justify-center items-start gap-4">
             <div className="flex flex-col justify-center items-start gap-[10px]">

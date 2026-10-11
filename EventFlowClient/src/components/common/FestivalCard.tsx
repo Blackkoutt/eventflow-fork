@@ -15,7 +15,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
       to={`/festivals/${festival.id}`}
       className="shadow-xl flex flex-row justify-center items-stretch w-full min-h-[500px] overflow-hidden hover:bg-slate-50 hover:cursor-pointer"
     >
-      <div className="relative w-[42%] shrink-0">
+      <div className="relative self-stretch aspect-[3/4] shrink-0">
         <img
           className="absolute inset-0 w-full h-full object-cover"
           src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
