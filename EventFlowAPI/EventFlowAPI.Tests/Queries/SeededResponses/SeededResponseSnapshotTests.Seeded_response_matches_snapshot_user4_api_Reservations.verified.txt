@@ -1,0 +1,89 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 1,
+      reservationGuid: Guid_1,
+      reservationDate: today+0d 00:00:00,
+      paymentDate: today+0d 00:00:00,
+      deleteDate: null,
+      reservationStatus: Active,
+      paymentAmount: 24.99,
+      user: {
+        id: 4,
+        name: Mateusz4,
+        surname: Strapczuk4,
+        emailAddress: mateusz.strapczuk4@gmail.com,
+        dateOfBirth: today-17107d 00:00:00,
+        registeredDate: today+0d 00:00:00,
+        allReservationsCount: 0,
+        allHallRentsCount: 0,
+        isActiveEventPass: false,
+        photoName: user4.jpg,
+        photoEndpoint: ,
+        userData: null
+      },
+      paymentType: {
+        id: 1,
+        name: PayU,
+        photoName: ,
+        photoEndpoint: 
+      },
+      ticket: {
+        id: 1,
+        price: 24.99,
+        isFestival: false,
+        event: {
+          id: 1,
+          title: Koncert: Mystic Waves,
+          shortDescription: Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.,
+          start: today+32d 00:00:00,
+          end: today+32d 01:00:00,
+          duration: 00:00:00.0003600,
+          eventStatus: Active,
+          photoName: koncert_mystic_waves.png,
+          photoEndpoint: ,
+          category: {
+            id: 1,
+            name: Koncert,
+            icon: fa-solid fa-music,
+            color: #82CAFC
+          },
+          details: null,
+          hall: {
+            id: 6,
+            hallNr: 2,
+            rentalPricePerHour: 89.99,
+            floor: 1,
+            seatsCount: 1,
+            hallDetails: null,
+            type: null
+          }
+        },
+        festival: null,
+        ticketType: {
+          id: 1,
+          name: Bilet normalny
+        }
+      },
+      seats: [
+        {
+          id: 26,
+          seatNr: 1,
+          row: 1,
+          gridRow: 1,
+          column: 1,
+          isAvailable: false,
+          gridColumn: 1,
+          seatType: {
+            id: 2,
+            name: Miejsce klasy premium,
+            description: Opis miejsca klasy premium,
+            seatColor: #ffa600,
+            addtionalPaymentPercentage: 10.0
+          }
+        }
+      ]
+    }
+  ]
+}

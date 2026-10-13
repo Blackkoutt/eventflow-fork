@@ -1,0 +1,43 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 2,
+      eventPassGuid: Guid_1,
+      startDate: today+0d 00:00:00,
+      renewalDate: null,
+      endDate: today+365d 00:00:00,
+      eventPassStatus: Active,
+      deleteDate: null,
+      paymentDate: today+0d 00:00:00,
+      paymentAmount: 999.99,
+      passType: {
+        id: 4,
+        name: Karnet roczny,
+        validityPeriodInMonths: 12,
+        renewalDiscountPercentage: 20.0,
+        price: 999.99
+      },
+      user: {
+        id: 3,
+        name: Mateusz3,
+        surname: Strapczuk3,
+        emailAddress: mateusz.strapczuk3@gmail.com,
+        dateOfBirth: today-17107d 00:00:00,
+        registeredDate: today+0d 00:00:00,
+        allReservationsCount: 0,
+        allHallRentsCount: 0,
+        isActiveEventPass: false,
+        photoName: user3.jpg,
+        photoEndpoint: ,
+        userData: null
+      },
+      paymentType: {
+        id: 1,
+        name: PayU,
+        photoName: ,
+        photoEndpoint: 
+      }
+    }
+  ]
+}

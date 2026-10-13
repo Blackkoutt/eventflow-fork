@@ -1,0 +1,8 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    question: W jaki sposób mogę kupić bilet na wydarzenie ?,
+    answer: Bilety możesz kupić przechodząc do zakładki Wydarzenia. Następnie wybierz interesujące cię wydarzenie i kliknij przycisk Kup bilet. Wyświetli okno dialogowe w którym możliwy jest wybór miejsca i typu biletu. Wybierz miejsca i typ biletu, a następnie kliknij ponownie Kup bilet. Zostaniesz przekierowany do bramki płatniczej za pomocą której dokonasz opłaty za bilet. Po dokonaniu opłaty bilet zostanie przesłany na adres e-mail oraz będzie możliwy do pobrania w zakładce Profil > Moje rezerwacje.
+  }
+}

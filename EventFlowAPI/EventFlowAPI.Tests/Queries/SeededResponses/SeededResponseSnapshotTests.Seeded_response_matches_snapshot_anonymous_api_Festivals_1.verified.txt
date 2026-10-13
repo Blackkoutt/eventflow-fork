@@ -1,0 +1,140 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    title: Festiwal Muzyki Hip-Hop,
+    shortDescription: Największy festiwal hip-hopowy! Koncerty, freestyle battle, warsztaty DJ-skie i spotkania z artystami.,
+    start: today+32d 00:00:00,
+    end: today+62d 01:00:00,
+    festivalStatus: Active,
+    duration: 00:00:00.2595600,
+    photoName: festiwal_muzyki_hip_hop.png,
+    photoEndpoint: /Festivals/1/image,
+    details: {
+      id: 1,
+      longDescription: Festiwal Muzyki Hip-Hop to coroczne wydarzenie dedykowane nowoczesnym brzmieniom i eksperymentalnym kompozycjom. Na scenie pojawiają się zarówno uznani artyści, jak i młode talenty, prezentując innowacyjne podejście do muzyki. W programie znajdują się koncerty, warsztaty, spotkania z twórcami oraz panele dyskusyjne dotyczące przyszłości muzyki. Festiwal przyciąga miłośników dźwięków elektronicznych, jazzowych improwizacji, minimalistycznych kompozycji i nowych form ekspresji dźwiękowej. To wyjątkowa okazja, by odkryć najnowsze trendy muzyczne i poszerzyć swoje horyzonty artystyczne.
+    },
+    events: [
+      {
+        id: 1,
+        title: Koncert: Mystic Waves,
+        shortDescription: Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.,
+        start: today+32d 00:00:00,
+        end: today+32d 01:00:00,
+        duration: 00:00:00.0003600,
+        eventStatus: Active,
+        photoName: koncert_mystic_waves.png,
+        photoEndpoint: ,
+        category: {
+          id: 1,
+          name: Koncert,
+          icon: fa-solid fa-music,
+          color: #82CAFC
+        },
+        details: null,
+        hall: {
+          id: 6,
+          hallNr: 2,
+          rentalPricePerHour: 89.99,
+          floor: 1,
+          seatsCount: 0,
+          hallDetails: null,
+          type: null
+        }
+      },
+      {
+        id: 5,
+        title: Koncert: New Era,
+        shortDescription: Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.,
+        start: today+62d 00:00:00,
+        end: today+62d 01:00:00,
+        duration: 00:00:00.0003600,
+        eventStatus: Active,
+        photoName: new_era.png,
+        photoEndpoint: ,
+        category: {
+          id: 1,
+          name: Koncert,
+          icon: fa-solid fa-music,
+          color: #82CAFC
+        },
+        details: null,
+        hall: {
+          id: 10,
+          hallNr: 2,
+          rentalPricePerHour: 89.99,
+          floor: 1,
+          seatsCount: 0,
+          hallDetails: null,
+          type: null
+        }
+      }
+    ],
+    mediaPatrons: [
+      {
+        id: 1,
+        name: Gazeta Nowoczesna,
+        photoName: gazeta_nowoczesna.png,
+        photoEndpoint: /MediaPatrons/1/image
+      },
+      {
+        id: 2,
+        name: Nowy świat TV,
+        photoName: nowy_swiat.png,
+        photoEndpoint: /MediaPatrons/2/image
+      }
+    ],
+    organizers: [
+      {
+        id: 1,
+        name: EventFlow,
+        photoName: eventflow.png,
+        photoEndpoint: /Organizers/1/image
+      },
+      {
+        id: 2,
+        name: Snowflake,
+        photoName: snowflake.png,
+        photoEndpoint: /Organizers/2/image
+      }
+    ],
+    sponsors: [
+      {
+        id: 1,
+        name: Basel,
+        photoName: basel.png,
+        photoEndpoint: /Sponsors/1/image
+      },
+      {
+        id: 2,
+        name: Vision,
+        photoName: vision.png,
+        photoEndpoint: /Sponsors/2/image
+      }
+    ],
+    tickets: [
+      {
+        id: 5,
+        price: 19.99,
+        isFestival: true,
+        event: null,
+        festival: null,
+        ticketType: {
+          id: 1,
+          name: Bilet normalny
+        }
+      },
+      {
+        id: 6,
+        price: 19.99,
+        isFestival: true,
+        event: null,
+        festival: null,
+        ticketType: {
+          id: 1,
+          name: Bilet normalny
+        }
+      }
+    ]
+  }
+}

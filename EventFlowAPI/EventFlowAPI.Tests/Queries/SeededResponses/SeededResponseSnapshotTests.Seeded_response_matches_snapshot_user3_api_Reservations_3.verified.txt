@@ -1,0 +1,87 @@
+﻿{
+  status: 200,
+  body: {
+    id: 3,
+    reservationGuid: Guid_1,
+    reservationDate: today+0d 00:00:00,
+    paymentDate: today+0d 00:00:00,
+    deleteDate: null,
+    reservationStatus: Active,
+    paymentAmount: 29.99,
+    user: {
+      id: 3,
+      name: Mateusz3,
+      surname: Strapczuk3,
+      emailAddress: mateusz.strapczuk3@gmail.com,
+      dateOfBirth: today-17107d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user3.jpg,
+      photoEndpoint: ,
+      userData: null
+    },
+    paymentType: {
+      id: 1,
+      name: PayU,
+      photoName: ,
+      photoEndpoint: 
+    },
+    ticket: {
+      id: 3,
+      price: 29.99,
+      isFestival: false,
+      event: {
+        id: 3,
+        title: Królestwo planety małp,
+        shortDescription: Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.,
+        start: today+34d 00:00:00,
+        end: today+34d 02:00:00,
+        duration: 00:00:00.0007200,
+        eventStatus: Active,
+        photoName: krolestwo_planety_malp.png,
+        photoEndpoint: ,
+        category: {
+          id: 2,
+          name: Film,
+          icon: fa-solid fa-film,
+          color: #6BD49B
+        },
+        details: null,
+        hall: {
+          id: 5,
+          hallNr: 1,
+          rentalPricePerHour: 120.99,
+          floor: 2,
+          seatsCount: 1,
+          hallDetails: null,
+          type: null
+        }
+      },
+      festival: null,
+      ticketType: {
+        id: 1,
+        name: Bilet normalny
+      }
+    },
+    seats: [
+      {
+        id: 14,
+        seatNr: 1,
+        row: 1,
+        gridRow: 1,
+        column: 1,
+        isAvailable: false,
+        gridColumn: 1,
+        seatType: {
+          id: 1,
+          name: Miejsce VIP,
+          description: Opis miejsca VIP,
+          seatColor: #9803fc,
+          addtionalPaymentPercentage: 25.0
+        }
+      }
+    ]
+  }
+}

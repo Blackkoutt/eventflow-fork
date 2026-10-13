@@ -1,0 +1,48 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    hallRentGuid: Guid_1,
+    startDate: today+32d 00:00:00,
+    endDate: today+32d 08:00:00,
+    paymentDate: today+0d 00:00:00,
+    deleteDate: null,
+    hallRentStatus: Active,
+    paymentAmount: 899.99,
+    paymentType: {
+      id: 1,
+      name: PayU,
+      photoName: ,
+      photoEndpoint: 
+    },
+    hall: {
+      id: 12,
+      hallNr: 1,
+      rentalPricePerHour: 120.99,
+      floor: 2,
+      seatsCount: 0,
+      hallDetails: null,
+      type: {
+        id: 1,
+        name: Sala filmowa,
+        description: Nowoczesna sala kinowa, wyposażona w wysokiej jakości projektor oraz system nagłośnienia Dolby Digital. Idealna do projekcji filmów w różnych formatach, zapewniająca doskonałe wrażenia wizualne i dźwiękowe. Pomieszczenie jest przystosowane do projekcji 2D i 3D, z przestronnymi fotelami zapewniającymi komfort podczas długotrwałego seansu.,
+        photoName: filmowa.jpg,
+        photoEndpoint: 
+      }
+    },
+    user: {
+      id: 4,
+      name: Mateusz4,
+      surname: Strapczuk4,
+      emailAddress: mateusz.strapczuk4@gmail.com,
+      dateOfBirth: today-17107d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user4.jpg,
+      photoEndpoint: ,
+      userData: null
+    }
+  }
+}

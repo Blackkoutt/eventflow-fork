@@ -1,0 +1,116 @@
+﻿{
+  status: 200,
+  body: {
+    id: 3,
+    title: Festiwal Sztuki,
+    shortDescription: Wystawy, instalacje i performanse! Odkryj nowoczesne formy sztuki i weź udział w kreatywnych warsztatach.,
+    start: today+35d 00:00:00,
+    end: today+65d 03:00:00,
+    festivalStatus: Active,
+    duration: 00:00:00.2602800,
+    photoName: festiwal_sztuki.png,
+    photoEndpoint: /Festivals/3/image,
+    details: {
+      id: 3,
+      longDescription: Festiwal Sztuki to wydarzenie celebrujące kreatywność i nieograniczoną ekspresję artystyczną. W ramach festiwalu prezentowane są prace artystów, którzy eksperymentują z formą, kolorem i strukturą, tworząc unikalne dzieła sztuki nowoczesnej. Oprócz wystaw odbywają się warsztaty, podczas których uczestnicy mogą spróbować swoich sił w malarstwie, rzeźbie czy instalacjach multimedialnych. Festiwal to także przestrzeń do rozmów o współczesnych trendach w sztuce, spotkania z artystami oraz wykłady ekspertów. To niepowtarzalna okazja, by odkryć nowe inspiracje i spojrzeć na sztukę z innej perspektywy.
+    },
+    events: [
+      {
+        id: 4,
+        title: Nowe inspiracje,
+        shortDescription: Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.,
+        start: today+35d 00:00:00,
+        end: today+35d 03:00:00,
+        duration: 00:00:00.0010800,
+        eventStatus: Active,
+        photoName: nowe_inspiracje.png,
+        photoEndpoint: ,
+        category: {
+          id: 4,
+          name: Wystawa,
+          icon: fa-solid fa-landmark,
+          color: #FC5353
+        },
+        details: null,
+        hall: {
+          id: 8,
+          hallNr: 4,
+          rentalPricePerHour: 199.99,
+          floor: 1,
+          seatsCount: 0,
+          hallDetails: null,
+          type: null
+        }
+      },
+      {
+        id: 7,
+        title: Nowa sztuka,
+        shortDescription: Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.,
+        start: today+65d 00:00:00,
+        end: today+65d 03:00:00,
+        duration: 00:00:00.0010800,
+        eventStatus: Active,
+        photoName: ,
+        photoEndpoint: ,
+        category: {
+          id: 4,
+          name: Wystawa,
+          icon: fa-solid fa-landmark,
+          color: #FC5353
+        },
+        details: null,
+        hall: {
+          id: 11,
+          hallNr: 4,
+          rentalPricePerHour: 199.99,
+          floor: 1,
+          seatsCount: 0,
+          hallDetails: null,
+          type: null
+        }
+      }
+    ],
+    mediaPatrons: [
+      {
+        id: 2,
+        name: Nowy świat TV,
+        photoName: nowy_swiat.png,
+        photoEndpoint: /MediaPatrons/2/image
+      },
+      {
+        id: 3,
+        name: Tygodnik Nowiny,
+        photoName: tygodnik_nowiny.png,
+        photoEndpoint: /MediaPatrons/3/image
+      }
+    ],
+    organizers: [
+      {
+        id: 2,
+        name: Snowflake,
+        photoName: snowflake.png,
+        photoEndpoint: /Organizers/2/image
+      },
+      {
+        id: 3,
+        name: Aura,
+        photoName: aura.png,
+        photoEndpoint: /Organizers/3/image
+      }
+    ],
+    sponsors: [
+      {
+        id: 2,
+        name: Vision,
+        photoName: vision.png,
+        photoEndpoint: /Sponsors/2/image
+      },
+      {
+        id: 3,
+        name: Waveless,
+        photoName: waveless.png,
+        photoEndpoint: /Sponsors/3/image
+      }
+    ]
+  }
+}

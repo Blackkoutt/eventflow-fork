@@ -1,0 +1,10 @@
+﻿status: 204
+hall types:
+1: Sala filmowa zmieniona
+2: Sala koncertowa
+3: Sala teatralna
+4: Sala wystawowa
+5: Sala ogólna
+6: Sala konferencyjna
+rented hall type: Sala filmowa zmieniona
+base hall type: Sala filmowa zmieniona

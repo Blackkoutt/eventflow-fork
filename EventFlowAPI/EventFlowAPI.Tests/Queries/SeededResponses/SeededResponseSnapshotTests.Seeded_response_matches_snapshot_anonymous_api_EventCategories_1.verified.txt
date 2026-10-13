@@ -1,0 +1,9 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    name: Koncert,
+    icon: fa-solid fa-music,
+    color: #82CAFC
+  }
+}

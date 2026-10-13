@@ -1,0 +1,159 @@
+﻿{
+  status: 200,
+  body: {
+    reportGuid: Guid_1,
+    startDate: today-30d 00:00:00,
+    endDate: today+120d 00:00:00,
+    totalIncome: {
+      reservationsIncome: 209.92,
+      hallRentsIncome: 2150.96,
+      eventPassesIncome: 1735.97,
+      totalIncome: 4096.85
+    },
+    hallRentStatistics: {
+      allAddedHallRentsCount: 4,
+      allHallRentsThatTookPlaceInTimePeriod: 4,
+      allCanceledHallRentsCount: 0,
+      durationAvg: 225,
+      totalHallRentsIncome: 2150.96,
+      userReservationsDict: {
+        Mateusz3 Strapczuk3: 2,
+        Mateusz4 Strapczuk4: 1,
+        Mateusz2 Strapczuk2: 1
+      },
+      hallReservationsDict: {
+        1: 1,
+        2: 1,
+        3: 1,
+        4: 1
+      },
+      hallTypeReservationsDict: {
+        Sala filmowa: 1,
+        Sala koncertowa: 1,
+        Sala teatralna: 1,
+        Sala wystawowa: 1
+      },
+      hallAddtionalServicesReservationsDict: {
+        Obsługa oświetlenia: 2,
+        DJ: 1,
+        Obsługa nagłośnienia: 1,
+        Fotograf: 1,
+        Promocja wydarzenia: 1
+      }
+    },
+    eventStatistics: {
+      allAddedEventsCount: 0,
+      allEventsThatTookPlaceInTimePeriod: 12,
+      allCanceledEventsCount: 0,
+      durationAvg: 127,
+      totalEventsIncome: 109.96,
+      mostPopularEvents: {
+        Koncert: Mystic Waves: 1,
+        Cień Przeszłości: 1,
+        Królestwo planety małp: 1,
+        Nowe inspiracje: 1,
+        Koncert: New Era: 0
+      },
+      mostProfitableEvents: {
+        Cień Przeszłości: 34.99,
+        Królestwo planety małp: 29.99,
+        Koncert: Mystic Waves: 24.99,
+        Nowe inspiracje: 19.99,
+        Koncert: New Era: 0
+      },
+      eventHallDict: {
+        2: 3,
+        3: 3,
+        1: 3,
+        4: 3
+      },
+      eventCategoryDict: {
+        Koncert: 3,
+        Spektakl: 3,
+        Film: 3,
+        Wystawa: 3
+      }
+    },
+    eventPassStatistics: {
+      allBougthEventPassesCount: 3,
+      allRenewedEventPassesCount: 0,
+      allCanceledEventPassesCount: 0,
+      totalEventPassesIncome: 1735.97,
+      eventPassTypeDict: {
+        Karnet półroczny: 1,
+        Karnet roczny: 1,
+        Karnet kwartalny: 1
+      },
+      mostProfitableEventsPassTypeDict: {
+        Karnet roczny: 999.99,
+        Karnet półroczny: 499.99,
+        Karnet kwartalny: 235.99
+      }
+    },
+    festivalStatistics: {
+      allAddedFestivalsCount: 0,
+      allFestivalsThatTookPlaceInTimePeriod: 3,
+      allCanceledFestivalsCount: 0,
+      durationAvg: 43800,
+      eventCountAvg: 2,
+      totalFestivalsIncome: 99.96,
+      mostPopularFestivals: {
+        Festiwal Muzyki Hip-Hop: 2,
+        Festiwal Filmowy: 2,
+        Festiwal Sztuki: 0
+      },
+      mostProfitableFestivals: {
+        Festiwal Filmowy: 59.98,
+        Festiwal Muzyki Hip-Hop: 39.98,
+        Festiwal Sztuki: 0
+      },
+      organizatorFestivalsDict: {
+        EventFlow: 2,
+        Snowflake: 2,
+        Aura: 2
+      },
+      mediaPatronFestivalsDict: {
+        Gazeta Nowoczesna: 2,
+        Nowy świat TV: 2,
+        Tygodnik Nowiny: 2
+      },
+      sponsorFestivalsDict: {
+        Basel: 2,
+        Vision: 2,
+        Waveless: 2
+      }
+    },
+    reservationStatistics: {
+      allNewReservationsCount: 8,
+      allCanceledReservationsCount: 0,
+      allNewEventReservationsCount: 4,
+      allNewFestivalReservationsCount: 4,
+      reservationFestivalEventsDict: {
+        Wydarzenia: 4,
+        Festiwale: 4
+      },
+      reservationTicketsTypesDict: {
+        Bilet normalny: 6,
+        Bilet ulgowy: 2
+      },
+      reservationSeatTypesDict: {
+        Miejsce klasy premium: 3,
+        Miejsce zwykłe: 3,
+        Miejsce VIP: 2
+      }
+    },
+    paymentStatistics: {
+      paymentsCount: 15,
+      totalTransactionsCost: 4096.85,
+      paymentTypesDict: {
+        PayU: 15,
+        Karnet: 0
+      }
+    },
+    userStatistics: {
+      totalUsersCount: 5,
+      newRegistredUsersCount: 5,
+      usersAgeAvg: 41
+    }
+  }
+}

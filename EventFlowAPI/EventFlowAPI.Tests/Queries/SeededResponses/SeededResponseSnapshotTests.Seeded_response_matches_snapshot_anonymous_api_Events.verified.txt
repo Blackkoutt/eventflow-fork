@@ -1,0 +1,513 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 1,
+      title: Koncert: Mystic Waves,
+      shortDescription: Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.,
+      start: today+32d 00:00:00,
+      end: today+32d 01:00:00,
+      duration: 00:00:00.0003600,
+      eventStatus: Active,
+      photoName: koncert_mystic_waves.png,
+      photoEndpoint: /Events/1/image,
+      category: {
+        id: 1,
+        name: Koncert,
+        icon: fa-solid fa-music,
+        color: #82CAFC
+      },
+      details: {
+        id: 1,
+        longDescription: Koncert Mystic Waves to wyjątkowe wydarzenie muzyczne, które przeniesie Cię w świat atmosferycznych dźwięków. Zespół wystąpi z premierowym materiałem, łączącym elementy muzyki elektronicznej i ambientowej. Koncert odbędzie się w klimatycznej sali, z wykorzystaniem nowoczesnej technologii dźwiękowej i wizualnej, co zapewni niezapomniane przeżycia. Muzycy znani z licznych występów na scenach festiwalowych zaprezentują swoją najnowszą produkcję, która z pewnością oczaruje fanów muzyki eksperymentalnej.
+      },
+      hall: {
+        id: 6,
+        hallNr: 2,
+        rentalPricePerHour: 89.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 1,
+          price: 24.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        },
+        {
+          id: 5,
+          price: 19.99,
+          isFestival: true,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: Cień Przeszłości,
+      shortDescription: Dramatyczna opowieść o sekretach przeszłości, które powracają, by zmienić teraźniejszość.,
+      start: today+33d 00:00:00,
+      end: today+33d 03:00:00,
+      duration: 00:00:00.0010800,
+      eventStatus: Active,
+      photoName: cien_przeszlosci.png,
+      photoEndpoint: /Events/2/image,
+      category: {
+        id: 3,
+        name: Spektakl,
+        icon: fa-solid fa-masks-theater,
+        color: #C33EB1
+      },
+      details: {
+        id: 2,
+        longDescription: Spektakl 'Cień Przeszłość' to wciągająca produkcja teatralna, która porusza tematykę przemijania i refleksji nad przeszłością. Historia opowiada o dwóch postaciach, które spotykają się po latach, by skonfrontować swoje wspomnienia i tajemnice. Reżyseria, mistrzowskie aktorstwo oraz emocjonalna głębia tej sztuki sprawiają, że jest to wydarzenie, które zostanie z widzami na długo. Spektakl jest pełen symboliki i zaskakujących zwrotów akcji, które skłonią do przemyśleń o upływającym czasie.
+      },
+      hall: {
+        id: 7,
+        hallNr: 3,
+        rentalPricePerHour: 179.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 2,
+          price: 34.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        },
+        {
+          id: 7,
+          price: 29.99,
+          isFestival: true,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 2,
+            name: Bilet ulgowy
+          }
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: Królestwo planety małp,
+      shortDescription: Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.,
+      start: today+34d 00:00:00,
+      end: today+34d 02:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Active,
+      photoName: krolestwo_planety_malp.png,
+      photoEndpoint: /Events/3/image,
+      category: {
+        id: 2,
+        name: Film,
+        icon: fa-solid fa-film,
+        color: #6BD49B
+      },
+      details: {
+        id: 3,
+        longDescription: Film 'Królestwo planety małp' to spektakularna produkcja science-fiction, która kontynuuje historię walczących o przetrwanie małp. Akcja filmu toczy się w post-apokaliptycznym świecie, w którym małpy zaczynają dominować nad ludźmi. W filmie zobaczymy dynamiczne sceny bitewne, dramatyczne decyzje bohaterów i wciągającą fabułę, która porusza kwestie moralności i przyszłości ludzkości. Wysoka jakość efektów specjalnych oraz rewelacyjna gra aktorska sprawiają, że jest to jeden z najważniejszych filmów tego roku.
+      },
+      hall: {
+        id: 5,
+        hallNr: 1,
+        rentalPricePerHour: 120.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 3,
+          price: 29.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: Nowe inspiracje,
+      shortDescription: Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.,
+      start: today+35d 00:00:00,
+      end: today+35d 03:00:00,
+      duration: 00:00:00.0010800,
+      eventStatus: Active,
+      photoName: nowe_inspiracje.png,
+      photoEndpoint: /Events/4/image,
+      category: {
+        id: 4,
+        name: Wystawa,
+        icon: fa-solid fa-landmark,
+        color: #FC5353
+      },
+      details: {
+        id: 4,
+        longDescription: Wystawa 'Nowe inspiracje' to wyjątkowa ekspozycja sztuki współczesnej, która gromadzi prace młodych artystów z całego świata. Wystawa skupia się na nowych nurtach artystycznych, które łączą tradycję z nowoczesnością. Można tu zobaczyć prace w różnych mediach, od malarstwa po instalacje interaktywne. Artyści eksperymentują z formą i materiałami, zapraszając widzów do interakcji z dziełami. Jest to przestrzeń, która otwiera umysł na nowe pomysły i inspiracje, zachęcając do refleksji nad współczesnym światem sztuki.
+      },
+      hall: {
+        id: 8,
+        hallNr: 4,
+        rentalPricePerHour: 199.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 4,
+          price: 19.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: Koncert: New Era,
+      shortDescription: Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.,
+      start: today+62d 00:00:00,
+      end: today+62d 01:00:00,
+      duration: 00:00:00.0003600,
+      eventStatus: Active,
+      photoName: new_era.png,
+      photoEndpoint: /Events/5/image,
+      category: {
+        id: 1,
+        name: Koncert,
+        icon: fa-solid fa-music,
+        color: #82CAFC
+      },
+      details: {
+        id: 5,
+        longDescription: Koncert 'New Era' to wyjątkowe wydarzenie muzyczne, które łączy najnowsze trendy w muzyce elektronicznej z klasycznymi brzmieniami. Zespół zaprezentuje utwory z debiutanckiego albumu, który zdobył uznanie wśród krytyków muzycznych. Występ będzie pełen energetycznych melodii i przejmujących dźwięków, które z pewnością poruszą serca słuchaczy. Nowoczesne technologie audio-wizualne, wykorzystywane podczas koncertu, sprawią, że każdy utwór nabierze nowego wymiaru. Warto być częścią tego muzycznego doświadczenia!
+      },
+      hall: {
+        id: 10,
+        hallNr: 2,
+        rentalPricePerHour: 89.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 6,
+          price: 19.99,
+          isFestival: true,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        },
+        {
+          id: 9,
+          price: 24.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: Gladiator,
+      shortDescription: Legendarna opowieść o honorze i zemście w starożytnym Rzymie.,
+      start: today+64d 00:00:00,
+      end: today+64d 02:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Active,
+      photoName: gladiator.png,
+      photoEndpoint: /Events/6/image,
+      category: {
+        id: 2,
+        name: Film,
+        icon: fa-solid fa-film,
+        color: #6BD49B
+      },
+      details: {
+        id: 6,
+        longDescription: Film 'Gladiator' to epicka opowieść o wojowniku, który staje do walki nie tylko o swoje życie, ale także o wolność i sprawiedliwość. Akcja rozgrywa się w starożytnym Rzymie, gdzie główny bohater, Maximus, zostaje zdradzony przez cesarza, a jego rodzina zostaje zamordowana. Maximus trafia do areny, gdzie walczy o przetrwanie i zemstę. Film pełen jest emocjonujących walk, dramatycznych zwrotów akcji i wciągającej fabuły, która porusza tematy honoru, lojalności i zemsty.
+      },
+      hall: {
+        id: 9,
+        hallNr: 1,
+        rentalPricePerHour: 120.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 8,
+          price: 29.99,
+          isFestival: true,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 2,
+            name: Bilet ulgowy
+          }
+        },
+        {
+          id: 10,
+          price: 32.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 7,
+      title: Nowa sztuka,
+      shortDescription: Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.,
+      start: today+65d 00:00:00,
+      end: today+65d 03:00:00,
+      duration: 00:00:00.0010800,
+      eventStatus: Active,
+      photoName: ,
+      photoEndpoint: /Events/7/image,
+      category: {
+        id: 4,
+        name: Wystawa,
+        icon: fa-solid fa-landmark,
+        color: #FC5353
+      },
+      details: {
+        id: 7,
+        longDescription: Wystawa 'Nowa sztuka' to prezentacja młodych artystów, którzy swoją twórczość ukierunkowali na przekroczenie granic tradycyjnej sztuki. Na wystawie można zobaczyć prace w różnorodnych technikach: od klasycznych obrazów po awangardowe instalacje. Artyści bawią się konwencjami, angażując widza w interaktywną formę prezentacji. Wystawa jest zaproszeniem do refleksji nad tym, czym współczesna sztuka może być i jakie emocje potrafi wywołać. To wydarzenie, które pokazuje, jak sztuka może zmieniać nasze postrzeganie świata.
+      },
+      hall: {
+        id: 11,
+        hallNr: 4,
+        rentalPricePerHour: 199.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 11,
+          price: 34.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 8,
+      title: Cień Nad Miastem,
+      shortDescription: Mroczny thriller teatralny o tajemniczych wydarzeniach, które wstrząsają miastem po zmroku.,
+      start: today+76d 00:00:00,
+      end: today+76d 02:30:00,
+      duration: 00:00:00.0009000,
+      eventStatus: Active,
+      photoName: cien_nad_miastem.png,
+      photoEndpoint: /Events/8/image,
+      category: {
+        id: 3,
+        name: Spektakl,
+        icon: fa-solid fa-masks-theater,
+        color: #C33EB1
+      },
+      details: {
+        id: 8,
+        longDescription: Cień Nad Miastem to mroczny thriller teatralny, który przenosi widza w świat pełen tajemniczych wydarzeń, które zaczynają wstrząsać miastem po zmroku. Główna fabuła opowiada historię, w której pozornie spokojne miasto staje się areną niebezpiecznych wydarzeń, których rozwiązanie wciąga nie tylko bohaterów, ale również publiczność. W spektaklu dominują napięcie i atmosfera niepokoju, które potęgują świetnie dobrane efekty wizualne oraz świetne aktorstwo. Każda scena jest przemyślana, a dramaturgia składa się z zagadek i zwrotów akcji, które trzymają widza w ciągłym napięciu. To przedstawienie nie tylko o mrocznych wydarzeniach, ale także o ludzkich emocjach, które rodzą się w sytuacjach kryzysowych, zmieniając życie bohaterów na zawsze. W trakcie spektaklu widzowie będą mieli okazję odkryć tajemnice miasta i skonfrontować się z pytaniem, jak cienka jest granica między rzeczywistością a tym, co wytworzyła wyobraźnia.
+      },
+      hall: {
+        id: 16,
+        hallNr: 3,
+        rentalPricePerHour: 179.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      },
+      tickets: [
+        {
+          id: 12,
+          price: 19.99,
+          isFestival: false,
+          event: null,
+          festival: null,
+          ticketType: {
+            id: 1,
+            name: Bilet normalny
+          }
+        }
+      ]
+    },
+    {
+      id: 9,
+      title: Jazzowe Brzmienia,
+      shortDescription: Magiczny czas z jazzem na żywo – koncert znanych artystów jazzowych, którzy przeniosą Cię w świat wyjątkowych dźwięków.,
+      start: today-1d 01:00:00,
+      end: today-1d 03:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Expired,
+      photoName: jazz.png,
+      photoEndpoint: /Events/9/image,
+      category: {
+        id: 1,
+        name: Koncert,
+        icon: fa-solid fa-music,
+        color: #82CAFC
+      },
+      details: {
+        id: 9,
+        longDescription: Jazzowe Brzmienia to wyjątkowy koncert, który przenosi uczestników w świat żywego jazzu. Podczas wydarzenia wystąpią znani artyści jazzowi, którzy zabiorą widzów w podróż po różnorodnych stylach tego gatunku. Atmosfera pełna emocji, improwizacji i magicznych dźwięków sprawia, że każda chwila staje się niezapomnianym doświadczeniem. Koncert jest idealną okazją, by poczuć autentyczną magię jazzu w wyjątkowym wykonaniu na żywo, a publiczność wciągnie się w niepowtarzalny klimat muzycznej ekspresji.
+      },
+      hall: {
+        id: 17,
+        hallNr: 2,
+        rentalPricePerHour: 89.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      }
+    },
+    {
+      id: 10,
+      title: Interstellar,
+      shortDescription: Epicka podróż kosmiczna, która bada granice ludzkiej wytrzymałości i miłości.,
+      start: today-2d 02:00:00,
+      end: today-2d 04:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Expired,
+      photoName: interstellar.jpg,
+      photoEndpoint: /Events/10/image,
+      category: {
+        id: 2,
+        name: Film,
+        icon: fa-solid fa-film,
+        color: #6BD49B
+      },
+      details: {
+        id: 10,
+        longDescription: Interstellar to epicka podróż w głąb kosmosu, która bada granice ludzkiej wytrzymałości, miłości i poświęcenia. Grupa astronautów, wyruszając na misję w poszukiwaniu nowego domu dla ludzkości, zmierzy się z niewyobrażalnymi wyzwaniami. Film porusza tematykę czasu, przestrzeni i ofiary, ukazując niesamowite krajobrazy kosmiczne oraz ludzką determinację w walce o przetrwanie. Każdy moment to prawdziwa uczta dla zmysłów, a historia miłości i poświęcenia łączy się z naukową fascynacją, tworząc niezapomniane doświadczenie filmowe.
+      },
+      hall: {
+        id: 18,
+        hallNr: 1,
+        rentalPricePerHour: 120.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      }
+    },
+    {
+      id: 11,
+      title: Zatrzymać Przeznaczenie,
+      shortDescription: Spektakl o postaci, która staje w obliczu nieuchronnego przeznaczenia.,
+      start: today-3d 03:00:00,
+      end: today-3d 05:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Expired,
+      photoName: zatrzymac_przeznaczenie.jpg,
+      photoEndpoint: /Events/11/image,
+      category: {
+        id: 3,
+        name: Spektakl,
+        icon: fa-solid fa-masks-theater,
+        color: #C33EB1
+      },
+      details: {
+        id: 11,
+        longDescription: Spektakl 'Zatrzymać Przeznaczenie' to głęboka opowieść o postaci, która staje przed obliczem nieuchronnego przeznaczenia. Bohaterowie zmagają się z wyborem, który może zmienić bieg wydarzeń, a ich działania prowadzą do nieodwracalnych konsekwencji. Spektakl skłania do refleksji nad wolną wolą, nieuchronnością losu i odpowiedzialnością za własne wybory. Z pomocą wciągającej dramaturgii oraz poruszających dialogów, spektakl ukazuje, jak delikatna jest granica między tym, co możemy kontrolować, a tym, co jest zapisane w naszych losach.
+      },
+      hall: {
+        id: 19,
+        hallNr: 3,
+        rentalPricePerHour: 179.99,
+        floor: 2,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      }
+    },
+    {
+      id: 12,
+      title: Nowe Perspektywy,
+      shortDescription: Wystawa sztuki współczesnej, która zaprasza do odkrywania świata z nowych punktów widzenia.,
+      start: today-4d 04:00:00,
+      end: today-4d 06:00:00,
+      duration: 00:00:00.0007200,
+      eventStatus: Expired,
+      photoName: nowe_perspektywy.jpg,
+      photoEndpoint: /Events/12/image,
+      category: {
+        id: 4,
+        name: Wystawa,
+        icon: fa-solid fa-landmark,
+        color: #FC5353
+      },
+      details: {
+        id: 12,
+        longDescription: Wystawa 'Nowe Perspektywy' zaprasza do odkrywania sztuki współczesnej z zupełnie nowych punktów widzenia. Artyści wykorzystują różnorodne techniki, od tradycyjnych obrazów po innowacyjne instalacje, które angażują widza w interaktywną formę prezentacji. Każda praca na wystawie to zaproszenie do zastanowienia się nad tym, jak sztuka może zmieniać nasze postrzeganie rzeczywistości. To także próba przekroczenia granic tradycyjnych konwencji, poszukiwania nowych środków wyrazu i głębokiej refleksji nad naturą współczesnej sztuki.
+      },
+      hall: {
+        id: 20,
+        hallNr: 4,
+        rentalPricePerHour: 199.99,
+        floor: 1,
+        seatsCount: 0,
+        hallDetails: null,
+        type: null
+      }
+    }
+  ]
+}

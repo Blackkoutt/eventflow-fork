@@ -1,0 +1,10 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    name: Miejsce VIP,
+    description: Opis miejsca VIP,
+    seatColor: #9803fc,
+    addtionalPaymentPercentage: 25.0
+  }
+}

@@ -1,0 +1,9 @@
+﻿{
+  status: 200,
+  body: {
+    id: 1,
+    name: DJ,
+    price: 400.0,
+    description: null
+  }
+}

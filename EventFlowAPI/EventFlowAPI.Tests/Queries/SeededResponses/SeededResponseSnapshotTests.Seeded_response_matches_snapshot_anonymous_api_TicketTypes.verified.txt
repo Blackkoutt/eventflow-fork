@@ -1,0 +1,17 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 1,
+      name: Bilet normalny
+    },
+    {
+      id: 2,
+      name: Bilet ulgowy
+    },
+    {
+      id: 3,
+      name: Bilet rodzinny
+    }
+  ]
+}

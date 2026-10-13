@@ -1,0 +1,28 @@
+﻿{
+  status: 200,
+  body: {
+    id: 2,
+    name: Mateusz2,
+    surname: Strapczuk2,
+    emailAddress: mateusz.strapczuk2@gmail.com,
+    dateOfBirth: today-15228d 00:00:00,
+    registeredDate: today+0d 00:00:00,
+    allReservationsCount: 5,
+    allHallRentsCount: 1,
+    isActiveEventPass: true,
+    photoName: user2.jpg,
+    photoEndpoint: /Users/2/image,
+    userData: {
+      id: 2,
+      street: Wiejska,
+      houseNumber: 10,
+      flatNumber: 31,
+      city: Poznań,
+      zipCode: 01-342,
+      phoneNumber: 123456789
+    },
+    userRoles: [
+      User
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 1,
+      hallNr: 1,
+      rentalPricePerHour: 120.99,
+      floor: 2,
+      seatsCount: 4,
+      hallDetails: null,
+      type: {
+        id: 1,
+        name: Sala filmowa,
+        description: Nowoczesna sala kinowa, wyposażona w wysokiej jakości projektor oraz system nagłośnienia Dolby Digital. Idealna do projekcji filmów w różnych formatach, zapewniająca doskonałe wrażenia wizualne i dźwiękowe. Pomieszczenie jest przystosowane do projekcji 2D i 3D, z przestronnymi fotelami zapewniającymi komfort podczas długotrwałego seansu.,
+        photoName: filmowa.jpg,
+        photoEndpoint: /HallTypes/1/image
+      }
+    },
+    {
+      id: 2,
+      hallNr: 2,
+      rentalPricePerHour: 89.99,
+      floor: 1,
+      seatsCount: 4,
+      hallDetails: null,
+      type: {
+        id: 2,
+        name: Sala koncertowa,
+        description: Sala koncertowa o najwyższej jakości akustyce, przeznaczona do organizacji koncertów, recitali i występów muzycznych. Wyposażona w profesjonalny system nagłośnienia i adaptację akustyczną, która zapewnia doskonałe warunki dźwiękowe dla artystów oraz publiczności. Przestronny design, komfortowe siedzenia oraz nowoczesne oświetlenie sprawiają, że jest to idealne miejsce do wydarzeń muzycznych.,
+        photoName: koncertowa.jpg,
+        photoEndpoint: /HallTypes/2/image
+      }
+    },
+    {
+      id: 3,
+      hallNr: 3,
+      rentalPricePerHour: 179.99,
+      floor: 2,
+      seatsCount: 4,
+      hallDetails: null,
+      type: {
+        id: 3,
+        name: Sala teatralna,
+        description: Sala teatralna o wysokiej jakości akustyce i estetyce, przystosowana do organizacji spektakli teatralnych, przedstawień, recitalów oraz wydarzeń artystycznych. Wyposażona w profesjonalne oświetlenie sceniczne, nagłośnienie oraz przestronną scenę, która zapewnia doskonałą widoczność i akustykę. To przestrzeń, która sprzyja artystycznemu wyrazowi i tworzeniu niezapomnianych doznań dla widzów.,
+        photoName: teatralna.jpg,
+        photoEndpoint: /HallTypes/3/image
+      }
+    },
+    {
+      id: 4,
+      hallNr: 4,
+      rentalPricePerHour: 199.99,
+      floor: 1,
+      seatsCount: 1,
+      hallDetails: null,
+      type: {
+        id: 4,
+        name: Sala wystawowa,
+        description: Przestronna sala wystawowa dedykowana organizacji wystaw, targów i ekspozycji artystycznych. Zapewnia dużą powierzchnię do prezentacji dzieł sztuki, rzemiosła i innych ekspozycji. Zmodernizowane oświetlenie i możliwość aranżacji przestrzeni pozwalają na profesjonalne wyeksponowanie dzieł. Jest to przestrzeń elastyczna, doskonała do organizacji wydarzeń kulturalnych i wystaw artystycznych.,
+        photoName: wystawowa.jpg,
+        photoEndpoint: /HallTypes/4/image
+      }
+    }
+  ]
+}

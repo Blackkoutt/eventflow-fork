@@ -1,0 +1,20 @@
+﻿{
+  status: 200,
+  body: {
+    id: 5,
+    name: Mateusz,
+    surname: Strapczuk,
+    emailAddress: mateusz.strapczuk1@gmail.com,
+    dateOfBirth: today-17107d 00:00:00,
+    registeredDate: today+0d 00:00:00,
+    allReservationsCount: 0,
+    allHallRentsCount: 0,
+    isActiveEventPass: false,
+    photoName: user5.jpg,
+    photoEndpoint: /Users/info/image,
+    userData: null,
+    userRoles: [
+      User
+    ]
+  }
+}

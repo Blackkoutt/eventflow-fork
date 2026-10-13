@@ -1,0 +1,122 @@
+﻿{
+  status: 200,
+  body: [
+    {
+      id: 1,
+      name: Admin,
+      surname: Admin,
+      emailAddress: admin@gmail.com,
+      dateOfBirth: today-9688d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: admin.jpg,
+      photoEndpoint: /Users/1/image,
+      userData: {
+        id: 1,
+        street: Wesoła,
+        houseNumber: 12,
+        flatNumber: 14,
+        city: Warszawa,
+        zipCode: 15-264,
+        phoneNumber: 789456123
+      },
+      userRoles: [
+        Admin
+      ]
+    },
+    {
+      id: 2,
+      name: Mateusz2,
+      surname: Strapczuk2,
+      emailAddress: mateusz.strapczuk2@gmail.com,
+      dateOfBirth: today-15228d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user2.jpg,
+      photoEndpoint: /Users/2/image,
+      userData: {
+        id: 2,
+        street: Wiejska,
+        houseNumber: 10,
+        flatNumber: 31,
+        city: Poznań,
+        zipCode: 01-342,
+        phoneNumber: 123456789
+      },
+      userRoles: [
+        User
+      ]
+    },
+    {
+      id: 3,
+      name: Mateusz3,
+      surname: Strapczuk3,
+      emailAddress: mateusz.strapczuk3@gmail.com,
+      dateOfBirth: today-17107d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user3.jpg,
+      photoEndpoint: /Users/3/image,
+      userData: {
+        id: 3,
+        street: Pogodna,
+        houseNumber: 7,
+        flatNumber: 21,
+        city: Białystok,
+        zipCode: 14-453,
+        phoneNumber: 147852369
+      },
+      userRoles: [
+        User
+      ]
+    },
+    {
+      id: 4,
+      name: Mateusz4,
+      surname: Strapczuk4,
+      emailAddress: mateusz.strapczuk4@gmail.com,
+      dateOfBirth: today-17107d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user4.jpg,
+      photoEndpoint: /Users/4/image,
+      userData: {
+        id: 4,
+        street: Słoneczna,
+        houseNumber: 21,
+        flatNumber: 42,
+        city: Warszawa,
+        zipCode: 14-453,
+        phoneNumber: 147852369
+      },
+      userRoles: [
+        User
+      ]
+    },
+    {
+      id: 5,
+      name: Mateusz,
+      surname: Strapczuk,
+      emailAddress: mateusz.strapczuk1@gmail.com,
+      dateOfBirth: today-17107d 00:00:00,
+      registeredDate: today+0d 00:00:00,
+      allReservationsCount: 0,
+      allHallRentsCount: 0,
+      isActiveEventPass: false,
+      photoName: user5.jpg,
+      photoEndpoint: /Users/5/image,
+      userData: null,
+      userRoles: [
+        User
+      ]
+    }
+  ]
+}

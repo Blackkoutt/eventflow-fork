@@ -1,0 +1,9 @@
+﻿status: 204
+ticket types:
+1: Bilet normalny
+2: Bilet ulgowy
+3: Bilet zmieniony
+reserved ticket type: Bilet zmieniony
+event ticket types:
+1: Bilet normalny
+3: Bilet zmieniony
