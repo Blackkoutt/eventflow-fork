@@ -1,9 +1,0 @@
-﻿{
-  status: 200,
-  body: {
-    id: 1,
-    name: Gazeta Nowoczesna,
-    photoName: gazeta_nowoczesna.png,
-    photoEndpoint: 
-  }
-}

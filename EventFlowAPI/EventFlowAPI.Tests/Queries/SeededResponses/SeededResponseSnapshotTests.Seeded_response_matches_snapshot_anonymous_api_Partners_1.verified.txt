@@ -1,9 +1,0 @@
-﻿{
-  status: 200,
-  body: {
-    id: 1,
-    name: Basel,
-    photoName: basel.png,
-    photoEndpoint: /Partners/1/image
-  }
-}

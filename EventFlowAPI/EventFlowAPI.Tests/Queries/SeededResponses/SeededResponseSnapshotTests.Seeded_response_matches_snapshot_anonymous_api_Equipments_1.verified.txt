@@ -1,8 +1,0 @@
-﻿{
-  status: 200,
-  body: {
-    id: 1,
-    name: Projektor multimedialny,
-    description: Nowoczesny projektor, idealny do prezentacji multimedialnych, z wysoką rozdzielczością i możliwością podłączenia różnych źródeł sygnału.
-  }
-}
