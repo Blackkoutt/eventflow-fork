@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Mapper;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -115,5 +116,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<bool>.Success(result);
         }
+
+        protected override EventPassTypeResponseDto MapResponse(EventPassType entity) => entity.ToResponse();
+
+        protected override EventPassType MapAsEntity(EventPassTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override EventPassType MapUpdatedAsEntity(UpdateEventPassTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateEventPassTypeRequestDto requestDto, EventPassType oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

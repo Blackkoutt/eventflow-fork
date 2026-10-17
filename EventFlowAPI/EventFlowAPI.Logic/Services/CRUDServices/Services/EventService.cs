@@ -3,7 +3,7 @@ using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -502,20 +502,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override Event MapAsEntity(IRequestDto requestDto)
-        {
-            string? longDescription = string.Empty;
-            switch (requestDto)
-            {
-                case EventRequestDto eventRequestDto: 
-                    longDescription = eventRequestDto.LongDescription;
-                    break;
-                case UpdateEventRequestDto updateEventRequestDto:
-                    longDescription = updateEventRequestDto.LongDescription;
-                    break;
-            }
+        protected sealed override Event MapAsEntity(EventRequestDto requestDto) =>
+            PrepareEntity(requestDto.ToEntity(), requestDto.LongDescription);
 
-            var eventEntity = base.MapAsEntity(requestDto);
+        protected sealed override Event MapUpdatedAsEntity(UpdateEventRequestDto requestDto) =>
+            PrepareEntity(requestDto.ToEntity(), requestDto.LongDescription);
+
+        private Event PrepareEntity(Event eventEntity, string? longDescription)
+        {
             if (!string.IsNullOrEmpty(longDescription))
                 eventEntity.LongDescription = longDescription;
             return eventEntity;
@@ -524,7 +518,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override IEntity MapToEntity(UpdateEventRequestDto requestDto, Event oldEntity)
         {
 
-            var eventEntity = (Event)base.MapToEntity(requestDto, oldEntity);
+            var eventEntity = (Event)requestDto.ApplyTo(oldEntity);
             if (!string.IsNullOrEmpty(requestDto.LongDescription))
                 eventEntity.LongDescription = requestDto.LongDescription;
             return eventEntity;
@@ -534,19 +528,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<EventResponseDto>();
-                responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
-                responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<EventDetailsResponseDto>();
+                var responseDto = entity.ToResponse();
+                responseDto.Category = entity.Category?.ToResponse();
                 responseDto.Tickets = entity.Tickets.Select(t =>
                 {
-                    var ticket = t.AsDto<TicketResponseDto>();
+                    var ticket = t.ToResponse();
                     ticket.IsFestival = t.FestivalId != null;
                     ticket.Event = null;
                     ticket.Festival = null;
-                    ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                    ticket.TicketType = t.TicketType.ToResponse();
                     return ticket;
                 }).ToList();
-                responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
+                responseDto.Hall = entity.Hall?.ToResponse();
                 responseDto.EventStatus = GetEntityStatus(entity);
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
@@ -559,17 +552,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override EventResponseDto MapAsDto(Event entity)
         {
-            var responseDto = entity.AsDto<EventResponseDto>();
-            responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
-            responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<EventDetailsResponseDto>();
-            responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
+            var responseDto = entity.ToResponse();
+            responseDto.Category = entity.Category?.ToResponse();
+            responseDto.Hall = entity.Hall?.ToResponse();
             responseDto.Tickets = entity.Tickets.Select(t =>
             {
-                var ticket = t.AsDto<TicketResponseDto>();
+                var ticket = t.ToResponse();
                 ticket.IsFestival = t.FestivalId != null;
                 ticket.Event = null;
                 ticket.Festival = null;
-                ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                ticket.TicketType = t.TicketType.ToResponse();
                 return ticket;
             }).ToList();
             responseDto.Hall!.Seats = [];
@@ -579,5 +571,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override EventResponseDto MapResponse(Event entity) => entity.ToResponse();
     }
 }

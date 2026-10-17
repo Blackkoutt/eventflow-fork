@@ -8,7 +8,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -64,7 +64,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(userResult.Error);
             var user = userResult.Value;
 
-            userDataRequestDto.MapTo(user);
+            userDataRequestDto.ApplyTo(user);
 
             //Log.Information($"Hello {userDataRequestDto.UserPhoto}");
             var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: true);
@@ -81,7 +81,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<UserResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.UserRoles = new List<string> { entity.Role.ToString() };
                 responseDto.EmailAddress = entity.Email!;
                 responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";
@@ -91,7 +91,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private UserResponseDto MapAsDto(User entity)
         {
-            var responseDto = entity.AsDto<UserResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.UserRoles = new List<string> { entity.Role.ToString() };
             responseDto.EmailAddress = entity.Email!;
             responseDto.PhotoEndpoint = $"/Users/{responseDto.Id}/image";

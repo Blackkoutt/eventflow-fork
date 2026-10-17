@@ -15,7 +15,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
         protected override string OrderId => $"{_eventPass.Id}";
         protected override string DateLabel => "Zakup dokonany:";
         protected override string DateOfOrder => $"{_eventPass.StartDate.ToString(DateFormat.DateTimeFullMonth)}";
-        protected override string TypeOfPayment => $"{_eventPass.PaymentType.AsDto().Name}";
+        protected override string TypeOfPayment => $"{_eventPass.PaymentType.ToResponse().Name}";
         protected sealed override string UserName => $"{_eventPass.User.Name}";
         protected sealed override string UserSurname => $"{_eventPass.User.Surname}";
         protected sealed override string UserEmail => $"{_eventPass.User.Email}";

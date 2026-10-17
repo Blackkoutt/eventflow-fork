@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Mapper;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -79,5 +81,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<bool>.Success(result);
         }
+
+        protected override FAQResponseDto MapResponse(FAQ entity) => entity.ToResponse();
+
+        protected override FAQ MapAsEntity(FAQRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override FAQ MapUpdatedAsEntity(UpdateFAQRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateFAQRequestDto requestDto, FAQ oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

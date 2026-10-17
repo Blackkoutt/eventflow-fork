@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Mapper;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -84,5 +86,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<bool>.Success(result);
         }
+
+        protected override EquipmentResponseDto MapResponse(Equipment entity) => entity.ToResponse();
+
+        protected override Equipment MapAsEntity(EquipmentRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override Equipment MapUpdatedAsEntity(UpdateEquipmentRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateEquipmentRequestDto requestDto, Equipment oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

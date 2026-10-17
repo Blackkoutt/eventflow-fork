@@ -1,10 +1,11 @@
-﻿using EventFlowAPI.Logic.Helpers;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.DB.Entities.Enums;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -259,19 +260,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<HallRentResponseDto>();
-                responseDto.User = entity.User.AsDto<UserResponseDto>();
+                var responseDto = entity.ToResponse();
+                responseDto.User = entity.User.ToResponse();
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto();
+                responseDto.PaymentType = entity.PaymentType.ToResponse();
                 responseDto.HallRentStatus = GetEntityStatus(entity);
-                responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
-                responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
+                responseDto.Hall = entity.Hall.ToResponse();
+                responseDto.Hall.Type = entity.Hall.Type.ToResponse();
                 responseDto.Hall.Type.Equipments = [];
                 responseDto.Hall.Seats = [];
                 responseDto.Hall.HallDetails = null;
                 responseDto.AdditionalServices = entity.AdditionalServices
-                    .Select(services => services.AsDto<AdditionalServicesResponseDto>()).ToList();
+                    .Select(services => services.ToResponse()).ToList();
                 return responseDto;
             });
         }
@@ -279,19 +280,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override HallRentResponseDto MapAsDto(HallRent entity)
         {
-            var responseDto = entity.AsDto<HallRentResponseDto>();
-            responseDto.User = entity.User.AsDto<UserResponseDto>();
+            var responseDto = entity.ToResponse();
+            responseDto.User = entity.User.ToResponse();
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
-            responseDto.PaymentType = entity.PaymentType.AsDto();
-            responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
-            responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.ToResponse();
+            responseDto.Hall = entity.Hall.ToResponse();
+            responseDto.Hall.Type = entity.Hall.Type.ToResponse();
             responseDto.HallRentStatus = GetEntityStatus(entity);
             responseDto.Hall.Type.Equipments = [];
             responseDto.Hall.Seats = [];
             responseDto.Hall.HallDetails = null;
             responseDto.AdditionalServices = entity.AdditionalServices
-                .Select(services => services.AsDto<AdditionalServicesResponseDto>()).ToList();
+                .Select(services => services.ToResponse()).ToList();
             return responseDto;
         }
 
@@ -394,5 +395,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             throw new NotImplementedException();
         }
+
+        protected override HallRentResponseDto MapResponse(HallRent entity) => entity.ToResponse();
+
+        protected override HallRent MapAsEntity(HallRentRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override HallRent MapUpdatedAsEntity(UpdateHallRentRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateHallRentRequestDto requestDto, HallRent oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

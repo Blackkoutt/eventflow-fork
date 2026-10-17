@@ -15,7 +15,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
         protected sealed override string OrderId => $"{_reservation.Id}";
         protected override string DateLabel => "Rezerwacja dokonana:";
         protected sealed override string DateOfOrder => $"{_reservation.ReservationDate.ToString(DateFormat.DateTimeFullMonth)}";
-        protected sealed override string TypeOfPayment => $"{_reservation.PaymentType.AsDto().Name}";
+        protected sealed override string TypeOfPayment => $"{_reservation.PaymentType.ToResponse().Name}";
         protected sealed override string UserName => $"{_reservation.User.Name}";
         protected sealed override string UserSurname => $"{_reservation.User.Surname}";
         protected sealed override string UserEmail => $"{_reservation.User.Email}";   

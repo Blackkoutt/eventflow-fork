@@ -8,7 +8,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -170,9 +170,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public new PartnerResponseDto MapAsDto(Partner entity)
         {
-            var responseDto = entity.AsDto<PartnerResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/Partners/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override PartnerResponseDto MapResponse(Partner entity) => MapAsDto(entity);
+
+        protected override Partner MapAsEntity(PartnerRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override Partner MapUpdatedAsEntity(UpdatePartnerRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdatePartnerRequestDto requestDto, Partner oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -52,7 +52,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private PaymentTypeResponseDto MapAsDto(PaymentTypeInfo entity)
         {
-            var responseDto = entity.AsDto<PaymentTypeResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";
             return responseDto;
         }

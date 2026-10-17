@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -7,7 +8,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -629,15 +630,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<FestivalResponseDto>();
-                responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<FestivalDetailsResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.Events = entity.Events.Select(e =>
                 {
-                    var eventEntity = e.AsDto<EventResponseDto>();
-                    eventEntity.Category = e.Category.AsDto<EventCategoryResponseDto>();
+                    var eventEntity = e.ToResponse();
+                    eventEntity.Category = e.Category.ToResponse();
                     if (eventEntity.Details != null)
                         eventEntity.Details = null;
-                    eventEntity.Hall = e.Hall.AsDto<HallResponseDto>();
+                    eventEntity.Hall = e.Hall.ToResponse();
                     if(eventEntity.Hall.HallDetails != null)
                         eventEntity.Hall.HallDetails = null;
                     eventEntity.Hall.Seats = [];
@@ -649,11 +649,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.FestivalStatus = GetEntityStatus(entity);
                 responseDto.Tickets = entity.Tickets.Select(t =>
                 {
-                    var ticket = t.AsDto<TicketResponseDto>();
+                    var ticket = t.ToResponse();
                     ticket.IsFestival = t.FestivalId.HasValue;
                     ticket.Event = null;
                     ticket.Festival = null;
-                    ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                    ticket.TicketType = t.TicketType.ToResponse();
                     return ticket;
                 }).ToList();
                 responseDto.MediaPatrons = entity.Partners.Where(p => p.Kind == PartnerKind.MediaPatron).Select(p => _partnerService.MapAsDto(p)).ToList();
@@ -667,15 +667,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override FestivalResponseDto MapAsDto(Festival entity)
         {
-            var responseDto = entity.AsDto<FestivalResponseDto>();
-            responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<FestivalDetailsResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.Events = entity.Events.Select(e =>
             {
-                var eventEntity = e.AsDto<EventResponseDto>();
-                eventEntity.Category = e.Category.AsDto<EventCategoryResponseDto>();
+                var eventEntity = e.ToResponse();
+                eventEntity.Category = e.Category.ToResponse();
                 if (eventEntity.Details != null)
                     eventEntity.Details = null;
-                eventEntity.Hall = e.Hall.AsDto<HallResponseDto>();
+                eventEntity.Hall = e.Hall.ToResponse();
                 if (eventEntity.Hall.HallDetails != null)
                     eventEntity.Hall.HallDetails = null;
                 eventEntity.Hall.Seats = [];
@@ -687,11 +686,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.FestivalStatus = GetEntityStatus(entity);
             responseDto.Tickets = entity.Tickets.Select(t =>
             {
-                var ticket = t.AsDto<TicketResponseDto>();
+                var ticket = t.ToResponse();
                 ticket.IsFestival = t.FestivalId.HasValue;
                 ticket.Event = null;
                 ticket.Festival = null;
-                ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                ticket.TicketType = t.TicketType.ToResponse();
                 return ticket;
             }).ToList();
             responseDto.MediaPatrons = entity.Partners.Where(p => p.Kind == PartnerKind.MediaPatron).Select(p => _partnerService.MapAsDto(p)).ToList();
@@ -700,5 +699,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.PhotoEndpoint = $"/Festivals/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override FestivalResponseDto MapResponse(Festival entity) => entity.ToResponse();
+
+        protected override Festival MapAsEntity(FestivalRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override Festival MapUpdatedAsEntity(UpdateFestivalRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateFestivalRequestDto requestDto, Festival oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

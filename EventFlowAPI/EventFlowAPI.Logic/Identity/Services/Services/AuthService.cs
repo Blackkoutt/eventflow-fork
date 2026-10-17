@@ -8,7 +8,7 @@ using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -58,9 +58,9 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         }
         private UserResponseDto MapAsDto(User entity)
         {
-            var userDto = entity.AsDto<UserResponseDto>();
+            var userDto = entity.ToResponse();
             userDto.EmailAddress = entity.Email!;
-            userDto.UserData = entity.HasUserData ? entity.AsDto<UserDataResponseDto>() : null;
+            userDto.UserData = entity.ToUserDataResponse();
             userDto.PhotoEndpoint = $"/Users/info/image";
             userDto.UserRoles = new List<string> { entity.Role.ToString() };
             return userDto;
@@ -100,7 +100,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 return Result<UserRegisterResponseDto>.Failure(new AuthError(errors).ErrorsWhileCreatingUser);
             }
 
-            var user = requestDto.AsEntity<User>();
+            var user = requestDto.ToEntity();
             user.RegisteredDate = DateTime.Now;
             user.Role = Roles.User;
             user.PasswordHash = _passwordHasher.Hash(user, requestDto.Password);
