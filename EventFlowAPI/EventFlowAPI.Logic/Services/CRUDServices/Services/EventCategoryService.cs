@@ -113,11 +113,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override EventCategoryResponseDto MapResponse(EventCategory entity) => entity.ToResponse();
+        protected override EventCategoryResponseDto MapAsDto(EventCategory entity) => entity.ToResponse();
 
         protected override EventCategory MapAsEntity(EventCategoryRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override EventCategory MapUpdatedAsEntity(UpdateEventCategoryRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateEventCategoryRequestDto requestDto, EventCategory oldEntity) => requestDto.ApplyTo(oldEntity);
     }

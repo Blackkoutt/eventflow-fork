@@ -764,9 +764,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override Hall MapAsEntity(HallRequestDto requestDto) =>
             PrepareEntity(requestDto.ToEntity(), true, requestDto.Seats);
 
-        protected sealed override Hall MapUpdatedAsEntity(UpdateHallRequestDto requestDto) =>
-            PrepareEntity(requestDto.ToEntity(), false, requestDto.Seats);
-
         private Hall PrepareEntity(Hall hallEntity, bool hasDetails, ICollection<SeatRequestDto> seats)
         {
             if (hasDetails)
@@ -842,6 +839,5 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return hallEntity;
         }
 
-        protected override HallResponseDto MapResponse(Hall entity) => entity.ToResponse();
     }
 }

@@ -797,11 +797,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             throw new NotImplementedException();
         }
 
-        protected override ReservationResponseDto MapResponse(Reservation entity) => entity.ToResponse();
-
         protected override Reservation MapAsEntity(ReservationRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override Reservation MapUpdatedAsEntity(UpdateReservationRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateReservationRequestDto requestDto, Reservation oldEntity) => requestDto.ApplyTo(oldEntity);
     }

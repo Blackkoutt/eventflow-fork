@@ -383,11 +383,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected override EventPassResponseDto MapResponse(EventPass entity) => entity.ToResponse();
-
         protected override EventPass MapAsEntity(EventPassRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override EventPass MapUpdatedAsEntity(UpdateEventPassRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateEventPassRequestDto requestDto, EventPass oldEntity) => requestDto.ApplyTo(oldEntity);
     }

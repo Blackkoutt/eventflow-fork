@@ -117,11 +117,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override TicketTypeResponseDto MapResponse(TicketType entity) => entity.ToResponse();
+        protected override TicketTypeResponseDto MapAsDto(TicketType entity) => entity.ToResponse();
 
         protected override TicketType MapAsEntity(TicketTypeRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override TicketType MapUpdatedAsEntity(UpdateTicketTypeRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateTicketTypeRequestDto requestDto, TicketType oldEntity) => requestDto.ApplyTo(oldEntity);
     }

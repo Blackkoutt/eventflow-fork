@@ -505,9 +505,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override Event MapAsEntity(EventRequestDto requestDto) =>
             PrepareEntity(requestDto.ToEntity(), requestDto.LongDescription);
 
-        protected sealed override Event MapUpdatedAsEntity(UpdateEventRequestDto requestDto) =>
-            PrepareEntity(requestDto.ToEntity(), requestDto.LongDescription);
-
         private Event PrepareEntity(Event eventEntity, string? longDescription)
         {
             if (!string.IsNullOrEmpty(longDescription))
@@ -570,6 +567,5 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override EventResponseDto MapResponse(Event entity) => entity.ToResponse();
     }
 }

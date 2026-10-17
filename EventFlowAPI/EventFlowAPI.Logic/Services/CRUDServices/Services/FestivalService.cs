@@ -694,11 +694,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override FestivalResponseDto MapResponse(Festival entity) => entity.ToResponse();
-
         protected override Festival MapAsEntity(FestivalRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override Festival MapUpdatedAsEntity(UpdateFestivalRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateFestivalRequestDto requestDto, Festival oldEntity) => requestDto.ApplyTo(oldEntity);
     }

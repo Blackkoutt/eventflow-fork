@@ -163,23 +163,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        public new IEnumerable<PartnerResponseDto> MapAsDto(IEnumerable<Partner> records)
-        {
-            return records.Select(entity => MapAsDto(entity));
-        }
-
-        public new PartnerResponseDto MapAsDto(Partner entity)
+        protected override PartnerResponseDto MapAsDto(Partner entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/Partners/{responseDto.Id}/image";
             return responseDto;
         }
 
-        protected override PartnerResponseDto MapResponse(Partner entity) => MapAsDto(entity);
+        IEnumerable<PartnerResponseDto> IPartnerService.MapAsDto(IEnumerable<Partner> records) => MapAsDto(records);
+
+        PartnerResponseDto IPartnerService.MapAsDto(Partner entity) => MapAsDto(entity);
 
         protected override Partner MapAsEntity(PartnerRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override Partner MapUpdatedAsEntity(UpdatePartnerRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdatePartnerRequestDto requestDto, Partner oldEntity) => requestDto.ApplyTo(oldEntity);
     }

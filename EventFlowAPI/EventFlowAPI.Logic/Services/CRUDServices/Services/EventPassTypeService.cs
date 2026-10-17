@@ -117,11 +117,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override EventPassTypeResponseDto MapResponse(EventPassType entity) => entity.ToResponse();
+        protected override EventPassTypeResponseDto MapAsDto(EventPassType entity) => entity.ToResponse();
 
         protected override EventPassType MapAsEntity(EventPassTypeRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override EventPassType MapUpdatedAsEntity(UpdateEventPassTypeRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateEventPassTypeRequestDto requestDto, EventPassType oldEntity) => requestDto.ApplyTo(oldEntity);
     }

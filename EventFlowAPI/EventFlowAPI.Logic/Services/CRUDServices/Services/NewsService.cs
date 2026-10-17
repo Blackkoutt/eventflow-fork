@@ -162,11 +162,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override NewsResponseDto MapResponse(News entity) => entity.ToResponse();
-
         protected override News MapAsEntity(NewsRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override News MapUpdatedAsEntity(UpdateNewsRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateNewsRequestDto requestDto, News oldEntity) => requestDto.ApplyTo(oldEntity);
     }

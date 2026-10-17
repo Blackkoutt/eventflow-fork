@@ -209,18 +209,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        public new IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
-        {
-            return records.Select(entity =>
-            {
-                var responseDto = entity.ToResponse();
-                responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
-                responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
-                return responseDto;
-            });
-        }
-
-        public new HallTypeResponseDto MapAsDto(HallType entity)
+        protected override HallTypeResponseDto MapAsDto(HallType entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
@@ -228,11 +217,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override HallTypeResponseDto MapResponse(HallType entity) => entity.ToResponse();
+        IEnumerable<HallTypeResponseDto> IHallTypeService.MapAsDto(IEnumerable<HallType> records) => MapAsDto(records);
+
+        HallTypeResponseDto IHallTypeService.MapAsDto(HallType entity) => MapAsDto(entity);
 
         protected override HallType MapAsEntity(HallTypeRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override HallType MapUpdatedAsEntity(UpdateHallTypeRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateHallTypeRequestDto requestDto, HallType oldEntity) => requestDto.ApplyTo(oldEntity);
     }

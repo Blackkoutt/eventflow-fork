@@ -82,11 +82,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override FAQResponseDto MapResponse(FAQ entity) => entity.ToResponse();
+        protected override FAQResponseDto MapAsDto(FAQ entity) => entity.ToResponse();
 
         protected override FAQ MapAsEntity(FAQRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override FAQ MapUpdatedAsEntity(UpdateFAQRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateFAQRequestDto requestDto, FAQ oldEntity) => requestDto.ApplyTo(oldEntity);
     }

@@ -103,7 +103,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
                 return Result<object>.Failure(validationResult.Error);
 
             var entity = validationResult.Value.Entity;
-            var user = validationResult.Value.User;
 
             await DeleteEntity(entity, isSoftDelete: false);
 
@@ -189,10 +188,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         }
 
         protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(MapAsDto);
-        protected virtual TResponseDto MapAsDto(TEntity entity) => MapResponse(entity);
-        protected abstract TResponseDto MapResponse(TEntity entity);
+        protected abstract TResponseDto MapAsDto(TEntity entity);
         protected abstract TEntity MapAsEntity(TRequestDto requestDto);
-        protected abstract TEntity MapUpdatedAsEntity(TUpdateRequestDto requestDto);
         protected abstract IEntity MapToEntity(TUpdateRequestDto requestDto, TEntity oldEntity);
         protected async Task<bool> IsEntityExistInDB<TSomeEntity>(int id)
                     where TSomeEntity : class =>

@@ -394,11 +394,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             throw new NotImplementedException();
         }
 
-        protected override HallRentResponseDto MapResponse(HallRent entity) => entity.ToResponse();
-
         protected override HallRent MapAsEntity(HallRentRequestDto requestDto) => requestDto.ToEntity();
-
-        protected override HallRent MapUpdatedAsEntity(UpdateHallRentRequestDto requestDto) => requestDto.ToEntity();
 
         protected override IEntity MapToEntity(UpdateHallRentRequestDto requestDto, HallRent oldEntity) => requestDto.ApplyTo(oldEntity);
     }
