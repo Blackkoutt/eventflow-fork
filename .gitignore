@@ -11,3 +11,9 @@ EventFlowAPI/EventFlowAPI.DB/Assets/generated/*
 
 # Locally generated JWT signing key (development)
 EventFlowAPI/EventFlowAPI/App_Data/
+
+# Test project output
+EventFlowAPI/EventFlowAPI.Tests/bin/
+EventFlowAPI/EventFlowAPI.Tests/obj/
+EventFlowAPI/EventFlowAPI.Tests/TestResults/
+*.received.*
