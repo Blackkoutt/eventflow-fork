@@ -159,7 +159,12 @@ namespace EventFlowAPI.Tests.Infrastructure
                 hallNr = 500 + _factory.NextSlot(),
                 rentalPricePerHour = 100,
                 floor = 1,
-                hallDetails = new { totalLength = 20.0, totalWidth = 10.0, stageLength = 5.0, stageWidth = 8.0, maxNumberOfSeatsRows = 5, maxNumberOfSeatsColumns = 10 },
+                totalLength = 20.0,
+                totalWidth = 10.0,
+                stageLength = 5.0,
+                stageWidth = 8.0,
+                maxNumberOfSeatsRows = 5,
+                maxNumberOfSeatsColumns = 10,
                 hallTypeId = 1,
                 seats,
             };

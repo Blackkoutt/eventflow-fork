@@ -85,7 +85,7 @@ const EventPage = () => {
               </div>
               <h3 className="text-[24px] font-semibold ">{eventEntity.title}</h3>
             </div>
-            <p className="pl-6 w-full text-textPrimary">{eventEntity.details?.longDescription}</p>
+            <p className="pl-6 w-full text-textPrimary">{eventEntity.longDescription}</p>
           </article>
 
           <div className="flex flex-col justify-center items-center gap-[14px] min-w-[180px] py-4">

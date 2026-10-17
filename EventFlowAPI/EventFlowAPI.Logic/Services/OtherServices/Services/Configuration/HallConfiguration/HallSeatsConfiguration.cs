@@ -70,7 +70,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
                 var borderAndPaddingLength = 2 * paddingFromCanvasBorder + 2 * borderTickness;
                 var seatHeight = _seatsConfiguration.SeatHeight;
                 var rowPadding = _seatsConfiguration.RowPadding;
-                var seatRows = hall.HallDetails!.MaxNumberOfSeatsRows;
+                var seatRows = hall.MaxNumberOfSeatsRows;
                 var rowNumberHeight = _seatsConfiguration.RowColNumberHeight + 10;
 
                 var legendTextHeight = _legendConfiguration.LegendTextHeight;
@@ -92,9 +92,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
 
                 var totalPrintingAreaHeight = biggerFooterItem + topSeatsPadding + footerPadding + totalSeatsHeight;
 
-                if (hall.HallDetails.StageLength is not null)
+                if (hall.StageLength is not null)
                 {
-                    var stageToHallLengthRatio = (float)hall.HallDetails.StageLength! / (float)hall.HallDetails.TotalLength;
+                    var stageToHallLengthRatio = (float)hall.StageLength! / (float)hall.TotalLength;
                     var seatsAndOtherItemsToStageRatio = 1 - stageToHallLengthRatio;
 
                     var onePercentLength = totalPrintingAreaHeight / (seatsAndOtherItemsToStageRatio * 100);

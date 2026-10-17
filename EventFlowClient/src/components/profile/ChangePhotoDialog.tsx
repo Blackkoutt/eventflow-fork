@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { User } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { UserDataRequest, UserDataSchema } from "../../models/create_schemas/UserDataSchema";
+import { UserInfoRequest, UserInfoSchema } from "../../models/create_schemas/UserInfoSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../common/forms/Input";
 import FormButton from "../common/forms/FormButton";
@@ -27,34 +27,34 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<UserDataRequest>({
-      resolver: zodResolver(UserDataSchema),
+    const methods = useForm<UserInfoRequest>({
+      resolver: zodResolver(UserInfoSchema),
       defaultValues: {
-        street: user.userData?.street ?? null,
-        houseNumber: (user.userData?.houseNumber === 0 ? null : user.userData?.houseNumber) ?? null,
-        flatNumber: (user.userData?.flatNumber === 0 ? null : user.userData?.flatNumber) ?? null,
-        city: user.userData?.city ?? null,
-        zipCode: user.userData?.zipCode ?? null,
-        phoneNumber: user.userData?.phoneNumber ?? null,
+        street: user.street ?? null,
+        houseNumber: (user.houseNumber === 0 ? null : user.houseNumber) ?? null,
+        flatNumber: (user.flatNumber === 0 ? null : user.flatNumber) ?? null,
+        city: user.city ?? null,
+        zipCode: user.zipCode ?? null,
+        phoneNumber: user.phoneNumber ?? null,
       },
     });
     const { handleSubmit, formState, watch, setValue } = methods;
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
-      setValue("street", user.userData?.street ?? null);
+      setValue("street", user.street ?? null);
       setValue(
         "houseNumber",
-        (user.userData?.houseNumber === 0 ? null : user.userData?.houseNumber) ?? null
+        (user.houseNumber === 0 ? null : user.houseNumber) ?? null
       );
       setValue(
         "flatNumber",
-        (user.userData?.flatNumber === 0 ? null : user.userData?.flatNumber) ?? null
+        (user.flatNumber === 0 ? null : user.flatNumber) ?? null
       );
-      setValue("city", user.userData?.city ?? null);
-      setValue("zipCode", user.userData?.zipCode ?? null);
-      setValue("phoneNumber", user.userData?.phoneNumber ?? null);
-    }, [user.userData]);
+      setValue("city", user.city ?? null);
+      setValue("zipCode", user.zipCode ?? null);
+      setValue("phoneNumber", user.phoneNumber ?? null);
+    }, [user.street, user.houseNumber, user.flatNumber, user.city, user.zipCode, user.phoneNumber]);
 
     const file = watch().userPhoto;
     const validator = MaxFileSizeAndTypeValidator(10, ["image/jpeg", "image/png"]);
@@ -69,7 +69,7 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
       }
     }, [file]);
 
-    const onSubmit: SubmitHandler<UserDataRequest> = async (data) => {
+    const onSubmit: SubmitHandler<UserInfoRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
       formData.append("Street", data.street || "");

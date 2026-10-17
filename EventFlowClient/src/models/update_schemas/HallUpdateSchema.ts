@@ -47,7 +47,6 @@ export const HallUpdateSchema = z.object({
   //     .refine((val) => val >= 1 && val <= 4, "Nr piętra musi być z przedziału (1-4)")
   // ),
 
-  // hallDetails: z.object(HallDetailsSchema.shape),
 
   hallTypeId: z.preprocess(
     (value) => {

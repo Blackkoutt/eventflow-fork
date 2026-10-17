@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class UserDataRequestDto : IRequestDto
+    public class UserInfoRequestDto : IRequestDto
     {
         [OptionalLengthValidator(2, 50, ErrorMessage = "Nazwa ulicy powinna zawierać od 2 do 50 znaków.")]
         [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ0-9][A-Za-ząćęłńóśźż0-9' \-]*$", ErrorMessage = "Nazwa ulicy powinna zaczynać się wielką literą lub cyfrą, a także zawierać tylko litery, cyfry, myślniki, apostrofy oraz spacje.")]

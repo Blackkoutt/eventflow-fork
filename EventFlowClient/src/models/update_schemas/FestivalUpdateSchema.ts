@@ -62,7 +62,6 @@ export const FestivalUpdateSchema = z.object({
       }
       return true;
     }, "Długi opis powinien zawierać od 2 do 2000 znaków."),
-  //details: z.object(FestivalDetailsSchema.shape).optional().nullable(),
 
   festivalPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 

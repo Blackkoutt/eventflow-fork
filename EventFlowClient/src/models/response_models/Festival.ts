@@ -1,6 +1,5 @@
 import { IModel } from "../abstract/IModel";
 import { EventEntity } from "./EventEntity";
-import { FestivalDetails } from "./FestivalDetails";
 import { MediaPatron } from "./MediaPatron";
 import { Organizer } from "./Organizer";
 import { Sponsor } from "./Sponsor";
@@ -15,7 +14,7 @@ export type Festival = IModel & {
   duration: string;
   photoName: string;
   photoEndpoint: string;
-  details?: FestivalDetails;
+  longDescription?: string;
   events: EventEntity[];
   mediaPatrons: MediaPatron[];
   organizers: Organizer[];

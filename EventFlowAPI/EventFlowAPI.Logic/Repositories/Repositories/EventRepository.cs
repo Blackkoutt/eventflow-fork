@@ -13,7 +13,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.Event
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
-                        .Include(e => e.Details)
                         .Include(e => e.Tickets)
                             .ThenInclude(t => t.TicketType)
                         .Include(e => e.Festivals);
@@ -25,7 +24,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             return await _context.Event
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
-                        .Include(e => e.Details)
                         .Include(e => e.Festivals)
                         .Include(e => e.Tickets)
                             .ThenInclude(t => t.TicketType)

@@ -17,8 +17,28 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [Range(1,4, ErrorMessage = "Numer piętra nie może być mniejszy niż 0 lub większy niż 4.")]   
         public int Floor { get; set; }
 
-        [Required(ErrorMessage = "Szczegóły dotyczące sali są wymagane.")]
-        public HallDetailsRequestDto HallDetails { get; set; } = default!;
+        [Required(ErrorMessage = "Długość sali jest wymagana.")]
+        [Range(4, 99.99, ErrorMessage = "Długość sali nie może być mniejsza niż 4 metry i większa niż 99.99 metrów.")]
+        public decimal TotalLength { get; set; }
+
+        [Required(ErrorMessage = "Szerokość sali jest wymagana.")]
+        [Range(4, 99.99, ErrorMessage = "Szerokość sali nie może być mniejsza niż 4 metry i większa niż 99.99 metrów.")]
+        public decimal TotalWidth { get; set; }
+
+        [Range(3.00, 30.00, ErrorMessage = "Długość sceny nie może być mniejsza niż 3 m lub większa niż 30 m.")]
+        public float? StageLength { get; set; }
+
+        [Range(3.00, 30.00, ErrorMessage = "Szerokość sceny nie może być mniejsza niż 3 m lub większa niż 30 m.")]
+        public float? StageWidth { get; set; }
+
+        [Required(ErrorMessage = "Ilość rzędów miejsc w sali jest wymagana.")]
+        [Range(1, 20, ErrorMessage = "Ilość rzędów miejsc w sali nie może być mniejsza niż 1 lub większa niż 20.")]
+        public int MaxNumberOfSeatsRows { get; set; }
+
+        [Required(ErrorMessage = "Ilość kolumn miejsc w sali jest wymagana.")]
+        [Range(1, 20, ErrorMessage = "Ilość kolumn miejsc w sali nie może być mniejsza niż 1 lub większa niż 20.")]
+        public int MaxNumberOfSeatsColumns { get; set; }
+
 
         [Required(ErrorMessage = "Typ sali jest wymagany.")]
         public int HallTypeId { get; set; }

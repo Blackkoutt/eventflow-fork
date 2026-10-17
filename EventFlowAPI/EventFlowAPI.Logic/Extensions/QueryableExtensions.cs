@@ -194,12 +194,12 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.MaxRentalPrice != null) queryable = queryable.Where(x => x.RentalPricePerHour <= query.MaxRentalPrice);
             if (query.Floor != null) queryable = queryable.Where(x => x.Floor == query.Floor);
             if (query.HallTypeId != null) queryable = queryable.Where(x => x.HallTypeId == query.HallTypeId);
-            if (query.MinSeatsCount != null) queryable = queryable.Where(x => x.HallDetails!.MaxNumberOfSeats >= query.MinSeatsCount);
-            if (query.MaxSeatsCount != null) queryable = queryable.Where(x => x.HallDetails!.MaxNumberOfSeats <= query.MaxSeatsCount);
-            if (query.MinHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.HallDetails!.TotalLength * x.HallDetails!.TotalWidth) >= query.MinHallArea);
-            if (query.MaxHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.HallDetails!.TotalLength * x.HallDetails!.TotalWidth) <= query.MaxHallArea);
-            if (query.IsHallHaveStage == false) queryable = queryable.Where(x => x.HallDetails!.StageLength == null && x.HallDetails!.StageWidth == null);
-            if (query.IsHallHaveStage == true) queryable = queryable.Where(x => x.HallDetails!.StageLength != null && x.HallDetails!.StageWidth != null);
+            if (query.MinSeatsCount != null) queryable = queryable.Where(x => x.MaxNumberOfSeats >= query.MinSeatsCount);
+            if (query.MaxSeatsCount != null) queryable = queryable.Where(x => x.MaxNumberOfSeats <= query.MaxSeatsCount);
+            if (query.MinHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.TotalLength * x.TotalWidth) >= query.MinHallArea);
+            if (query.MaxHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.TotalLength * x.TotalWidth) <= query.MaxHallArea);
+            if (query.IsHallHaveStage == false) queryable = queryable.Where(x => x.StageLength == null && x.StageWidth == null);
+            if (query.IsHallHaveStage == true) queryable = queryable.Where(x => x.StageLength != null && x.StageWidth != null);
             queryable = queryable.SortBy(query.SortBy, query.SortDirection);
             return queryable;
         }

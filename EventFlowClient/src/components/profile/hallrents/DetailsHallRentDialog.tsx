@@ -126,7 +126,7 @@ const DetailsHallRentDialog = forwardRef<HTMLDialogElement, DetailsHallRentDialo
                     <LabelText
                       labelWidth={185}
                       label="Powierzchnia (m2):"
-                      text={hallWidthDetails[0].hallDetails?.totalArea}
+                      text={hallWidthDetails[0].totalArea}
                       gap={10}
                     />
                     <LabelText

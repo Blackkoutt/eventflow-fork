@@ -43,7 +43,7 @@ public static class FestivalMapping
         target.EndDate = source.EndDate;
         target.Duration = source.Duration;
         target.PhotoName = source.PhotoName;
-        target.Details = source.Details.ToResponse(context);
+        target.LongDescription = source.LongDescription;
         target.Events = source.Events?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.MediaPatrons = source.Partners?.Where(p => p.Kind == PartnerKind.MediaPatron).Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Organizers = source.Partners?.Where(p => p.Kind == PartnerKind.Organizer).Select(item => item.ToResponse(context)).ToList() ?? [];

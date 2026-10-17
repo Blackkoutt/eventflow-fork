@@ -17,7 +17,12 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public bool IsActiveEventPass { get; set; }
         public string PhotoName { get; set; } = string.Empty;
         public string PhotoEndpoint { get; set; } = string.Empty;
-        public UserDataResponseDto? UserData { get; set; }
+        public string? Street { get; set; }
+        public int? HouseNumber { get; set; }
+        public int? FlatNumber { get; set; }
+        public string? City { get; set; }
+        public string? ZipCode { get; set; }
+        public string? PhoneNumber { get; set; }
         public IList<string?> UserRoles { get; set; } = [];
     }
 }

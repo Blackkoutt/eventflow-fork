@@ -66,7 +66,7 @@ const DetailsHallDialog = forwardRef<HTMLDialogElement, DetailsHallDialogProps>(
                     <LabelText
                       labelWidth={162}
                       label="Max ilość miejsc:"
-                      text={hallWithDetails.hallDetails?.maxNumberOfSeats}
+                      text={hallWithDetails.maxNumberOfSeats}
                       gap={10}
                     />
                     <LabelText
@@ -86,37 +86,37 @@ const DetailsHallDialog = forwardRef<HTMLDialogElement, DetailsHallDialogProps>(
                     <LabelText
                       labelWidth={162}
                       label="Powierzchnia:"
-                      text={`${hallWithDetails.hallDetails?.totalArea} m2`}
+                      text={`${hallWithDetails.totalArea} m2`}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={162}
                       label="Długość:"
-                      text={`${hallWithDetails.hallDetails?.totalLength} m`}
+                      text={`${hallWithDetails.totalLength} m`}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={162}
                       label="Szerokość:"
-                      text={`${hallWithDetails.hallDetails?.totalWidth} m`}
+                      text={`${hallWithDetails.totalWidth} m`}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={162}
                       label="Powierzchnia sceny:"
-                      text={`${hallWithDetails.hallDetails?.stageArea ?? 0} m2`}
+                      text={`${hallWithDetails.stageArea ?? 0} m2`}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={162}
                       label="Max ilość rzędów:"
-                      text={hallWithDetails.hallDetails?.maxNumberOfSeatsRows}
+                      text={hallWithDetails.maxNumberOfSeatsRows}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={162}
                       label="Max ilość kolumn:"
-                      text={hallWithDetails.hallDetails?.maxNumberOfSeatsColumns}
+                      text={hallWithDetails.maxNumberOfSeatsColumns}
                       gap={10}
                     />
                   </div>

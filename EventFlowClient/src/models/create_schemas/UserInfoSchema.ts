@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 
-export const UserDataSchema = z.object({
+export const UserInfoSchema = z.object({
   street: z
     .string()
     .optional()
@@ -107,4 +107,4 @@ export const UserDataSchema = z.object({
   userPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
 });
 
-export type UserDataRequest = z.infer<typeof UserDataSchema>;
+export type UserInfoRequest = z.infer<typeof UserInfoSchema>;

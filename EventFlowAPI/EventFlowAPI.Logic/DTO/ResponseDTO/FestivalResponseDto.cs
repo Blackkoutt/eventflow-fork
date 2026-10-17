@@ -17,7 +17,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public TimeSpan Duration { get; set; }
         public string PhotoName { get; set; } = string.Empty;
         public string PhotoEndpoint { get; set; } = string.Empty;
-        public FestivalDetailsResponseDto? Details { get; set; }
+        public string? LongDescription { get; set; }
         public ICollection<EventResponseDto> Events { get; set; } = [];
         public ICollection<PartnerResponseDto> MediaPatrons { get; set; } = [];
         public ICollection<PartnerResponseDto> Organizers { get; set; } = [];

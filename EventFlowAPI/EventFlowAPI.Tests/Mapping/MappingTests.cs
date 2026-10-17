@@ -90,7 +90,7 @@ public class MappingTests
 
         Assert.Null(response.Hall);
         Assert.Null(response.Category);
-        Assert.Null(response.Details);
+        Assert.Null(response.LongDescription);
         Assert.Empty(response.Tickets);
         Assert.Null(((Event?)null).ToResponse());
     }
@@ -116,23 +116,22 @@ public class MappingTests
     }
 
     [Fact]
-    public void Nested_hall_details_update_retains_identity_and_recalculates_area()
+    public void Hall_details_update_retains_identity_and_recalculates_area()
     {
-        var details = new HallDetails { Id = 20, TotalLength = 5, TotalWidth = 6, NumberOfSeats = 4 };
-        var hall = new Hall { Id = 10, HallDetails = details };
+        var hall = new Hall { Id = 10, TotalLength = 5, TotalWidth = 6, NumberOfSeats = 4 };
         var request = new HallRequestDto
         {
-            HallDetails = new HallDetailsRequestDto { TotalLength = 6, TotalWidth = 7 }
+            TotalLength = 6,
+            TotalWidth = 7
         };
 
         request.ApplyTo(hall);
 
-        Assert.Same(details, hall.HallDetails);
-        Assert.Equal(20, details.Id);
-        Assert.Equal(42, details.TotalArea);
-        Assert.Equal(4, details.NumberOfSeats);
-        Assert.Equal(6, details.TotalLength);
-        Assert.Equal(7, details.TotalWidth);
+        Assert.Equal(10, hall.Id);
+        Assert.Equal(42, hall.TotalArea);
+        Assert.Equal(4, hall.NumberOfSeats);
+        Assert.Equal(6, hall.TotalLength);
+        Assert.Equal(7, hall.TotalWidth);
     }
 
     [Fact]
@@ -170,9 +169,9 @@ public class MappingTests
         Assert.Equal(TimeSpan.FromHours(1), new Event { StartDate = start, EndDate = start.AddHours(1) }.ToResponse().Duration);
         Assert.Equal(TimeSpan.FromHours(2), new Festival { StartDate = start, EndDate = start.AddHours(2) }.ToResponse().Duration);
 
-        var response = new UserData { Id = "42", HouseNumber = null }.ToResponse();
-        Assert.Equal(42, response.Id);
-        Assert.Equal(0, response.HouseNumber);
-        Assert.Throws<FormatException>(() => new UserData { Id = "non-numeric" }.ToResponse());
+        var response = new User { Id = "42", Street = "Wiejska", HouseNumber = null }.ToResponse();
+        Assert.Equal("Wiejska", response.Street);
+        Assert.Null(response.HouseNumber);
+        Assert.Null(response.WithoutAddress().Street);
     }
 }

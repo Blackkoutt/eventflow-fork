@@ -11,9 +11,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
     public interface IUserService
     {
-        Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserDataQuery query);
+        Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserQuery query);
         Task<Result<BlobResponseDto>> GetUserPhoto();
         Task<Result<UserResponseDto>> GetOneAsync(string id);
-        Task<Result<object>> SetUserInfo(UserDataRequestDto userDataRequestDto);
+        Task<Result<object>> SetUserInfo(UserInfoRequestDto userInfoRequestDto);
     }
 }

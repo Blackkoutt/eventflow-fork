@@ -103,7 +103,7 @@ const EventReservationDialog = forwardRef<HTMLDialogElement, EventReservationDia
       }
     }, [hallWithDetails]);
 
-    const hallDetails = hallWithDetails[0]?.hallDetails;
+    const selectedHall = hallWithDetails[0];
 
     const toggleUserReservedSeat = (seatNr: number) => {
       setUserReservedSeats((prev) =>
@@ -194,11 +194,11 @@ const EventReservationDialog = forwardRef<HTMLDialogElement, EventReservationDia
                   <div className="flex flex-col justify-center items-center gap-3">
                     {/* <div>stage</div> */}
                     <div className="flex flex-col gap-2">
-                      {hallDetails?.maxNumberOfSeatsRows !== undefined &&
-                        hallDetails?.maxNumberOfSeatsColumns !== undefined && (
+                      {selectedHall?.maxNumberOfSeatsRows !== undefined &&
+                        selectedHall?.maxNumberOfSeatsColumns !== undefined && (
                           <SeatsGrid
-                            maxNumberOfSeatsRows={hallDetails.maxNumberOfSeatsRows}
-                            maxNumberOfSeatsColumns={hallDetails.maxNumberOfSeatsColumns}
+                            maxNumberOfSeatsRows={selectedHall.maxNumberOfSeatsRows}
+                            maxNumberOfSeatsColumns={selectedHall.maxNumberOfSeatsColumns}
                             seats={hallSeats}
                             reservedSeatNumbers={reservedSeatNumbers}
                             selectedSeatNumbers={userReservedSeats}

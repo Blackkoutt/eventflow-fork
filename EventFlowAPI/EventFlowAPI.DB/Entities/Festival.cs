@@ -20,12 +20,14 @@ namespace EventFlowAPI.DB.Entities
         public DateTime? DeleteDate { get; set; }
         public string PhotoName { get; set; } = string.Empty;
 
+        [MaxLength(2000)]
+        public string? LongDescription { get; set; }
+
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
 
         [NotMapped]
         public TimeSpan Duration => EndDate - StartDate;
-        public FestivalDetails? Details { get; set; }
         public ICollection<Event> Events { get; set; } = [];
         public ICollection<Partner> Partners { get; set; } = [];
         public ICollection<Ticket> Tickets { get; set; } = [];

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 
 namespace EventFlowAPI.Logic.Mapper;
@@ -16,6 +17,28 @@ public static class UserMapping
         target.Surname = source.Surname;
         target.DateOfBirth = source.DateOfBirth;
         return target;
+    }
+
+    public static User ApplyTo(this UserInfoRequestDto source, User target)
+    {
+        target.Street = source.Street;
+        target.HouseNumber = source.HouseNumber;
+        target.FlatNumber = source.FlatNumber;
+        target.City = source.City;
+        target.ZipCode = source.ZipCode;
+        target.PhoneNumber = source.PhoneNumber;
+        return target;
+    }
+
+    public static UserResponseDto WithoutAddress(this UserResponseDto source)
+    {
+        source.Street = null;
+        source.HouseNumber = null;
+        source.FlatNumber = null;
+        source.City = null;
+        source.ZipCode = null;
+        source.PhoneNumber = null;
+        return source;
     }
 
     [return: NotNullIfNotNull(nameof(source))]
@@ -34,7 +57,12 @@ public static class UserMapping
         target.DateOfBirth = source.DateOfBirth;
         target.RegisteredDate = source.RegisteredDate;
         target.PhotoName = source.PhotoName;
-        target.UserData = source.UserData.ToResponse(context);
+        target.Street = source.Street;
+        target.HouseNumber = source.HouseNumber;
+        target.FlatNumber = source.FlatNumber;
+        target.City = source.City;
+        target.ZipCode = source.ZipCode;
+        target.PhoneNumber = source.PhoneNumber;
         return target;
     }
 }

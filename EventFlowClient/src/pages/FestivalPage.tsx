@@ -81,7 +81,7 @@ const FestivalPage = () => {
           </div>
           <div className="w-full h-[1px] bg-textPrimary"></div>
           <div className="flex flex-col justify-start items-start">
-            <p className="text-textPrimary">{festival.details?.longDescription}</p>
+            <p className="text-textPrimary">{festival.longDescription}</p>
           </div>
           <div className="w-full h-[0.5px] bg-textPrimary"></div>
           <div className="flex flex-row justify-start items-center flex-wrap gap-3">

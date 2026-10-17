@@ -30,28 +30,28 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
         };
         public TextOptions HallSeatsCount => new TextOptions
         {
-            Text = $"Ilość miejsc: {hall.Seats.Count} / {hall.HallDetails!.MaxNumberOfSeats}",
+            Text = $"Ilość miejsc: {hall.Seats.Count} / {hall.MaxNumberOfSeats}",
             PaddingBottom = 2.5f,
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
         };
 
         public TextOptions HallDimensions => new TextOptions
         {
-            Text = $"Wymiary sali: {hall.HallDetails!.TotalWidth} m x {hall.HallDetails!.TotalLength} m",
+            Text = $"Wymiary sali: {hall.TotalWidth} m x {hall.TotalLength} m",
             PaddingBottom = 2.5f,
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
         };
         public TextOptions HallStageArea()
         {
-            var stageLength = hall.HallDetails!.StageLength;
-            var stageWidth = hall.HallDetails.StageWidth;
+            var stageLength = hall.StageLength;
+            var stageWidth = hall.StageWidth;
             decimal stageArea = 0m;
             if (stageLength is not null && stageWidth is not null)
                 stageArea = Math.Round((decimal)(stageWidth * stageLength), 2);
 
             return new TextOptions
             {
-                Text = $"Powierzchnia (sceny / sali): {(stageArea != 0m ? stageArea + " m²" : "Brak")} / {hall.HallDetails!.TotalArea} m²",
+                Text = $"Powierzchnia (sceny / sali): {(stageArea != 0m ? stageArea + " m²" : "Brak")} / {hall.TotalArea} m²",
                 PaddingBottom = 0f,
                 Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
             };

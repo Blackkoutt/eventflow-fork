@@ -139,7 +139,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 Tickets = eventEntity.Tickets
             };
             var oldHall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity.Hall.Id);
-            oldEventEntity.Hall.HallDetails = oldHall!.HallDetails;
+            oldEventEntity.Hall.MaxNumberOfSeatsRows = oldHall!.MaxNumberOfSeatsRows;
 
             MapToEntity(requestDto!, eventEntity);
             bool isAnyDateInEventChanged = eventEntity!.StartDate != oldEventEntity.StartDate ||
@@ -323,8 +323,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (reservationsForEvent.Any())
             {
-                var newHallSeatsGridRows = newHall.HallDetails!.MaxNumberOfSeatsRows;
-                var oldHallSeatsGridRows = oldHall.HallDetails!.MaxNumberOfSeatsRows;
+                var newHallSeatsGridRows = newHall.MaxNumberOfSeatsRows;
+                var oldHallSeatsGridRows = oldHall.MaxNumberOfSeatsRows;
                 var rowGridRatio = (double)newHallSeatsGridRows / oldHallSeatsGridRows;
 
                 var groupedReservations = reservationsForEvent.GroupBy(r => r.UserId);
@@ -510,7 +510,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private Event PrepareEntity(Event eventEntity, string? longDescription)
         {
-            AddOrUpdateEventDetails(eventEntity, longDescription);
+            if (!string.IsNullOrEmpty(longDescription))
+                eventEntity.LongDescription = longDescription;
             return eventEntity;
         }
 
@@ -518,26 +519,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
 
             var eventEntity = (Event)requestDto.ApplyTo(oldEntity);
-            AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
+            if (!string.IsNullOrEmpty(requestDto.LongDescription))
+                eventEntity.LongDescription = requestDto.LongDescription;
             return eventEntity;
-        }
-
-        private void AddOrUpdateEventDetails(Event eventEntity, string? longDescription)
-        {
-            if (!string.IsNullOrEmpty(longDescription))
-            {
-                if (eventEntity.Details == null)
-                {
-                    eventEntity.Details = new EventDetails
-                    {
-                        LongDescription = longDescription
-                    };
-                }
-                else
-                {
-                    eventEntity.Details!.LongDescription = longDescription;
-                }
-            }
         }
 
         protected sealed override IEnumerable<EventResponseDto> MapAsDto(IEnumerable<Event> records)
@@ -546,7 +530,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.ToResponse();
                 responseDto.Category = entity.Category?.ToResponse();
-                responseDto.Details = entity.Details?.ToResponse();
                 responseDto.Tickets = entity.Tickets.Select(t =>
                 {
                     var ticket = t.ToResponse();
@@ -560,7 +543,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.EventStatus = GetEntityStatus(entity);
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
-                responseDto.Hall!.HallDetails = null;
                 responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -571,7 +553,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var responseDto = entity.ToResponse();
             responseDto.Category = entity.Category?.ToResponse();
-            responseDto.Details = entity.Details?.ToResponse();
             responseDto.Hall = entity.Hall?.ToResponse();
             responseDto.Tickets = entity.Tickets.Select(t =>
             {
@@ -585,7 +566,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Hall!.Seats = [];
             responseDto.EventStatus = GetEntityStatus(entity);
             responseDto.Hall!.Type = null;
-            responseDto.Hall!.HallDetails = null;
             responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
             return responseDto;
         }

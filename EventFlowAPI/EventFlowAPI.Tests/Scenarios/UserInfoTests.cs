@@ -27,7 +27,7 @@ namespace EventFlowAPI.Tests.Scenarios
             var response = await user.PutFormAsync("/api/Users/info", Address("Poznan"));
 
             response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
-            var address = (await user.GetJsonAsync("/api/Users/info")).GetProperty("userData");
+            var address = (await user.GetJsonAsync("/api/Users/info"));
             address.GetProperty("city").GetString().ShouldBe("Poznan");
             address.GetProperty("street").GetString().ShouldBe("Dluga");
             address.GetProperty("zipCode").GetString().ShouldBe("60-001");

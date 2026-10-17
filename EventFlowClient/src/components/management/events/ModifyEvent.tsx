@@ -57,7 +57,7 @@ const ModifyEvent = forwardRef<HTMLDialogElement, ModifyEventProps>(
         startDate: DateFormatter.ParseDateFromCalendar(item?.start),
         endDate: DateFormatter.ParseDateFromCalendar(item?.end),
         shortDescription: item?.shortDescription,
-        longDescription: item?.details?.longDescription,
+        longDescription: item?.longDescription,
         categoryId: item?.category?.id,
         hallId: item?.hall?.id,
       });
@@ -120,7 +120,7 @@ const ModifyEvent = forwardRef<HTMLDialogElement, ModifyEventProps>(
         startDate: DateFormatter.ParseDateFromCalendar(item?.start),
         endDate: DateFormatter.ParseDateFromCalendar(item?.end),
         shortDescription: item?.shortDescription,
-        longDescription: item?.details?.longDescription,
+        longDescription: item?.longDescription,
         categoryId: item?.category?.id,
         hallId: item?.hall?.id,
       },

@@ -115,7 +115,7 @@ const ModifyFestival = forwardRef<HTMLDialogElement, ModifyFestivalProps>(
       reset({
         name: item?.title,
         shortDescription: item?.shortDescription,
-        longDescription: item?.details?.longDescription,
+        longDescription: item?.longDescription,
         eventIds: item?.events.map((x) => x.id),
         mediaPatronIds: item?.mediaPatrons.map((x) => x.id),
         organizerIds: item?.organizers.map((x) => x.id),
@@ -192,7 +192,7 @@ const ModifyFestival = forwardRef<HTMLDialogElement, ModifyFestivalProps>(
       defaultValues: {
         name: item?.title,
         shortDescription: item?.shortDescription,
-        longDescription: item?.details?.longDescription,
+        longDescription: item?.longDescription,
         eventIds: item?.events.map((x) => x.id),
         mediaPatronIds: item?.mediaPatrons.map((x) => x.id),
         organizerIds: item?.organizers.map((x) => x.id),

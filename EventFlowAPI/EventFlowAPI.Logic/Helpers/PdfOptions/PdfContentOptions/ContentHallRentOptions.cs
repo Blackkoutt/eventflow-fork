@@ -80,7 +80,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
         {
             Label = "Maksymalna ilość miejsc: ",
             LabelStyle = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
-            Value = $"{_hallRent.Hall.HallDetails!.MaxNumberOfSeats}",
+            Value = $"{_hallRent.Hall.MaxNumberOfSeats}",
             ValueStyle = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
             Space = 5f,
         };
@@ -90,7 +90,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
         {
             Label = "Wymiary sali: ",
             LabelStyle = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
-            Value = $"{_hallRent.Hall.HallDetails!.TotalWidth} m x {_hallRent.Hall.HallDetails!.TotalLength} m",
+            Value = $"{_hallRent.Hall.TotalWidth} m x {_hallRent.Hall.TotalLength} m",
             ValueStyle = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
             Space = 5f,
             PaddingBottom = 2.5f
@@ -99,15 +99,15 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
         {
             Label = "Powierzchnia sali: ",
             LabelStyle = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
-            Value = $"{_hallRent.Hall.HallDetails!.TotalArea} m²",
+            Value = $"{_hallRent.Hall.TotalArea} m²",
             ValueStyle = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
             Space = 5f,
             PaddingBottom = 2.5f
         };
         public LabelValueTextOptions StageArea() 
         {
-            var stageLength = _hallRent.Hall.HallDetails!.StageLength;
-            var stageWidth = _hallRent.Hall.HallDetails.StageWidth;
+            var stageLength = _hallRent.Hall.StageLength;
+            var stageWidth = _hallRent.Hall.StageWidth;
             decimal stageArea = 0m;
             if (stageLength is not null && stageWidth is not null)
                 stageArea = Math.Round((decimal)(stageWidth * stageLength), 2);

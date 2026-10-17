@@ -106,7 +106,7 @@ const FestivalDetails = ({ item, maxWidth }: FestivalDetailsProps) => {
           labelWidth={145}
           isTextLeft={true}
           label="Długi opis:"
-          text={item?.details?.longDescription}
+          text={item?.longDescription}
           gap={10}
         />
         <div className="flex flex-row justify-start items-center gap-2">

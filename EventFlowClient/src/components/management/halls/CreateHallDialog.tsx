@@ -53,17 +53,15 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
     const methods = useForm<HallRequest>({
       resolver: zodResolver(HallSchema),
       defaultValues: {
-        hallDetails: {
-          maxNumberOfSeatsRows: 10,
-          maxNumberOfSeatsColumns: 10,
-        },
+        maxNumberOfSeatsRows: 10,
+        maxNumberOfSeatsColumns: 10,
       },
     });
     const { handleSubmit, formState, reset, watch } = methods;
     const { errors, isSubmitting } = formState;
 
-    const maxRows = watch().hallDetails.maxNumberOfSeatsRows;
-    const maxCols = watch().hallDetails.maxNumberOfSeatsColumns;
+    const maxRows = watch().maxNumberOfSeatsRows;
+    const maxCols = watch().maxNumberOfSeatsColumns;
 
     useEffect(() => {
       if (maxRows >= 1 && maxRows <= 20) setCurrentMaxNumberRows(maxRows);
@@ -81,10 +79,8 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
       getSeatTypes({ id: undefined, queryParams: undefined });
       getHallTypes({ id: undefined, queryParams: undefined });
       reset({
-        hallDetails: {
-          maxNumberOfSeatsRows: 10,
-          maxNumberOfSeatsColumns: 10,
-        },
+        maxNumberOfSeatsRows: 10,
+        maxNumberOfSeatsColumns: 10,
       });
     }, []);
 
@@ -281,14 +277,12 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
         rentalPricePerHour: data.rentalPricePerHour,
         floor: data.floor,
         hallTypeId: data.hallTypeId,
-        hallDetails: {
-          totalLength: data.hallDetails.totalLength,
-          totalWidth: data.hallDetails.totalWidth,
-          stageLength: data.hallDetails.stageLength,
-          stageWidth: data.hallDetails.stageWidth,
-          maxNumberOfSeatsRows: data.hallDetails.maxNumberOfSeatsRows,
-          maxNumberOfSeatsColumns: data.hallDetails.maxNumberOfSeatsColumns,
-        },
+        totalLength: data.totalLength,
+        totalWidth: data.totalWidth,
+        stageLength: data.stageLength,
+        stageWidth: data.stageWidth,
+        maxNumberOfSeatsRows: data.maxNumberOfSeatsRows,
+        maxNumberOfSeatsColumns: data.maxNumberOfSeatsColumns,
         seats: requestSeats,
       } as HallRequest;
 
@@ -413,11 +407,11 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
                       <Input
                         label="Długość sali (m)"
                         type="number"
-                        name="hallDetails.totalLength"
+                        name="totalLength"
                         step={0.01}
                         min={4}
                         max={99.99}
-                        error={errors.hallDetails?.totalLength}
+                        error={errors.totalLength}
                         errorHeight={15}
                       />
                     </div>
@@ -425,49 +419,49 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
                       <Input
                         label="Szerokość sali (m)"
                         type="number"
-                        name="hallDetails.totalWidth"
+                        name="totalWidth"
                         step={0.01}
                         min={4}
                         max={99.99}
-                        error={errors.hallDetails?.totalWidth}
+                        error={errors.totalWidth}
                         errorHeight={15}
                       />
                       <Input
                         label="Długość sceny (m)"
                         type="number"
-                        name="hallDetails.stageLength"
+                        name="stageLength"
                         step={0.01}
                         min={3}
                         max={30}
-                        error={errors.hallDetails?.stageLength}
+                        error={errors.stageLength}
                         errorHeight={15}
                       />
                       <Input
                         label="Szerokość sceny (m)"
                         type="number"
-                        name="hallDetails.stageWidth"
+                        name="stageWidth"
                         step={0.01}
                         min={3}
                         max={30}
-                        error={errors.hallDetails?.stageWidth}
+                        error={errors.stageWidth}
                         errorHeight={15}
                       />
                       <Input
                         label="Max ilość rzędów"
                         type="number"
-                        name="hallDetails.maxNumberOfSeatsRows"
+                        name="maxNumberOfSeatsRows"
                         min={1}
                         max={20}
-                        error={errors.hallDetails?.maxNumberOfSeatsRows}
+                        error={errors.maxNumberOfSeatsRows}
                         errorHeight={15}
                       />
                       <Input
                         label="Max ilość kolumn"
                         type="number"
-                        name="hallDetails.maxNumberOfSeatsColumns"
+                        name="maxNumberOfSeatsColumns"
                         min={1}
                         max={20}
-                        error={errors.hallDetails?.maxNumberOfSeatsColumns}
+                        error={errors.maxNumberOfSeatsColumns}
                         errorHeight={15}
                       />
                     </div>

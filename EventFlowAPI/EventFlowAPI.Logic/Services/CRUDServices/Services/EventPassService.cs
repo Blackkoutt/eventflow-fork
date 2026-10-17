@@ -303,7 +303,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.EventPassGuid = entity.EventPassGuid;
                 responseDto.EventPassStatus = GetEntityStatus(entity);
-                responseDto.User.UserData = null;
+                responseDto.User.WithoutAddress();
                 responseDto.PaymentType = entity.PaymentType.ToResponse();
                 responseDto.PassType = entity.PassType.ToResponse();
                 return responseDto;
@@ -317,7 +317,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.EventPassStatus = GetEntityStatus(entity);
             responseDto.EventPassGuid = entity.EventPassGuid;
-            responseDto.User.UserData = null;
+            responseDto.User.WithoutAddress();
             responseDto.PaymentType = entity.PaymentType.ToResponse();
             responseDto.PassType = entity.PassType.ToResponse();
             return responseDto;

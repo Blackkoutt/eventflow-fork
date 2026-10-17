@@ -126,8 +126,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(festival.ShortDescription != requestDto!.ShortDescription)
                 festival.ShortDescription = requestDto!.ShortDescription; 
             
-            if(festival.Details != null && festival.Details.LongDescription != requestDto.LongDescription)
-                festival.Details.LongDescription = requestDto.LongDescription;
+            if(festival.LongDescription != null && festival.LongDescription != requestDto.LongDescription)
+                festival.LongDescription = requestDto.LongDescription;
 
             List<Event> newFestivalEventList = [];
 
@@ -269,7 +269,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var festivalStartDate = festivalEvents.First().StartDate;
             var festivalEndDate = festivalEvents.Last().EndDate;
-            var festivalDetails = string.IsNullOrEmpty(requestDto.LongDescription) ? null : new FestivalDetails { LongDescription = requestDto.LongDescription };
 
             return new Festival
             {
@@ -280,7 +279,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 EndDate = festivalEndDate,
                 DeleteDate = null,
                 IsDeleted = false,
-                Details = festivalDetails,
+                LongDescription = string.IsNullOrEmpty(requestDto.LongDescription) ? null : requestDto.LongDescription,
                 Events = festivalEvents,
                 Partners = festivalMediaPatrons.Concat(festivalOrganizers).Concat(festivalSponsors).ToList(),
             };
@@ -632,16 +631,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.ToResponse();
-                responseDto.Details = entity.Details?.ToResponse();
                 responseDto.Events = entity.Events.Select(e =>
                 {
                     var eventEntity = e.ToResponse();
                     eventEntity.Category = e.Category.ToResponse();
-                    if (eventEntity.Details != null)
-                        eventEntity.Details = null;
+                    eventEntity.LongDescription = null;
                     eventEntity.Hall = e.Hall.ToResponse();
-                    if(eventEntity.Hall.HallDetails != null)
-                        eventEntity.Hall.HallDetails = null;
                     eventEntity.Hall.Seats = [];
                     if (eventEntity.Hall.Type != null)
                         eventEntity.Hall.Type = null;
@@ -670,16 +665,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override FestivalResponseDto MapAsDto(Festival entity)
         {
             var responseDto = entity.ToResponse();
-            responseDto.Details = entity.Details?.ToResponse();
             responseDto.Events = entity.Events.Select(e =>
             {
                 var eventEntity = e.ToResponse();
                 eventEntity.Category = e.Category.ToResponse();
-                if (eventEntity.Details != null)
-                    eventEntity.Details = null;
+                eventEntity.LongDescription = null;
                 eventEntity.Hall = e.Hall.ToResponse();
-                if (eventEntity.Hall.HallDetails != null)
-                    eventEntity.Hall.HallDetails = null;
                 eventEntity.Hall.Seats = [];
                 if (eventEntity.Hall.Type != null)
                     eventEntity.Hall.Type = null;

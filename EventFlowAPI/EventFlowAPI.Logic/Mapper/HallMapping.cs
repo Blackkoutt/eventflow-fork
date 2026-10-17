@@ -16,9 +16,12 @@ public static class HallMapping
         target.RentalPricePerHour = source.RentalPricePerHour;
         target.Floor = source.Floor;
         target.HallTypeId = source.HallTypeId;
-        target.HallDetails = source.HallDetails is null
-            ? null
-            : source.HallDetails.ApplyTo(target.HallDetails ?? new HallDetails());
+        target.TotalLength = source.TotalLength;
+        target.TotalWidth = source.TotalWidth;
+        target.StageLength = source.StageLength;
+        target.StageWidth = source.StageWidth;
+        target.MaxNumberOfSeatsRows = source.MaxNumberOfSeatsRows;
+        target.MaxNumberOfSeatsColumns = source.MaxNumberOfSeatsColumns;
         target.Seats ??= [];
         target.Seats.Clear();
         foreach (var item in source.Seats?.Select(item => item.ToEntity()).ToList() ?? []) target.Seats.Add(item);
@@ -72,7 +75,15 @@ public static class HallMapping
         target.RentalPricePerHour = source.RentalPricePerHour;
         target.Floor = source.Floor;
         target.SeatsCount = source.Seats?.Count ?? 0;
-        target.HallDetails = source.HallDetails.ToResponse(context);
+        target.TotalLength = source.TotalLength;
+        target.TotalWidth = source.TotalWidth;
+        target.TotalArea = source.TotalArea;
+        target.StageLength = source.StageLength;
+        target.StageWidth = source.StageWidth;
+        target.MaxNumberOfSeatsRows = source.MaxNumberOfSeatsRows;
+        target.MaxNumberOfSeatsColumns = source.MaxNumberOfSeatsColumns;
+        target.NumberOfSeats = source.NumberOfSeats;
+        target.MaxNumberOfSeats = source.MaxNumberOfSeats;
         target.Type = source.Type.ToResponse(context);
         target.Seats = source.Seats?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Id = source.Id;

@@ -91,37 +91,37 @@ const DetailsUserDialog = forwardRef<HTMLDialogElement, DetailsUserDialogProps>(
                     <LabelText
                       labelWidth={236}
                       label="Miasto:"
-                      text={user?.userData?.city}
+                      text={user?.city}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={236}
                       label="Ulica:"
-                      text={user?.userData?.street}
+                      text={user?.street}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={236}
                       label="Kod pocztowy:"
-                      text={user?.userData?.zipCode}
+                      text={user?.zipCode}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={236}
                       label="Nr domu:"
-                      text={user?.userData?.houseNumber}
+                      text={user?.houseNumber}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={236}
                       label="Nr mieszkania:"
-                      text={user?.userData?.flatNumber}
+                      text={user?.flatNumber}
                       gap={10}
                     />
                     <LabelText
                       labelWidth={236}
                       label="Nr telefonu:"
-                      text={user?.userData?.phoneNumber}
+                      text={user?.phoneNumber}
                       gap={10}
                     />
                     <div className="flex flex-row justify-start items-center self-start gap-2">

@@ -18,7 +18,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     HallViewFileName = "sala_5_5_1.pdf",
                     IsCopy = false,
                     IsVisible = true,
-                    HallTypeId = 1
+                    HallTypeId = 1,
+                    TotalLength = 22m,
+                    TotalWidth = 14m, 
+                    StageWidth = 7f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 15,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 255,
                 },
                 new Hall
                 {
@@ -30,7 +38,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = false,
                     IsVisible = true,
-                    HallTypeId = 2
+                    HallTypeId = 2,
+                    TotalLength = 22m,
+                    TotalWidth = 9m,
+                    StageWidth = null,
+                    StageLength = null,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                 },
                 new Hall
                 {
@@ -42,7 +58,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = false,
                     IsVisible = true,
-                    HallTypeId = 3
+                    HallTypeId = 3,
+                    TotalLength = 11m,
+                    TotalWidth = 9m,
+                    StageWidth = 5.6f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                 },
                 new Hall
                 {
@@ -54,7 +78,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = false,
                     IsVisible = true,
-                    HallTypeId = 4
+                    HallTypeId = 4,
+                    TotalLength = 17m,
+                    TotalWidth = 9m,
+                    StageWidth = 7.2f,
+                    StageLength = 6f,
+                    MaxNumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                 },
                 new Hall
                 {
@@ -66,7 +98,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 1
+                    HallTypeId = 1,
+                    TotalLength = 22m,
+                    TotalWidth = 14m,
+                    StageWidth = 7f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 15,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 255,
                 },
                 new Hall
                 {
@@ -78,7 +118,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 2
+                    HallTypeId = 2,
+                    TotalLength = 22m,
+                    TotalWidth = 9m,
+                    StageWidth = null,
+                    StageLength = null,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                 },
                 new Hall
                 {
@@ -90,7 +138,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 3
+                    HallTypeId = 3,
+                    TotalLength = 11m,
+                    TotalWidth = 9m,
+                    StageWidth = 5.6f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                 },
                 new Hall
                 {
@@ -102,7 +158,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 4
+                    HallTypeId = 4,
+                    TotalLength = 17m,
+                    TotalWidth = 9m,
+                    StageWidth = 7.2f,
+                    StageLength = 6f,
+                    MaxNumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                 },
                  new Hall
                  {
@@ -114,7 +178,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                      Floor = 2,
                      IsCopy = true,
                      IsVisible = false,
-                     HallTypeId = 1
+                     HallTypeId = 1,
+                    TotalLength = 22m,
+                    TotalWidth = 14m,
+                    StageWidth = 7f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 15,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 255,
                  },
                 new Hall
                 {
@@ -126,7 +198,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 2
+                    HallTypeId = 2,
+                    TotalLength = 22m,
+                    TotalWidth = 9m,
+                    StageWidth = null,
+                    StageLength = null,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                 },
                 new Hall
                 {
@@ -138,7 +218,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 4
+                    HallTypeId = 4,
+                    TotalLength = 17m,
+                    TotalWidth = 9m,
+                    StageWidth = 7.2f,
+                    StageLength = 6f,
+                    MaxNumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                 },
                  new Hall
                  {
@@ -150,7 +238,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                      Floor = 2,
                      IsCopy = true,
                      IsVisible = false,
-                     HallTypeId = 1
+                     HallTypeId = 1,
+                    TotalLength = 22m,
+                    TotalWidth = 14m,
+                    StageWidth = 7f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 15,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 255,
                  },
                 new Hall
                 {
@@ -162,7 +258,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 2
+                    HallTypeId = 2,
+                    TotalLength = 22m,
+                    TotalWidth = 9m,
+                    StageWidth = null,
+                    StageLength = null,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                 },
                 new Hall
                 {
@@ -174,7 +278,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 3
+                    HallTypeId = 3,
+                    TotalLength = 11m,
+                    TotalWidth = 9m,
+                    StageWidth = 5.6f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                 },
                 new Hall
                 {
@@ -186,7 +298,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 4
+                    HallTypeId = 4,
+                    TotalLength = 17m,
+                    TotalWidth = 9m,
+                    StageWidth = 7.2f,
+                    StageLength = 6f,
+                    MaxNumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                 },
                 new Hall
                 {
@@ -198,7 +318,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 3
+                    HallTypeId = 3,
+                    TotalLength = 11m,
+                    TotalWidth = 9m,
+                    StageWidth = 5.6f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                 },
                 new Hall
                 {
@@ -210,7 +338,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 2
+                    HallTypeId = 2,
+                    TotalLength = 22m,
+                    TotalWidth = 9m,
+                    StageWidth = null,
+                    StageLength = null,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                 },
                 new Hall
                 {
@@ -222,7 +358,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 1
+                    HallTypeId = 1,
+                    TotalLength = 22m,
+                    TotalWidth = 14m,
+                    StageWidth = 7f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsColumns = 15,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 255,
                 },
                 new Hall
                 {
@@ -234,7 +378,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 2,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 3
+                    HallTypeId = 3,
+                    TotalLength = 11m,
+                    TotalWidth = 9m,
+                    StageWidth = 5.6f,
+                    StageLength = 4.4f,
+                    MaxNumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                 },
                 new Hall
                 {
@@ -246,7 +398,15 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Floor = 1,
                     IsCopy = true,
                     IsVisible = false,
-                    HallTypeId = 4
+                    HallTypeId = 4,
+                    TotalLength = 17m,
+                    TotalWidth = 9m,
+                    StageWidth = 7.2f,
+                    StageLength = 6f,
+                    MaxNumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                 }
             );
         }

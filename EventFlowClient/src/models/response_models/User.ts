@@ -1,5 +1,4 @@
 import { Roles } from "../../helpers/enums/UserRoleEnum";
-import { UserData } from "./UserData";
 
 export type User = {
   id: string;
@@ -12,7 +11,12 @@ export type User = {
   allReservationsCount: number;
   allHallRentsCount: number;
   isActiveEventPass: boolean;
-  userData?: UserData;
+  street?: string;
+  houseNumber?: number;
+  flatNumber?: number;
+  city?: string;
+  zipCode?: string;
+  phoneNumber?: string;
   userRoles: string[];
 };
 

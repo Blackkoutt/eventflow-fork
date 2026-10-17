@@ -2,7 +2,7 @@ import { FormEvent, forwardRef, useEffect, useState } from "react";
 import Dialog from "../common/Dialog";
 import { User } from "../../models/response_models";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { UserDataRequest, UserDataSchema } from "../../models/create_schemas/UserDataSchema";
+import { UserInfoRequest, UserInfoSchema } from "../../models/create_schemas/UserInfoSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useApi from "../../hooks/useApi";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
@@ -30,15 +30,15 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
     );
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<UserDataRequest>({
-      resolver: zodResolver(UserDataSchema),
+    const methods = useForm<UserInfoRequest>({
+      resolver: zodResolver(UserInfoSchema),
       defaultValues: {
-        street: user.userData?.street ?? null,
-        houseNumber: (user.userData?.houseNumber === 0 ? null : user.userData?.houseNumber) ?? null,
-        flatNumber: (user.userData?.flatNumber === 0 ? null : user.userData?.flatNumber) ?? null,
-        city: user.userData?.city ?? null,
-        zipCode: user.userData?.zipCode ?? null,
-        phoneNumber: user.userData?.phoneNumber ?? null,
+        street: user.street ?? null,
+        houseNumber: (user.houseNumber === 0 ? null : user.houseNumber) ?? null,
+        flatNumber: (user.flatNumber === 0 ? null : user.flatNumber) ?? null,
+        city: user.city ?? null,
+        zipCode: user.zipCode ?? null,
+        phoneNumber: user.phoneNumber ?? null,
       },
     });
     const { handleSubmit, formState } = methods;
@@ -76,7 +76,7 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
       }
     };
 
-    const onSubmit: SubmitHandler<UserDataRequest> = async (data) => {
+    const onSubmit: SubmitHandler<UserInfoRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
       formData.append("Street", data.street || "");
