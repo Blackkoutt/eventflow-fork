@@ -24,7 +24,12 @@ namespace EventFlowAPI.Tests.Scenarios
                 hallNr,
                 rentalPricePerHour = price,
                 floor = 2,
-                hallDetails = new { totalLength = 20.0, totalWidth = 10.0, stageLength = 5.0, stageWidth = 8.0, maxNumberOfSeatsRows = 5, maxNumberOfSeatsColumns = 5 },
+                totalLength = 20.0,
+                totalWidth = 10.0,
+                stageLength = 5.0,
+                stageWidth = 8.0,
+                maxNumberOfSeatsRows = 5,
+                maxNumberOfSeatsColumns = 5,
                 hallTypeId,
                 seats = seats ?? new[] { SeatPayload(1), SeatPayload(2, column: 2, seatTypeId: 1) },
             };
@@ -55,7 +60,7 @@ namespace EventFlowAPI.Tests.Scenarios
             hall.GetProperty("rentalPricePerHour").GetDecimal().ShouldBe(100.5m);
             hall.GetProperty("seatsCount").GetInt32().ShouldBe(2);
             hall.GetProperty("seats").GetArrayLength().ShouldBe(2);
-            hall.GetProperty("hallDetails").GetProperty("totalArea").GetDecimal().ShouldBe(200m);
+            hall.GetProperty("totalArea").GetDecimal().ShouldBe(200m);
             hall.GetProperty("type").GetProperty("id").GetInt32().ShouldBe(1);
         }
 

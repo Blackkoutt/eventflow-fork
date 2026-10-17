@@ -3,14 +3,13 @@ using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces;
+using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public sealed class UserRepository(APIContext context) : IUserRepository
+    public sealed class UserRepository(APIContext context) : GenericRepository<User>(context), IUserRepository
     {
-        private readonly APIContext _context = context;
-
         public async Task<User?> FindByEmailAsync(string email)
         {
             var lowerCaseEmail = email.ToLower();
@@ -39,16 +38,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             }
 
             return await users.ToListAsync();
-        }
-
-        public async Task AddAsync(User user)
-        {
-            await _context.Users.AddAsync(user);
-        }
-
-        public void Update(User user)
-        {
-            _context.Users.Update(user);
         }
     }
 }

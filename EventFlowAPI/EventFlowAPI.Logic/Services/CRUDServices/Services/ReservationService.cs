@@ -735,17 +735,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.User = entity.User.ToResponse();
                 responseDto.ReservationGuid = entity.ReservationGuid;
                 responseDto.User.EmailAddress = entity.User.Email!;
-                responseDto.User.UserData = null;
+                responseDto.User.WithoutAddress();
                 responseDto.PaymentType = entity.PaymentType.ToResponse();
                 responseDto.Ticket = entity.Ticket.ToResponse();
                 responseDto.ReservationStatus = GetEntityStatus(entity);
-                responseDto.Ticket.Event!.Details = null;
+                responseDto.Ticket.Event!.LongDescription = null;
                 responseDto.Ticket.Event.Tickets = [];
                 responseDto.Ticket.Event.Hall!.Seats = [];
-                responseDto.Ticket.Event.Hall!.HallDetails = null;
                 if (responseDto.Ticket.Festival is not null)
                 {
-                    responseDto.Ticket.Festival.Details = null;
+                    responseDto.Ticket.Festival.LongDescription = null;
                     responseDto.Ticket.Festival.Events = [];
                     responseDto.Ticket.Festival.MediaPatrons = [];
                     responseDto.Ticket.Festival.Sponsors = [];
@@ -765,18 +764,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var responseDto = entity.ToResponse();
             responseDto.User = entity.User.ToResponse();
             responseDto.User.EmailAddress = entity.User.Email!;
-            responseDto.User.UserData = null;
+            responseDto.User.WithoutAddress();
             responseDto.ReservationGuid = entity.ReservationGuid;
             responseDto.PaymentType = entity.PaymentType.ToResponse();
             responseDto.Ticket = entity.Ticket.ToResponse();
             responseDto.ReservationStatus = GetEntityStatus(entity);
-            responseDto.Ticket.Event!.Details = null;
+            responseDto.Ticket.Event!.LongDescription = null;
             responseDto.Ticket.Event.Tickets = [];
             responseDto.Ticket.Event.Hall!.Seats = [];
-            responseDto.Ticket.Event.Hall!.HallDetails = null;
             if (responseDto.Ticket.Festival is not null)
             {
-                responseDto.Ticket.Festival.Details = null;
+                responseDto.Ticket.Festival.LongDescription = null;
                 responseDto.Ticket.Festival.Events = [];
                 responseDto.Ticket.Festival.MediaPatrons = [];
                 responseDto.Ticket.Festival.Sponsors = [];

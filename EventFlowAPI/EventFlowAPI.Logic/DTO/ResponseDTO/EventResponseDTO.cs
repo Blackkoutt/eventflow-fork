@@ -21,7 +21,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public string PhotoName { get; set; } = string.Empty;
         public string PhotoEndpoint { get; set; } = string.Empty;
         public EventCategoryResponseDto? Category { get; set; }
-        public EventDetailsResponseDto? Details { get; set; }
+        public string? LongDescription { get; set; }
         public HallResponseDto? Hall { get; set; }
         public ICollection<TicketResponseDto> Tickets { get; set; } = [];
     }

@@ -34,10 +34,6 @@ public static class EventMapping
         return target;
     }
 
-    private static EventDetailsResponseDto? ToDetailsResponse(this Event source) => string.IsNullOrEmpty(source.LongDescription)
-        ? null
-        : new EventDetailsResponseDto { Id = source.Id, LongDescription = source.LongDescription };
-
     [return: NotNullIfNotNull(nameof(source))]
     public static EventResponseDto? ToResponse(this Event? source) => source.ToResponse(new ResponseMappingContext());
 
@@ -55,7 +51,7 @@ public static class EventMapping
         target.Duration = source.Duration;
         target.PhotoName = source.PhotoName;
         target.Category = source.Category.ToResponse(context);
-        target.Details = source.ToDetailsResponse();
+        target.LongDescription = source.LongDescription;
         target.Hall = source.Hall.ToResponse(context);
         target.Tickets = source.Tickets?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Id = source.Id;

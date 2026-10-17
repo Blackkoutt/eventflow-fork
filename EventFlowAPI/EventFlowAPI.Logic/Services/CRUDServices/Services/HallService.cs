@@ -542,15 +542,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
                 return SeatTypeError.SeatTypeNotFound;
 
-            var hallDetailsRequestDto = new HallDetailsRequestDto
-            {
-                StageLength = hall.StageLength,
-                StageWidth = hall.StageWidth,
-                MaxNumberOfSeatsRows = hall.MaxNumberOfSeatsRows,
-                MaxNumberOfSeatsColumns = hall.MaxNumberOfSeatsColumns
-            };
 
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallDetailsRequestDto);
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hall.MaxNumberOfSeatsRows, hall.MaxNumberOfSeatsColumns);
             if (isValidSeatsRowAndColumnError != Error.None)
                 return isValidSeatsRowAndColumnError;
 
@@ -596,16 +589,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (hall == null)
                 return HallError.NotFound;
 
-            var hallDetailsRequestDto = new HallDetailsRequestDto
-            {
-                StageLength = hall.StageLength,
-                StageWidth = hall.StageWidth,
-                MaxNumberOfSeatsRows = hall.MaxNumberOfSeatsRows,
-                MaxNumberOfSeatsColumns = hall.MaxNumberOfSeatsColumns
-            };
 
 
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallDetailsRequestDto);
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hall.MaxNumberOfSeatsRows, hall.MaxNumberOfSeatsColumns);
             if (isValidSeatsRowAndColumnError != Error.None)
                 return isValidSeatsRowAndColumnError;
 
@@ -620,20 +606,20 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto? hallDetails)
+        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, int? maxRows, int? maxColumns)
         {
             foreach (var seat in seatsFromRequest)
             {
                 /*if (seat.Column > hallDetails.NumberOfSeatsColumns)
                     return SeatError.SeatColumnOutOfRange;*/
 
-                if (hallDetails != null && seat.GridColumn > hallDetails.MaxNumberOfSeatsColumns)
+                if (maxColumns != null && seat.GridColumn > maxColumns)
                     return SeatError.SeatGridColumnOutOfRange;
 
                 /*if (seat.Row > hallDetails.NumberOfSeatsRows)
                     return SeatError.SeatRowOutOfRange;*/
 
-                if (hallDetails != null && seat.GridRow > hallDetails.MaxNumberOfSeatsRows)
+                if (maxRows != null && seat.GridRow > maxRows)
                     return SeatError.SeatGridRowOutOfRange;
 
                 var isSeatWithRowOrColumnExists = seatsFromRequest.Any(s =>
@@ -679,13 +665,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             int hallTypeId;
             ICollection<SeatRequestDto> seats = [];
-            HallDetailsRequestDto? details;
+            HallRequestDto? details;
             switch (requestDto)
             {
                 case HallRequestDto hallRequestDto:
                     hallTypeId = hallRequestDto.HallTypeId;
                     seats = hallRequestDto.Seats;
-                    details = hallRequestDto.HallDetails;
+                    details = hallRequestDto;
                     break;
                 case UpdateHallRequestDto updateHallRequestDto:
                     hallTypeId = updateHallRequestDto.HallTypeId;
@@ -708,7 +694,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             // Maybe hall details validation
 
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(seats, details);
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(seats, details?.MaxNumberOfSeatsRows, details?.MaxNumberOfSeatsColumns);
             if (isValidSeatsRowAndColumnError != Error.None)
                 return isValidSeatsRowAndColumnError;
 
@@ -745,8 +731,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.ToResponse();
-                responseDto.HallDetails = null;
-                responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
+                    responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
                 responseDto.Type.Equipments = [];
                 responseDto.SeatsCount = entity.Seats.Count;
                 responseDto.Seats = [];
@@ -756,8 +741,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override HallResponseDto MapAsDto(Hall entity)
         {
             var responseDto = entity.ToResponse();
-            if (responseDto.HallDetails?.StageLength != null && responseDto.HallDetails.StageWidth != null)
-                responseDto.HallDetails.StageArea = (decimal)responseDto.HallDetails.StageLength * (decimal)responseDto.HallDetails.StageWidth;
+            if (responseDto.StageLength != null && responseDto.StageWidth != null)
+                responseDto.StageArea = (decimal)responseDto.StageLength * (decimal)responseDto.StageWidth;
 
             responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
             responseDto.Type.Equipments = entity.Type.Equipments.Select(eq =>
@@ -777,16 +762,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
         protected sealed override Hall MapAsEntity(HallRequestDto requestDto) =>
-            PrepareEntity(requestDto.ToEntity(), requestDto.HallDetails, requestDto.Seats);
+            PrepareEntity(requestDto.ToEntity(), true, requestDto.Seats);
 
         protected sealed override Hall MapUpdatedAsEntity(UpdateHallRequestDto requestDto) =>
-            PrepareEntity(requestDto.ToEntity(), null, requestDto.Seats);
+            PrepareEntity(requestDto.ToEntity(), false, requestDto.Seats);
 
-        private Hall PrepareEntity(Hall hallEntity, HallDetailsRequestDto? hallDetails, ICollection<SeatRequestDto> seats)
+        private Hall PrepareEntity(Hall hallEntity, bool hasDetails, ICollection<SeatRequestDto> seats)
         {
-            if(hallDetails != null)
+            if (hasDetails)
             {
-                hallDetails.ApplyTo(hallEntity);
                 hallEntity.NumberOfSeats = hallEntity.Seats.Count;
                 hallEntity.MaxNumberOfSeats = hallEntity.MaxNumberOfSeatsRows * hallEntity.MaxNumberOfSeatsColumns;
             }

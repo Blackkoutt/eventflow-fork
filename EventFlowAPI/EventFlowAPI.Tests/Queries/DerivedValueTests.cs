@@ -39,7 +39,7 @@ namespace EventFlowAPI.Tests.Queries
         {
             var anonymous = _factory.CreateAnonymousClient();
 
-            var details = (await anonymous.GetJsonAsync("/api/Halls/5")).GetProperty("hallDetails");
+            var details = (await anonymous.GetJsonAsync("/api/Halls/5"));
 
             details.GetProperty("totalArea").GetDecimal()
                 .ShouldBe(details.GetProperty("totalLength").GetDecimal() * details.GetProperty("totalWidth").GetDecimal());

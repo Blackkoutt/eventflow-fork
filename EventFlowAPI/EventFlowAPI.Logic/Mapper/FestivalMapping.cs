@@ -27,10 +27,6 @@ public static class FestivalMapping
         return target;
     }
 
-    private static FestivalDetailsResponseDto? ToDetailsResponse(this Festival source) => string.IsNullOrEmpty(source.LongDescription)
-        ? null
-        : new FestivalDetailsResponseDto { Id = source.Id, LongDescription = source.LongDescription };
-
     [return: NotNullIfNotNull(nameof(source))]
     public static FestivalResponseDto? ToResponse(this Festival? source) => source.ToResponse(new ResponseMappingContext());
 
@@ -47,7 +43,7 @@ public static class FestivalMapping
         target.EndDate = source.EndDate;
         target.Duration = source.Duration;
         target.PhotoName = source.PhotoName;
-        target.Details = source.ToDetailsResponse();
+        target.LongDescription = source.LongDescription;
         target.Events = source.Events?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.MediaPatrons = source.Partners?.Where(p => p.Kind == PartnerKind.MediaPatron).Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Organizers = source.Partners?.Where(p => p.Kind == PartnerKind.Organizer).Select(item => item.ToResponse(context)).ToList() ?? [];

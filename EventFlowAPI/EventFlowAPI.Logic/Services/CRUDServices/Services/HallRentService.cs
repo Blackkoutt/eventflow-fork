@@ -263,14 +263,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var responseDto = entity.ToResponse();
                 responseDto.User = entity.User.ToResponse();
                 responseDto.User.EmailAddress = entity.User.Email!;
-                responseDto.User.UserData = null;
+                responseDto.User.WithoutAddress();
                 responseDto.PaymentType = entity.PaymentType.ToResponse();
                 responseDto.HallRentStatus = GetEntityStatus(entity);
                 responseDto.Hall = entity.Hall.ToResponse();
                 responseDto.Hall.Type = entity.Hall.Type.ToResponse();
                 responseDto.Hall.Type.Equipments = [];
                 responseDto.Hall.Seats = [];
-                responseDto.Hall.HallDetails = null;
                 responseDto.AdditionalServices = entity.AdditionalServices
                     .Select(services => services.ToResponse()).ToList();
                 return responseDto;
@@ -283,14 +282,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var responseDto = entity.ToResponse();
             responseDto.User = entity.User.ToResponse();
             responseDto.User.EmailAddress = entity.User.Email!;
-            responseDto.User.UserData = null;
+            responseDto.User.WithoutAddress();
             responseDto.PaymentType = entity.PaymentType.ToResponse();
             responseDto.Hall = entity.Hall.ToResponse();
             responseDto.Hall.Type = entity.Hall.Type.ToResponse();
             responseDto.HallRentStatus = GetEntityStatus(entity);
             responseDto.Hall.Type.Equipments = [];
             responseDto.Hall.Seats = [];
-            responseDto.Hall.HallDetails = null;
             responseDto.AdditionalServices = entity.AdditionalServices
                 .Select(services => services.ToResponse()).ToList();
             return responseDto;

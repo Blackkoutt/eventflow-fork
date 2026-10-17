@@ -543,7 +543,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.EventStatus = GetEntityStatus(entity);
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
-                responseDto.Hall!.HallDetails = null;
                 responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -567,7 +566,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Hall!.Seats = [];
             responseDto.EventStatus = GetEntityStatus(entity);
             responseDto.Hall!.Type = null;
-            responseDto.Hall!.HallDetails = null;
             responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
             return responseDto;
         }

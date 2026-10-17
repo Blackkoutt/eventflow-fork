@@ -90,7 +90,7 @@ public class MappingTests
 
         Assert.Null(response.Hall);
         Assert.Null(response.Category);
-        Assert.Null(response.Details);
+        Assert.Null(response.LongDescription);
         Assert.Empty(response.Tickets);
         Assert.Null(((Event?)null).ToResponse());
     }
@@ -121,7 +121,8 @@ public class MappingTests
         var hall = new Hall { Id = 10, TotalLength = 5, TotalWidth = 6, NumberOfSeats = 4 };
         var request = new HallRequestDto
         {
-            HallDetails = new HallDetailsRequestDto { TotalLength = 6, TotalWidth = 7 }
+            TotalLength = 6,
+            TotalWidth = 7
         };
 
         request.ApplyTo(hall);
@@ -168,10 +169,9 @@ public class MappingTests
         Assert.Equal(TimeSpan.FromHours(1), new Event { StartDate = start, EndDate = start.AddHours(1) }.ToResponse().Duration);
         Assert.Equal(TimeSpan.FromHours(2), new Festival { StartDate = start, EndDate = start.AddHours(2) }.ToResponse().Duration);
 
-        var response = new User { Id = "42", Street = "Wiejska", HouseNumber = null }.ToUserDataResponse();
-        Assert.Equal(42, response!.Id);
-        Assert.Equal(0, response.HouseNumber);
-        Assert.Equal(0, new User { Id = "non-numeric", City = "Poznań" }.ToUserDataResponse()!.Id);
-        Assert.Null(new User { Id = "42" }.ToUserDataResponse());
+        var response = new User { Id = "42", Street = "Wiejska", HouseNumber = null }.ToResponse();
+        Assert.Equal("Wiejska", response.Street);
+        Assert.Null(response.HouseNumber);
+        Assert.Null(response.WithoutAddress().Street);
     }
 }

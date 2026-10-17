@@ -42,19 +42,15 @@ public static class UserMapping
         return target;
     }
 
-    public static UserDataResponseDto? ToUserDataResponse(this User source)
+    public static UserResponseDto WithoutAddress(this UserResponseDto source)
     {
-        if (!source.HasUserData) return null;
-        return new UserDataResponseDto
-        {
-            Id = int.TryParse(source.Id, out var id) ? id : 0,
-            Street = source.Street ?? string.Empty,
-            HouseNumber = source.HouseNumber ?? 0,
-            FlatNumber = source.FlatNumber,
-            City = source.City ?? string.Empty,
-            ZipCode = source.ZipCode ?? string.Empty,
-            PhoneNumber = source.PhoneNumber ?? string.Empty
-        };
+        source.Street = null;
+        source.HouseNumber = null;
+        source.FlatNumber = null;
+        source.City = null;
+        source.ZipCode = null;
+        source.PhoneNumber = null;
+        return source;
     }
 
     [return: NotNullIfNotNull(nameof(source))]
@@ -73,7 +69,12 @@ public static class UserMapping
         target.DateOfBirth = source.DateOfBirth;
         target.RegisteredDate = source.RegisteredDate;
         target.PhotoName = source.PhotoName;
-        target.UserData = source.ToUserDataResponse();
+        target.Street = source.Street;
+        target.HouseNumber = source.HouseNumber;
+        target.FlatNumber = source.FlatNumber;
+        target.City = source.City;
+        target.ZipCode = source.ZipCode;
+        target.PhoneNumber = source.PhoneNumber;
         return target;
     }
 }

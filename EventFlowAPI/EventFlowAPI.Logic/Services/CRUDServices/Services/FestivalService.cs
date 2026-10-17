@@ -635,11 +635,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     var eventEntity = e.ToResponse();
                     eventEntity.Category = e.Category.ToResponse();
-                    if (eventEntity.Details != null)
-                        eventEntity.Details = null;
+                    eventEntity.LongDescription = null;
                     eventEntity.Hall = e.Hall.ToResponse();
-                    if(eventEntity.Hall.HallDetails != null)
-                        eventEntity.Hall.HallDetails = null;
                     eventEntity.Hall.Seats = [];
                     if (eventEntity.Hall.Type != null)
                         eventEntity.Hall.Type = null;
@@ -672,11 +669,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var eventEntity = e.ToResponse();
                 eventEntity.Category = e.Category.ToResponse();
-                if (eventEntity.Details != null)
-                    eventEntity.Details = null;
+                eventEntity.LongDescription = null;
                 eventEntity.Hall = e.Hall.ToResponse();
-                if (eventEntity.Hall.HallDetails != null)
-                    eventEntity.Hall.HallDetails = null;
                 eventEntity.Hall.Seats = [];
                 if (eventEntity.Hall.Type != null)
                     eventEntity.Hall.Type = null;
