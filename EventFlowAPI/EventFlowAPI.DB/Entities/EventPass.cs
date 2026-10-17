@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,11 +33,9 @@ namespace EventFlowAPI.DB.Entities
         public string? EventPassPDFName { get; set; } = string.Empty;
         public int PassTypeId { get; set; }
         public string UserId {  get; set; } = string.Empty;
-        public int PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; }
         public EventPassType PassType { get; set; } = default!;
         public User User { get; set; } = default!;
-        [NotMapped]
-        public PaymentType PaymentType => PaymentTypes.All.First(paymentType => paymentType.Id == PaymentTypeId);
         public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

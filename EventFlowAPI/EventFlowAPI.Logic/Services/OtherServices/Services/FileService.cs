@@ -145,7 +145,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 HallType => Result<BlobContainer>.Success(BlobContainer.HallTypePhotos),
                 MediaPatron => Result<BlobContainer>.Success(BlobContainer.MediaPatronPhotos),
                 Organizer => Result<BlobContainer>.Success(BlobContainer.OrganizerPhotos),
-                PaymentType => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
+                PaymentTypeInfo => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
                 Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
                 News => Result<BlobContainer>.Success(BlobContainer.NewsPhotos),
                 Partner => Result<BlobContainer>.Success(BlobContainer.PartnerPhotos),

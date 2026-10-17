@@ -118,7 +118,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 TotalDiscountPercentage = 0,
                 PassTypeId = eventPassType.Id,
                 UserId = user.Id,
-                PaymentTypeId = 1,
+                PaymentType = PaymentType.PayU,
             };
 
             // Add EventPass to db
@@ -171,7 +171,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
 
             Log.Information("Hello from renew3");
-            UpdateEventPass(eventPass, newPassType!, PaymentTypes.PayU);
+            UpdateEventPass(eventPass, newPassType!, PaymentType.PayU);
             Log.Information("Hello from renew4");
             var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, oldEventPassType, isUpdate: true);
             if (!pdfResult.IsSuccessful)
@@ -194,7 +194,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             eventPass.TotalDiscountPercentage = Math.Round(totalDiscountPercentage, 2);
             eventPass.TotalDiscount = Math.Round(totalDiscount, 2);
             eventPass.PassType = newPassType;
-            eventPass.PaymentTypeId = paymentType.Id;
+            eventPass.PaymentType = paymentType;
         }
 
 
@@ -303,7 +303,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.EventPassGuid = entity.EventPassGuid;
                 responseDto.EventPassStatus = GetEntityStatus(entity);
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.AsDto();
                 responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
                 return responseDto;
             });
@@ -317,7 +317,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.EventPassStatus = GetEntityStatus(entity);
             responseDto.EventPassGuid = entity.EventPassGuid;
             responseDto.User.UserData = null;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.AsDto();
             responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
             return responseDto;
         }
@@ -373,7 +373,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id == null && isUserAlreadyHaveActiveEventPass)
                 return EventPassError.UserAlreadyHaveActiveEventPass;
 
-            if (!PaymentTypes.All.Any(paymentType => paymentType.Id == paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
             if (!await IsEntityExistInDB<EventPassType>(passTypeId))

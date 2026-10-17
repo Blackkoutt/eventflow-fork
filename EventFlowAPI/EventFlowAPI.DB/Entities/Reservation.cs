@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -35,15 +36,13 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(7,2)")]
         public decimal PaymentAmount { get; set; }   
         public string UserId { get; set; } = string.Empty;
-        public int PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; }
         public int TicketId { get; set; }
         public int? EventPassId { get; set; }
         public EventPass? EventPass { get; set; } = default!;
         public string? TicketPDFFileName { get; set; }
         public List<string> TicketJPGFileNames { get; set; } = [];
         public User User { get; set; } = default!;
-        [NotMapped]
-        public PaymentType PaymentType => PaymentTypes.All.First(paymentType => paymentType.Id == PaymentTypeId);
         public Ticket Ticket { get; set; } = default!;
         public ICollection<Seat> Seats { get; set; } = [];
     }

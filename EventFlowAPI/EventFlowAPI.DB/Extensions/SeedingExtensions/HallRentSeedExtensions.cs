@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventFlowAPI.DB.Extensions.SeedingExtensions
@@ -22,7 +23,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_1.pdf",
                     PaymentAmount = 899.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 12,
                     UserId = "4"
                 },
@@ -35,7 +36,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_2.pdf",
                     PaymentAmount = 699.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 13,
                     UserId = "3"
                 },
@@ -48,7 +49,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_3.pdf",
                     PaymentAmount = 399.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 14,
                     UserId = "3"
                 },
@@ -61,7 +62,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_4.pdf",
                     PaymentAmount = 150.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 15,
                     UserId = "2"
                 }

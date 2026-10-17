@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventFlowAPI.DB.Extensions.SeedingExtensions
@@ -26,7 +27,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 2.5m,
                     PaymentAmount = 24.99m,
                     UserId = "4",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 1,
                     TicketPDFFileName = $"eventflow_bilet_test_{res1}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{res1}.jpg"]
@@ -42,7 +43,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 34.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 2,
                     TicketPDFFileName = $"eventflow_bilet_test_{res2}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{res2}.jpg"]
@@ -58,7 +59,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 7.5m,
                     PaymentAmount = 29.99m,
                     UserId = "3",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 3,
                     TicketPDFFileName = $"eventflow_bilet_test_{res3}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{res3}.jpg"]
@@ -74,7 +75,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 19.99m,
                     UserId = "3",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 4,
                     TicketPDFFileName = $"eventflow_bilet_test_{res4}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{res4}.jpg"]
@@ -90,7 +91,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 5,
                     TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{firstFestivalGuid}_1.jpg", $"eventflow_bilet_test_{firstFestivalGuid}_2.jpg"]
@@ -106,7 +107,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 6,
                     TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{firstFestivalGuid}_1.jpg", $"eventflow_bilet_test_{firstFestivalGuid}_2.jpg"]
@@ -122,7 +123,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 7,
                     TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{secondFestivalGuid}_1.jpg", $"eventflow_bilet_test_{secondFestivalGuid}_2.jpg"]
@@ -138,7 +139,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 8,
                     TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
                     TicketJPGFileNames = [$"eventflow_bilet_test_{secondFestivalGuid}_1.jpg", $"eventflow_bilet_test_{secondFestivalGuid}_2.jpg"]

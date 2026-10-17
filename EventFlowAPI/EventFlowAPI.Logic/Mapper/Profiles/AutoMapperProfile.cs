@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.DB.Entities.Enums;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -93,7 +96,8 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateOrganizerRequestDto, Organizer>();
             CreateMap<Organizer, OrganizerResponseDto>();
 
-            CreateMap<PaymentType, PaymentTypeResponseDto>();
+            CreateMap<PaymentTypeInfo, PaymentTypeResponseDto>();
+            CreateMap<PaymentType, PaymentTypeResponseDto>().ConvertUsing(src => src.AsDto());
 
             CreateMap<Reservation, Reservation>();
             CreateMap<ReservationRequestDto, Reservation>();

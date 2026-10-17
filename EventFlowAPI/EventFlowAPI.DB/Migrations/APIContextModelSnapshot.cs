@@ -603,7 +603,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PaymentTypeId")
+                    b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("RenewalDate")
@@ -642,7 +642,7 @@ namespace EventFlowAPI.DB.Migrations
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
@@ -659,7 +659,7 @@ namespace EventFlowAPI.DB.Migrations
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
@@ -676,7 +676,7 @@ namespace EventFlowAPI.DB.Migrations
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
@@ -1647,7 +1647,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
 
-                    b.Property<int>("PaymentTypeId")
+                    b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RentDate")
@@ -1678,7 +1678,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentPDFName = "wynajem_sali_1.pdf",
                             IsDeleted = false,
                             PaymentAmount = 899.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "4"
@@ -1692,7 +1692,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentPDFName = "wynajem_sali_2.pdf",
                             IsDeleted = false,
                             PaymentAmount = 699.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
@@ -1706,7 +1706,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentPDFName = "wynajem_sali_3.pdf",
                             IsDeleted = false,
                             PaymentAmount = 399.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
@@ -1720,7 +1720,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentPDFName = "wynajem_sali_4.pdf",
                             IsDeleted = false,
                             PaymentAmount = 150.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "2"
@@ -2157,7 +2157,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
 
-                    b.Property<int>("PaymentTypeId")
+                    b.Property<int>("PaymentType")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReservationDate")
@@ -2209,7 +2209,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 24.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2227,7 +2227,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 34.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2245,7 +2245,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 29.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
                             StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2263,7 +2263,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 19.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
                             StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2281,7 +2281,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 19.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2299,7 +2299,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 19.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2317,7 +2317,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 29.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2335,7 +2335,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             PaymentAmount = 29.99m,
-                            PaymentTypeId = 1,
+                            PaymentType = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),

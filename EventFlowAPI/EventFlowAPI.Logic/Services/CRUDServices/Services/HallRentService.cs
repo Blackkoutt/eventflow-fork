@@ -234,7 +234,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 EndDate = requestDto.EndDate,
                 RentDate = DateTime.Now,
                 PaymentAmount = CalculatePaymentAmount(requestDto, hall, additionalServices),
-                PaymentTypeId = 1,
+                PaymentType = PaymentType.PayU,
                 HallId = hall.Id,
                 UserId = userId,
                 AdditionalServices = additionalServices.ToList()
@@ -263,7 +263,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.AsDto();
                 responseDto.HallRentStatus = GetEntityStatus(entity);
                 responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
                 responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
@@ -283,7 +283,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.User = entity.User.AsDto<UserResponseDto>();
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.AsDto();
             responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
             responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
             responseDto.HallRentStatus = GetEntityStatus(entity);
@@ -341,7 +341,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return HallRentError.HallRentIsDeleted;
             }
 
-            if (!PaymentTypes.All.Any(paymentType => paymentType.Id == paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
 

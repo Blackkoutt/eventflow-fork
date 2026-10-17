@@ -133,7 +133,7 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.IsRenewed == false) queryable = queryable.Where(x => x.RenewalDate == null);
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.PassTypeId != null) queryable = queryable.Where(x => x.PassTypeId == query.PassTypeId);
             if (!string.IsNullOrEmpty(query.UserName)) queryable = queryable.Where(x => $"{x.User.Name} {x.User.Surname}".Contains(query.UserName));
             queryable = queryable.SortBy(query.SortBy, query.SortDirection);
@@ -150,7 +150,7 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.MaxDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) <= query.MaxDuration.Value.TotalSeconds);
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.HallNr != null) queryable = queryable.Where(x => x.Hall.HallNr == query.HallNr);
             if (!string.IsNullOrEmpty(query.UserName))
             {
@@ -173,7 +173,7 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
             if (!string.IsNullOrEmpty(query.UserName)) queryable = queryable.Where(x => $"{x.User.Name} {x.User.Surname}".Contains(query.UserName));
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.ReservationByEventPass == true) queryable = queryable.Where(x => x.EventPassId != null);
             if (query.ReservationByEventPass == false) queryable = queryable.Where(x => x.EventPassId == null);
             if (query.TicketTypeId != null) queryable = queryable.Where(x => x.Ticket.TicketTypeId == query.TicketTypeId);

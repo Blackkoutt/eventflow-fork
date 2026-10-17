@@ -17,7 +17,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<Result<IEnumerable<PaymentTypeResponseDto>>> GetAllAsync(PaymentTypeQuery query)
         {
-            var records = PaymentTypes.All.AsQueryable()
+            var records = PaymentTypeCatalogue.All.AsQueryable()
                                           .ByName(query)
                                           .SortBy(query.SortBy, query.SortDirection)
                                           .GetPage(query.PageNumber, query.PageSize)
@@ -31,7 +31,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return await Task.FromResult(Result<PaymentTypeResponseDto>.Failure(Error.RouteParamOutOfRange));
 
-            var record = PaymentTypes.All.FirstOrDefault(paymentType => paymentType.Id == id);
+            var record = PaymentTypeCatalogue.All.FirstOrDefault(paymentType => paymentType.Id == id);
             if (record == null)
                 return await Task.FromResult(Result<PaymentTypeResponseDto>.Failure(Error.NotFound));
 
@@ -43,14 +43,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<BlobResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = PaymentTypes.All.FirstOrDefault(paymentType => paymentType.Id == id);
+            var record = PaymentTypeCatalogue.All.FirstOrDefault(paymentType => paymentType.Id == id);
             if (record == null)
                 return Result<BlobResponseDto>.Failure(Error.NotFound);
 
             return await _fileService.GetEntityPhoto(record);
         }
 
-        private PaymentTypeResponseDto MapAsDto(PaymentType entity)
+        private PaymentTypeResponseDto MapAsDto(PaymentTypeInfo entity)
         {
             var responseDto = entity.AsDto<PaymentTypeResponseDto>();
             responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";

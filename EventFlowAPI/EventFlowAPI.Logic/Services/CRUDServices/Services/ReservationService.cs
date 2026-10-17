@@ -135,7 +135,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             List<Reservation> reservationsList = [];
             var eventSeatsDict = await GetListOfSeatsForEachEventTicket(festival, seatsList);
 
-            var paymentType = PaymentTypes.All.First(type => type.Id == requestDto!.PaymentTypeId);
+            var paymentType = (PaymentType)requestDto!.PaymentTypeId;
 
             if (festival != null && requestDto.IsReservationForFestival)
             {
@@ -144,7 +144,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                      eventSeatsDict: eventSeatsDict!,
                      userId: user.Id,
                      paymentTypeId: requestDto.PaymentTypeId,
-                     eventPass: (paymentType.Id == PaymentTypes.Pass.Id ? userActiveEventPass : null));
+                     eventPass: (paymentType == PaymentType.Pass ? userActiveEventPass : null));
 
 
                 reservationsList.AddRange(reservations);
@@ -157,7 +157,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     seatsList: seatsList,
                     userId: user.Id,
                     paymentTypeId: requestDto.PaymentTypeId,
-                    eventPass: (paymentType.Id == PaymentTypes.Pass.Id ? userActiveEventPass : null));
+                    eventPass: (paymentType == PaymentType.Pass ? userActiveEventPass : null));
 
                 reservationsList.Add(reservationEntity);
             }
@@ -436,7 +436,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 PaymentAmount = Math.Round(TotalPayment, 2),
                 TotalDiscount = TotalDiscount,
                 UserId = userId,
-                PaymentTypeId = paymentTypeId,
+                PaymentType = (PaymentType)paymentTypeId,
                 TicketId = ticket.Id,
                 Ticket = ticket,
                 Seats = seatsList,
@@ -475,7 +475,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     TotalAdditionalPaymentAmount = 0m,
                     TotalDiscount = TotalDiscount,
                     UserId = userId,
-                    PaymentTypeId = paymentTypeId,
+                    PaymentType = (PaymentType)paymentTypeId,
                     TicketId = eventTicket.Id,
                     Ticket = eventTicket,
                     Seats = seats,
@@ -591,14 +591,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private async Task<Error> ValidateEventPass(int paymentTypeId, List<int> seatIds, bool isReservationForFestival , UserResponseDto user,
             Festival? festivalEntity, Event eventEntity, List<Seat> seats, Ticket ticket)
         {
-            var paymentType = PaymentTypes.All.First(type => type.Id == paymentTypeId);
+            var paymentType = (PaymentType)paymentTypeId;
             var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
                                            q.Where(ep =>
                                            ep.UserId == user.Id &&
                                            !ep.IsDeleted &&
                                            ep.EndDate > DateTime.Now))).FirstOrDefault();
 
-            if (paymentType.Id == PaymentTypes.Pass.Id)
+            if (paymentType == PaymentType.Pass)
             {
                 if (userActiveEventPass == null)
                     return EventPassError.UserDoesNotHaveActiveEventPass;
@@ -691,7 +691,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
 
-            if (!PaymentTypes.All.Any(paymentType => paymentType.Id == paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
             var ticket = await _ticketRepository.GetOneAsync(ticketId);
@@ -736,7 +736,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.ReservationGuid = entity.ReservationGuid;
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.AsDto();
                 responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
                 responseDto.ReservationStatus = GetEntityStatus(entity);
                 responseDto.Ticket.Event!.Details = null;
@@ -767,7 +767,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
             responseDto.ReservationGuid = entity.ReservationGuid;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.AsDto();
             responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
             responseDto.ReservationStatus = GetEntityStatus(entity);
             responseDto.Ticket.Event!.Details = null;

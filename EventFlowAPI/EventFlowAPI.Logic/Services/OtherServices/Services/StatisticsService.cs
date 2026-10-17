@@ -314,12 +314,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var totalTransationsCount = allNewHallRents.Count() + allNewOrRenewedEventPasses.Count() + allNewReservations.Count();
             var totalIncome = (double)(hallRentsIncome + eventPassIncome + reservationIncome);
 
-            var paymentTypesDict = PaymentTypes.All
+            var paymentTypesDict = PaymentTypeCatalogue.All
                                     .ToDictionary(
                                         x => x.Name,
-                                        x => (double)(allNewOrRenewedEventPasses.Count(ep => ep.PaymentTypeId == x.Id) +
-                                             allNewReservations.Count(r => r.PaymentTypeId == x.Id) +
-                                             allNewHallRents.Count(hr => hr.PaymentTypeId == x.Id)))
+                                        x => (double)(allNewOrRenewedEventPasses.Count(ep => (int)ep.PaymentType == x.Id) +
+                                             allNewReservations.Count(r => (int)r.PaymentType == x.Id) +
+                                             allNewHallRents.Count(hr => (int)hr.PaymentType == x.Id)))
                                              .OrderByDescending(x => x.Value)
                                              .Take(MAX_ELEMENTS_IN_PLOT)
                                              .ToDictionary();
