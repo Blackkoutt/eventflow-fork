@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -12,7 +13,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
@@ -150,7 +151,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<SponsorResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.PhotoEndpoint = $"/Sponsors/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -158,9 +159,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public new SponsorResponseDto MapAsDto(Sponsor entity)
         {
-            var responseDto = entity.AsDto<SponsorResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/Sponsors/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override SponsorResponseDto MapResponse(Sponsor entity) => entity.ToResponse();
+
+        protected override Sponsor MapAsEntity(SponsorRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override Sponsor MapUpdatedAsEntity(UpdateSponsorRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateSponsorRequestDto requestDto, Sponsor oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

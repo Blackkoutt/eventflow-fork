@@ -9,7 +9,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -509,11 +509,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 if (seatDictionary.TryGetValue(requestSeat.SeatNr, out var seat))
                 {
-                    seatEntity = (Seat)requestSeat.MapTo(seat);
+                    seatEntity = (Seat)requestSeat.ApplyTo(seat);
                 }
                 else
                 {
-                    seatEntity = requestSeat.AsEntity<Seat>();
+                    seatEntity = requestSeat.ToEntity();
                 }
                 newSeats.Add(seatEntity);
             }
@@ -766,7 +766,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<HallResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.HallDetails = null;
                 responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
                 responseDto.Type.Equipments = [];
@@ -777,47 +777,39 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
         protected sealed override HallResponseDto MapAsDto(Hall entity)
         {
-            var responseDto = entity.AsDto<HallResponseDto>();
-            responseDto.HallDetails = entity.HallDetails?.AsDto<HallDetailsResponseDto>();
+            var responseDto = entity.ToResponse();
+            responseDto.HallDetails = entity.HallDetails?.ToResponse();
             if (responseDto.HallDetails?.StageLength != null && responseDto.HallDetails.StageWidth != null)
                 responseDto.HallDetails.StageArea = (decimal)responseDto.HallDetails.StageLength * (decimal)responseDto.HallDetails.StageWidth;
 
             responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
             responseDto.Type.Equipments = entity.Type.Equipments.Select(eq =>
             {
-                var equipmentDto = eq.AsDto<EquipmentResponseDto>();
+                var equipmentDto = eq.ToResponse();
                 return equipmentDto;
             }).ToList();
             responseDto.SeatsCount = entity.Seats.Count;
             responseDto.Seats = entity.Seats.Select(seat =>
             {
-                var seatDto = seat.AsDto<SeatResponseDto>();
-                seatDto.SeatType = seat.SeatType.AsDto<SeatTypeResponseDto>();
+                var seatDto = seat.ToResponse();
+                seatDto.SeatType = seat.SeatType.ToResponse();
                 return seatDto;
             }).ToList();
 
             return responseDto;
         }
 
-        protected sealed override Hall MapAsEntity(IRequestDto requestDto)
+        protected sealed override Hall MapAsEntity(HallRequestDto requestDto) =>
+            PrepareEntity(requestDto.ToEntity(), requestDto.HallDetails, requestDto.Seats);
+
+        protected sealed override Hall MapUpdatedAsEntity(UpdateHallRequestDto requestDto) =>
+            PrepareEntity(requestDto.ToEntity(), null, requestDto.Seats);
+
+        private Hall PrepareEntity(Hall hallEntity, HallDetailsRequestDto? hallDetails, ICollection<SeatRequestDto> seats)
         {
-            HallDetailsRequestDto? hallDetails = default!;
-            List<SeatRequestDto> seats = [];
-            switch (requestDto)
-            {
-                case HallRequestDto hallRequestDto:
-                    hallDetails = hallRequestDto.HallDetails;
-                    seats = hallRequestDto.Seats.ToList();
-                    break;
-                case UpdateHallRequestDto updateHallRequestDto:
-                    //hallDetails = updateHallRequestDto.HallDetails;
-                    seats = updateHallRequestDto.Seats.ToList();
-                    break;
-            }
-            var hallEntity = base.MapAsEntity(requestDto);
             if(hallDetails != null)
             {
-                hallEntity.HallDetails = hallDetails.AsEntity<HallDetails>();
+                hallEntity.HallDetails = hallDetails.ToEntity();
                 hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
                 hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
                 var area = hallDetails.TotalLength * hallDetails.TotalWidth;
@@ -826,7 +818,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             hallEntity.Seats = seats.Select(seat =>
             {
-                var seatEntity = seat.AsEntity<Seat>();
+                var seatEntity = seat.ToEntity();
                 return seatEntity;
             }).ToList();
             return hallEntity;
@@ -838,8 +830,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(hallEntity.HallDetails != null)
                 hallEntity.HallDetails.NumberOfSeats = requestDto.Seats.Count;
 
-            //var hallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
-            //var hallEntity = (Hall)requestDto.MapTo(oldEntity);
+            //var hallDetails = (HallDetails)requestDto.HallDetails.ApplyTo(oldEntity.HallDetails!);
+            //var hallEntity = (Hall)requestDto.ApplyTo(oldEntity);
             // hallEntity.HallDetails = hallDetails;
 
             //hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
@@ -853,7 +845,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private IEntity MapToEntity(EventHallRequestDto requestDto, Hall oldEntity)
         {         
-            var hallEntity = (Hall)requestDto.MapTo(oldEntity);
+            var hallEntity = (Hall)requestDto.ApplyTo(oldEntity);
 
             var seatsWithoutReservations = oldEntity.Seats.Where(s => !s.Reservations.Any());
             var seatsWithoutReservationsNumbers = seatsWithoutReservations.Select(s => s.SeatNr);
@@ -864,7 +856,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             oldEntity.Seats.ToList().AddRange(newHallSeatsWithoutReservations);
 
 
-            /* hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+            /* hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.ApplyTo(oldEntity.HallDetails!);
 
              hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
              hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
@@ -879,8 +871,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override IEntity MapToEntity(UpdateHallRequestDto requestDto, Hall oldEntity)
         {
-            var hallEntity = (Hall)requestDto.MapTo(oldEntity);
-           /* hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+            var hallEntity = (Hall)requestDto.ApplyTo(oldEntity);
+           /* hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.ApplyTo(oldEntity.HallDetails!);
 
             hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
             hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
@@ -891,5 +883,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return hallEntity;
         }
+
+        protected override HallResponseDto MapResponse(Hall entity) => entity.ToResponse();
     }
 }

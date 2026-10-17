@@ -7,7 +7,6 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -35,7 +34,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         where TResponseDto : class, IResponseDto
         where TQuery : QueryObject
     {
-        //AutoMapperMappingException , RepositoryNotExist
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
         protected readonly IAuthService _authService = authService;
         protected readonly IGenericRepository<TEntity> _repository = unitOfWork.GetRepository<TEntity>();
@@ -95,7 +93,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             var newEntity = oldEntity;
             if (oldEntity is ISoftUpdateable updateableEntity && isSoftUpdate)
             {
-                var entity = MapAsEntity(requestDto!);
+                var entity = MapUpdatedAsEntity(requestDto!);
                 await _repository.AddAsync(entity);
                 updateableEntity.IsSoftUpdated = true;
             }
@@ -200,10 +198,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             return Status.Unknown;
         }
 
-        protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(entity => entity.AsDto<TResponseDto>());
-        protected virtual TResponseDto MapAsDto(TEntity entity) => entity.AsDto<TResponseDto>();
-        protected virtual TEntity MapAsEntity(IRequestDto requestDto) => requestDto.AsEntity<TEntity>();
-        protected virtual IEntity MapToEntity(TUpdateRequestDto requestDto, TEntity oldEntity) => requestDto.MapTo(oldEntity);
+        protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(MapAsDto);
+        protected virtual TResponseDto MapAsDto(TEntity entity) => MapResponse(entity);
+        protected abstract TResponseDto MapResponse(TEntity entity);
+        protected abstract TEntity MapAsEntity(TRequestDto requestDto);
+        protected abstract TEntity MapUpdatedAsEntity(TUpdateRequestDto requestDto);
+        protected abstract IEntity MapToEntity(TUpdateRequestDto requestDto, TEntity oldEntity);
         protected async Task<bool> IsEntityExistInDB<TSomeEntity>(int id)
                     where TSomeEntity : class =>
                     await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;

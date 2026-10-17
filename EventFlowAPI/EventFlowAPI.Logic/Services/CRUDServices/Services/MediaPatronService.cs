@@ -13,7 +13,7 @@ using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.DB.Entities.Abstract;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
@@ -151,7 +151,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<MediaPatronResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.PhotoEndpoint = $"/MediaPatrons/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -159,9 +159,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public new MediaPatronResponseDto MapAsDto(MediaPatron entity)
         {
-            var responseDto = entity.AsDto<MediaPatronResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/MediaPatrons/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override MediaPatronResponseDto MapResponse(MediaPatron entity) => entity.ToResponse();
+
+        protected override MediaPatron MapAsEntity(MediaPatronRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override MediaPatron MapUpdatedAsEntity(UpdateMediaPatronRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateMediaPatronRequestDto requestDto, MediaPatron oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Mapper;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -49,7 +50,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var newEntity = oldEntity;
             if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Tickets.Any(t => t.Reservations.Any()))
             {
-                var entity = MapAsEntity(requestDto!);
+                var entity = MapUpdatedAsEntity(requestDto!);
                 var ticketsWithoutReservations = oldEntity.Tickets.Where(t => !t.Reservations.Any());
                 entity.Tickets = ticketsWithoutReservations.ToList();
                 await _repository.AddAsync(entity);
@@ -124,5 +125,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<bool>.Success(result);
         }
+
+        protected override TicketTypeResponseDto MapResponse(TicketType entity) => entity.ToResponse();
+
+        protected override TicketType MapAsEntity(TicketTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override TicketType MapUpdatedAsEntity(UpdateTicketTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateTicketTypeRequestDto requestDto, TicketType oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

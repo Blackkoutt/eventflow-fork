@@ -12,7 +12,7 @@ using EventFlowAPI.Logic.Helpers;
 
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -739,13 +739,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<ReservationResponseDto>();
-                responseDto.User = entity.User.AsDto<UserResponseDto>();
+                var responseDto = entity.ToResponse();
+                responseDto.User = entity.User.ToResponse();
                 responseDto.ReservationGuid = entity.ReservationGuid;
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
-                responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.ToResponse();
+                responseDto.Ticket = entity.Ticket.ToResponse();
                 responseDto.ReservationStatus = GetEntityStatus(entity);
                 responseDto.Ticket.Event!.Details = null;
                 responseDto.Ticket.Event.Tickets = [];
@@ -761,7 +761,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 }
                 responseDto.Seats = entity.Seats.Select(seat =>
                 {
-                    return seat.AsDto<SeatResponseDto>();
+                    return seat.ToResponse();
                 }).ToList();
                 return responseDto;
             });
@@ -770,13 +770,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override ReservationResponseDto MapAsDto(Reservation entity)
         {
-            var responseDto = entity.AsDto<ReservationResponseDto>();
-            responseDto.User = entity.User.AsDto<UserResponseDto>();
+            var responseDto = entity.ToResponse();
+            responseDto.User = entity.User.ToResponse();
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
             responseDto.ReservationGuid = entity.ReservationGuid;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
-            responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.ToResponse();
+            responseDto.Ticket = entity.Ticket.ToResponse();
             responseDto.ReservationStatus = GetEntityStatus(entity);
             responseDto.Ticket.Event!.Details = null;
             responseDto.Ticket.Event.Tickets = [];
@@ -792,7 +792,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
             responseDto.Seats = entity.Seats.Select(seat =>
             {
-                return seat.AsDto<SeatResponseDto>();
+                return seat.ToResponse();
             }).ToList();
 
             return responseDto;
@@ -806,5 +806,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             throw new NotImplementedException();
         }
+
+        protected override ReservationResponseDto MapResponse(Reservation entity) => entity.ToResponse();
+
+        protected override Reservation MapAsEntity(ReservationRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override Reservation MapUpdatedAsEntity(UpdateReservationRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateReservationRequestDto requestDto, Reservation oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

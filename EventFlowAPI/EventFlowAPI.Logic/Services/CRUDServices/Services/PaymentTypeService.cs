@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -12,7 +13,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
@@ -152,7 +153,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<PaymentTypeResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -160,9 +161,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override PaymentTypeResponseDto MapAsDto(PaymentType entity)
         {
-            var responseDto = entity.AsDto<PaymentTypeResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override PaymentTypeResponseDto MapResponse(PaymentType entity) => entity.ToResponse();
+
+        protected override PaymentType MapAsEntity(PaymentTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override PaymentType MapUpdatedAsEntity(UpdatePaymentTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdatePaymentTypeRequestDto requestDto, PaymentType oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

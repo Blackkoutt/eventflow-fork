@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using EventFlowAPI.Logic.Helpers.JpgOptions;
+﻿using EventFlowAPI.Logic.Helpers.JpgOptions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 

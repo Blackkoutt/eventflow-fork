@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -87,7 +87,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Halls.Any(h => h.Rents.Any()))
             {
-                var entity = MapAsEntity(requestDto!);
+                var entity = MapUpdatedAsEntity(requestDto!);
                 var hallWithoutRents = oldEntity.Halls.Where(h => !h.Rents.Any());
                 entity.Halls = hallWithoutRents.ToList();
 
@@ -232,8 +232,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<HallTypeResponseDto>();
-                responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
+                var responseDto = entity.ToResponse();
+                responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
                 responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -241,10 +241,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public new HallTypeResponseDto MapAsDto(HallType entity)
         {
-            var responseDto = entity.AsDto<HallTypeResponseDto>();
-            responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
+            var responseDto = entity.ToResponse();
+            responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
             responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override HallTypeResponseDto MapResponse(HallType entity) => entity.ToResponse();
+
+        protected override HallType MapAsEntity(HallTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override HallType MapUpdatedAsEntity(UpdateHallTypeRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateHallTypeRequestDto requestDto, HallType oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

@@ -1,11 +1,12 @@
-﻿using EventFlowAPI.Logic.Helpers;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -304,28 +305,28 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<EventPassResponseDto>();
-                responseDto.User = entity.User.AsDto<UserResponseDto>();
+                var responseDto = entity.ToResponse();
+                responseDto.User = entity.User.ToResponse();
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.EventPassGuid = entity.EventPassGuid;
                 responseDto.EventPassStatus = GetEntityStatus(entity);
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
-                responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.ToResponse();
+                responseDto.PassType = entity.PassType.ToResponse();
                 return responseDto;
             });
         }
 
         protected sealed override EventPassResponseDto MapAsDto(EventPass entity)
         {
-            var responseDto = entity.AsDto<EventPassResponseDto>();
-            responseDto.User = entity.User.AsDto<UserResponseDto>();
+            var responseDto = entity.ToResponse();
+            responseDto.User = entity.User.ToResponse();
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.EventPassStatus = GetEntityStatus(entity);
             responseDto.EventPassGuid = entity.EventPassGuid;
             responseDto.User.UserData = null;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
-            responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.ToResponse();
+            responseDto.PassType = entity.PassType.ToResponse();
             return responseDto;
         }
 
@@ -388,5 +389,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Error.None;
         }
+
+        protected override EventPassResponseDto MapResponse(EventPass entity) => entity.ToResponse();
+
+        protected override EventPass MapAsEntity(EventPassRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override EventPass MapUpdatedAsEntity(UpdateEventPassRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateEventPassRequestDto requestDto, EventPass oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

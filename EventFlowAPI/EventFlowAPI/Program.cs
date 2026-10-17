@@ -1,7 +1,6 @@
 ﻿using EventFlowAPI.Enums;
 using EventFlowAPI.Extensions;
 using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Mapper.Profiles;
 using QuestPDF.Infrastructure;
 using Serilog;
 using System.Text.Json.Serialization;
@@ -40,10 +39,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
-builder.Services.AddAutoMapper(configuration =>
-{
-    configuration.LicenseKey = builder.Configuration["AutoMapper:LicenseKey"];
-}, typeof(AutoMapperProfile));
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -66,8 +61,6 @@ app.UseCors(CORSPolicy.AllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseAutoMapper();
 
 app.MapControllers();
 

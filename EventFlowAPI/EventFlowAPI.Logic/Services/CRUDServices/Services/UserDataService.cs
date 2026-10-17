@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Logic.Mapper;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -37,5 +39,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             throw new NotImplementedException();
         }
+
+        protected override UserDataResponseDto MapResponse(UserData entity) => entity.ToResponse();
+
+        protected override UserData MapAsEntity(UserDataRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override UserData MapUpdatedAsEntity(UpdateUserDataRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateUserDataRequestDto requestDto, UserData oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }

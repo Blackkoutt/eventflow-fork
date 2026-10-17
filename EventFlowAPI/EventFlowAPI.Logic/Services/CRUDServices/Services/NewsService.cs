@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -7,7 +8,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -148,7 +149,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return records.Select(entity =>
             {
-                var responseDto = entity.AsDto<NewsResponseDto>();
+                var responseDto = entity.ToResponse();
                 responseDto.PhotoEndpoint = $"/News/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -156,9 +157,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override NewsResponseDto MapAsDto(News entity)
         {
-            var responseDto = entity.AsDto<NewsResponseDto>();
+            var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/News/{responseDto.Id}/image";
             return responseDto;
         }
+
+        protected override NewsResponseDto MapResponse(News entity) => entity.ToResponse();
+
+        protected override News MapAsEntity(NewsRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override News MapUpdatedAsEntity(UpdateNewsRequestDto requestDto) => requestDto.ToEntity();
+
+        protected override IEntity MapToEntity(UpdateNewsRequestDto requestDto, News oldEntity) => requestDto.ApplyTo(oldEntity);
     }
 }
