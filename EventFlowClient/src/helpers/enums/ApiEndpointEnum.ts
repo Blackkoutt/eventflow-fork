@@ -33,7 +33,6 @@ export enum ApiEndpoint {
   Sponsor,
   UserInfo,
   Stats,
-  StatsPDF,
   TicketType,
   User,
 }

@@ -46,29 +46,5 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             .PaddingBottom(options.PadBottom)
             .Image(bitmap);
         }
-
-        public static void AddPlotPicture(this IContainer column, byte[] bitmap, PlotType plotType, PictureOptions options)
-        {
-            if(plotType == PlotType.Pie)
-            {
-                column
-                    .AlignCenter()
-                    .PaddingTop(options.PadTop)
-                    .PaddingBottom(options.PadBottom)
-                    .Width(310)
-                    .Height(310)
-                    .Image(bitmap).FitArea();
-            }
-            else
-            {
-                column
-                    .AlignCenter()
-                    .PaddingTop(options.PadTop)
-                    .Width(390)
-                    .Height(290)
-                    .PaddingBottom(options.PadBottom)
-                    .Image(bitmap).FitArea();
-            }
-        }
     }
 }

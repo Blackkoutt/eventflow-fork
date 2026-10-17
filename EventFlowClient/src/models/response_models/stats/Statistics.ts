@@ -7,7 +7,6 @@ import { TotalIncomeStatistics } from "./TotalIncomeStatistics";
 import { UserStatistics } from "./UserStatistics";
 
 export type Statistics = {
-  reportGuid: string;
   startDate: string;
   endDate: string;
   totalIncome: TotalIncomeStatistics;

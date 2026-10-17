@@ -9,6 +9,5 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<byte[]> CreateTicketPdf(Reservation reservation, List<byte[]> tickets);
         Task<byte[]> CreateHallViewPdf(byte[] hallBitmap, Hall hall, HallRent? hallRent = null, Event? eventEntity = null);
         Task<byte[]> CreateHallRentPdf(HallRent hallRent);
-        Task<byte[]> CreateStatisticsPdf(StatisticsToPDFDto statisticsToPDFDto);
     }
 }

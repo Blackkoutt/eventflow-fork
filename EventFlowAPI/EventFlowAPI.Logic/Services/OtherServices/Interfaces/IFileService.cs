@@ -12,7 +12,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
     public interface IFileService
     {
-        Task<(byte[] Bitmap, string FileName)> CreateStatisticsPDF(StatisticsRequestDto statisticsRequestDto);
         Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassPDFBitmap(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? eventPassType, bool isUpdate = false);
         Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassJPGBitmap(EventPass eventPass, bool isUpdate = false);
         Task<Error> DeleteTicketFiles(Reservation reservation);

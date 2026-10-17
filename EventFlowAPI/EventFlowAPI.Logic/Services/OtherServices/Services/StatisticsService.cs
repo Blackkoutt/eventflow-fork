@@ -6,17 +6,14 @@ using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using ScottPlot;
 using Serilog;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
     public class StatisticsService(
-        IUnitOfWork unitOfWork,
-        IPlotService plotService) : IStatisticsService
+        IUnitOfWork unitOfWork) : IStatisticsService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IPlotService _plotService= plotService;
 
         private const int MAX_ELEMENTS_IN_PLOT = 5;
         private const int MIN_MAX_ELEMENTS_IN_PLOT = 3;
@@ -54,7 +51,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             return new StatisticsResponseDto 
             {
-                ReportGuid = Guid.NewGuid(),
                 StartDate = statisticsRequestDto.StartDate,
                 EndDate = statisticsRequestDto.EndDate,
                 TotalIncome = totalIncome,
@@ -67,181 +63,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 UserStatistics = userStatistics
             };
         }
-
-        public async Task<StatisticsToPDFDto> GenerateDataForStatisticsPDF(StatisticsRequestDto statisticsRequestDto)
-        {
-            var statisticsToPdfDto = new StatisticsToPDFDto();
-
-            var statisticsResponse = await GenerateStatistics(statisticsRequestDto);
-            statisticsToPdfDto.StatisticsResponseDto = statisticsResponse;
-
-            await AddIncomePlots(statisticsResponse, statisticsToPdfDto.TotalIncomePlotsBitmaps);
-
-            var hallRentsStatistics = statisticsResponse.HallRentStatistics;
-            if (hallRentsStatistics != null)
-                AddHallRentPlots(hallRentsStatistics, statisticsToPdfDto.HallRentsPlotsBitmaps);
-
-            var eventStatistics = statisticsResponse.EventStatistics;
-            if (eventStatistics != null)
-                AddEventPlots(eventStatistics, statisticsToPdfDto.EventPlotsBitmaps);
-
-            var eventPassStatistics = statisticsResponse.EventPassStatistics;
-            if (eventPassStatistics != null)
-                AddEventPassPlots(eventPassStatistics, statisticsToPdfDto.EventPassPlotsBitmaps);
-
-            var festivalStatistics = statisticsResponse.FestivalStatistics;
-            if(festivalStatistics != null)
-                AddFestivalPlots(festivalStatistics, statisticsToPdfDto.FestivalPlotsBitmaps);
-
-            var reservationStatistics = statisticsResponse.ReservationStatistics;
-            if(reservationStatistics != null)
-                AddReservationPlots(reservationStatistics, statisticsToPdfDto.ReservationPlotsBitmaps);
-
-            var paymentStatistics = statisticsResponse.PaymentStatistics;
-            if(paymentStatistics != null)
-                AddPaymentPlots(paymentStatistics, statisticsToPdfDto.PaymentPlotsBitmaps);
-
-            return statisticsToPdfDto;      
-        }
-
-
-        // *******************************
-        // Generate Statistics Plots
-        // *******************************
-
-
-        private async Task AddIncomePlots(StatisticsResponseDto statisticsResponse, List<(byte[], PlotType)> plotList)
-        {
-            var startDate = statisticsResponse.StartDate;
-            var endDate = statisticsResponse.EndDate;
-            var totalIncome = statisticsResponse.TotalIncome;
-
-            Color[] colors = { Color.FromHex("#9f30f2"), Color.FromHex("#7500f2"), Color.FromHex("#46017a") };
-            Dictionary<string, double> incomeDict = new Dictionary<string, double>
-            {
-                { $"Rezerwacje miejsc ({totalIncome.ReservationsIncome}", totalIncome.ReservationsIncome },
-                { $"Rezerwacje sal ({totalIncome.HallRentsIncome}",  totalIncome.HallRentsIncome },
-                { $"Karnety ({totalIncome.EventPassesIncome}", totalIncome.EventPassesIncome },
-            };
-            var totalIncomePlotBitmap = _plotService.GeneratePieChart(incomeDict, colors, "Całkowity przychód z podziałem na źródła");
-            plotList.Add((totalIncomePlotBitmap, PlotType.Pie));
-
-
-
-            var allNewHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
-                       q.Where(hr => hr.RentDate >= startDate && hr.RentDate <= endDate && !hr.IsDeleted));
-            var allNewEventPasses = await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
-                                    q.Where(ep => (ep.StartDate >= startDate && ep.StartDate <= endDate) ||
-                                                  (ep.RenewalDate >= startDate && ep.RenewalDate <= endDate) &&
-                                                  !ep.IsDeleted));
-
-            var allNewReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
-                                    q.Where(r => r.ReservationDate >= startDate && r.ReservationDate <= endDate && !r.IsDeleted));
-
-            Dictionary<DateTime, double> dailyIncomeDict = [];
-            for (var day = startDate.Date; day < endDate.Date; day = day.AddDays(1))
-            {
-                var dailyHallRents = allNewHallRents.Where(hr => hr.RentDate.Date == day).ToList();
-                var dailyEventPasses = allNewEventPasses.Where(ep => ep.StartDate.Date == day ||
-                                                                    (ep.RenewalDate != null && ep.RenewalDate != DateTime.MinValue &&
-                                                                    ((DateTime)ep.RenewalDate).Date == day)).ToList();
-                var dailyReservations = allNewReservations.Where(r => r.ReservationDate.Date == day).ToList();
-
-                var dailyIncome = (double)(dailyHallRents.Sum(hr => hr.PaymentAmount) +
-                                  dailyEventPasses.Sum(ep => ep.PaymentAmount) +
-                                  dailyReservations.Sum(r => r.PaymentAmount));
-
-                dailyIncomeDict.Add(day, dailyIncome);
-            }
-
-            var scatterPlotBitmap = _plotService.GenerateScatterDateTimePlot(dailyIncomeDict, "Przychód w dniach", "Dni", "Przychód (PLN)", Color.FromHex("#7500f2"));
-
-            plotList.Add((scatterPlotBitmap, PlotType.Scatter));
-        }
-
-        private void AddPaymentPlots(PaymentStatistics paymentStatistics, List<(byte[], PlotType)> plotList)
-        {
-            var ticketTypesBitmap = _plotService.GenerateBarChart(paymentStatistics.PaymentTypesDict, "Najczęściej wybierane typy płatności", "Ilość tranzakcji", "Typ płatności", Color.FromHex("#9975e6"));
-            plotList.Add((ticketTypesBitmap, PlotType.HorizontalBar));
-        }
-
-        private void AddReservationPlots(ReservationStatistics reservationStatistics, List<(byte[], PlotType)> plotList)
-        {
-            Color[] colors = { Color.FromHex("#651faf"), Color.FromHex("#b140f7"), Color.FromHex("#835cd1"), Color.FromHex("#4415a8"), Color.FromHex("#ac5ed6") };
-            var mostProfitableEventPassTypesPlotBitmap = _plotService.GeneratePieChart(reservationStatistics.ReservationFestivalEventsDict, colors, "Stosunek rezerwacji na wydarzenia\n do rezerwacji na festiwale", singularValueUnit: "rezerwacja", pluralValueUnit: "rezerwacje");
-            plotList.Add((mostProfitableEventPassTypesPlotBitmap, PlotType.Pie));
-
-            var ticketTypesBitmap = _plotService.GenerateBarChart(reservationStatistics.ReservationTicketsTypesDict, "Najczęściej wybierane typy biletów", "Ilość rezerwacji", "Typ biletu", Color.FromHex("#b66efa"));
-            plotList.Add((ticketTypesBitmap, PlotType.HorizontalBar));
-
-            var seatTypesBitmap = _plotService.GenerateBarChart(reservationStatistics.ReservationSeatTypesDict, "Najczęściej wybierane typy miejsc", "Ilość zarezerwowanych miejsc", "Typ miejsca", Color.FromHex("#b66efa"));
-            plotList.Add((seatTypesBitmap, PlotType.HorizontalBar));
-
-        }
-
-        private void AddEventPassPlots(EventPassStatistics eventPassStatistics, List<(byte[], PlotType)> plotList)
-        {
-            Color[] colors = { Color.FromHex("#7f44f4"), Color.FromHex("#62099e"), Color.FromHex("#3c129e"), Color.FromHex("#a558c9"), Color.FromHex("#965ee0") };
-            var mostProfitableEventPassTypesPlotBitmap = _plotService.GeneratePieChart(eventPassStatistics.MostProfitableEventsPassTypeDict, colors, "Przychód z karnetów z podziałem na typy");
-            plotList.Add((mostProfitableEventPassTypesPlotBitmap, PlotType.Pie));
-
-            var mostPopularEventPassTypePlotBitmap = _plotService.GenerateBarChart(eventPassStatistics.EventPassTypeDict, "Najczęściej kupowane typy karnetów", "Ilość karnetów", "Typy karnetów", Color.FromHex("#7f44f4"));
-            plotList.Add((mostPopularEventPassTypePlotBitmap, PlotType.HorizontalBar));
-        }
-
-        private void AddFestivalPlots(FestivalStatistics festivalStatistics, List<(byte[], PlotType)> plotList)
-        {
-            Color[] colors1 = { Color.FromHex("#cd70ff"), Color.FromHex("#6d18a5"), Color.FromHex("#b667fc"), Color.FromHex("#5d1aaf"), Color.FromHex("#6b2edd") };
-            var mostProfitableFestivalPlotBitmap = _plotService.GeneratePieChart(festivalStatistics.MostProfitableFestivals, colors1, "Przychód z festiwali");
-            plotList.Add((mostProfitableFestivalPlotBitmap, PlotType.Pie));
-
-            var mostPopularEventPlotBitmap = _plotService.GenerateBarChart(festivalStatistics.MostPopularFestivals, "Najpopularniejsze festiwale", "Ilość rezerwacji", "Festiwal", Color.FromHex("#a44bfc"));
-            plotList.Add((mostPopularEventPlotBitmap, PlotType.HorizontalBar));
-
-            Color[] colors2 = { Color.FromHex("#9247cc"), Color.FromHex("#7242b5"), Color.FromHex("#5636a0"), Color.FromHex("#6d049e"), Color.FromHex("#c166ff") };
-            var organizerFestivalPlotBitmap = _plotService.GeneratePieChart(festivalStatistics.OrganizatorFestivalsDict, colors2, "Organizatorzy festiwali", singularValueUnit: "festiwal", pluralValueUnit: "festiwale");
-            plotList.Add((organizerFestivalPlotBitmap, PlotType.Pie));
-
-            Color[] colors3 = { Color.FromHex("#b30ef9"), Color.FromHex("#6d389e"), Color.FromHex("#460889"), Color.FromHex("#8d21d1"), Color.FromHex("#641fd3") };
-            var sponsorFestivalPlotBitmap = _plotService.GeneratePieChart(festivalStatistics.SponsorFestivalsDict, colors3, "Sponsorzy festiwali", singularValueUnit: "festiwal", pluralValueUnit: "festiwale");
-            plotList.Add((sponsorFestivalPlotBitmap, PlotType.Pie));
-            Color[] colors4 = { Color.FromHex("#4e1ac9"), Color.FromHex("#a863dd"), Color.FromHex("#8848af"), Color.FromHex("#9247cc"), Color.FromHex("#8329aa") };
-            var mediaPatronFestivalPlotBitmap = _plotService.GeneratePieChart(festivalStatistics.MediaPatronFestivalsDict, colors4, "Patroni mediali festiwali", singularValueUnit: "festiwal", pluralValueUnit: "festiwale");
-            plotList.Add((mediaPatronFestivalPlotBitmap, PlotType.Pie));
-        }
-
-        private void AddEventPlots(EventStatistics eventStatistics, List<(byte[], PlotType)> plotList)
-        {
-            Color[] colors = { Color.FromHex("#9f30f2"), Color.FromHex("#5b3b80"), Color.FromHex("#4318a5"), Color.FromHex("#6e2793"), Color.FromHex("#8156ef") };
-            var mostProfitableEventPlotBitmap = _plotService.GeneratePieChart(eventStatistics.MostProfitableEvents, colors, "Przychód z poszczególnych wydarzeń");//_plotService.GenerateBarChart(eventStatistics.MostProfitableEvents, "Najbardziej dochodowe wydarzenia", "Dochód", "Wydarzenie", Color.FromHex("#6b26a3"), xAxisTicksIdentity: false);
-            plotList.Add((mostProfitableEventPlotBitmap, PlotType.Pie));
-
-            var mostPopularEventPlotBitmap = _plotService.GenerateBarChart(eventStatistics.MostPopularEvents, "Najpopularniejsze wydarzenia", "Ilość rezerwacji", "Wydarzenie", Color.FromHex("#6b26a3"));
-            plotList.Add((mostPopularEventPlotBitmap, PlotType.HorizontalBar));
-
-            var eventHallPlotBitmap = _plotService.GenerateBarChart(eventStatistics.EventHallDict, "Najczęściej występujące sale wydarzeń", "Ilość wydarzeń", "Numer sali", Color.FromHex("#6b26a3"));
-            plotList.Add((eventHallPlotBitmap, PlotType.HorizontalBar));
-
-            var eventCategoryPlotBitmap = _plotService.GenerateBarChart(eventStatistics.EventCategoryDict, "Najczęściej występujące kategorie wydarzeń", "Ilość wydarzeń", "Numer sali", Color.FromHex("#6b26a3"));
-            plotList.Add((eventCategoryPlotBitmap, PlotType.HorizontalBar));
-        }
-
-        private void AddHallRentPlots(HallRentStatistics hallRentsStatistics, List<(byte[], PlotType)> plotList)
-        {
-            var userHallRentPlotBitmap = _plotService.GenerateBarChart(hallRentsStatistics!.UserReservationsDict, "Użytkownicy z największą liczbą rezerwacji sal", "Ilość rezerwacji sal", "Użytkownicy", Color.FromHex("#a46fed"));
-            plotList.Add((userHallRentPlotBitmap, PlotType.HorizontalBar));
-
-            var hallPlotBitmap = _plotService.GenerateBarChart(hallRentsStatistics!.HallReservationsDict, "Najcześciej rezerwowane sale", "Ilość rezerwacji sal", "Numery sal", Color.FromHex("#a46fed"));
-            plotList.Add((hallPlotBitmap, PlotType.HorizontalBar));
-
-            var hallTypePlotBitmap = _plotService.GenerateBarChart(hallRentsStatistics!.HallTypeReservationsDict, "Najczęściej wybierane typy sal", "Ilość rezerwacji", "Typy sal", Color.FromHex("#a46fed"));
-            plotList.Add((hallTypePlotBitmap, PlotType.HorizontalBar));
-
-            var additionalServicePlotBitmap = _plotService.GenerateBarChart(hallRentsStatistics!.HallAddtionalServicesReservationsDict, "Najczęściej wybierane usługi przy rezerwacji sal", "Ilość rezerwacji", "Dodatkowe usługi", Color.FromHex("#a46fed"));
-            plotList.Add((additionalServicePlotBitmap, PlotType.HorizontalBar));
-        }
-
-
 
         // *******************************
         // Generate Data for Statistics

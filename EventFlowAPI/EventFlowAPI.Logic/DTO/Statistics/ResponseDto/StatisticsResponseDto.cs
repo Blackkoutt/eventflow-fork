@@ -2,7 +2,6 @@
 {
     public class StatisticsResponseDto
     {
-        public Guid ReportGuid { get; set; }
         public DateTime StartDate { get; set; } = DateTime.MinValue;
         public DateTime EndDate { get; set; } = DateTime.MaxValue;
         public TotalIncomeStatistics TotalIncome { get; set; } = default!;

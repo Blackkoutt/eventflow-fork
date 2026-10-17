@@ -15,14 +15,10 @@ import EventPassesStats from "../../components/management/stats/EventPassesStats
 import FestivalsStats from "../../components/management/stats/FestivalsStats";
 import ReservationsStats from "../../components/management/stats/ReservationsStats";
 import UserStats from "../../components/management/stats/UserStats";
-import { faChartLine, faDownload } from "@fortawesome/free-solid-svg-icons";
-import Button, { ButtonStyle } from "../../components/buttons/Button";
-import BlobService from "../../services/BlobService";
-import DateFormatter from "../../helpers/DateFormatter";
+import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 
 const StatsManagement = () => {
   const { data: stats, get: getStats } = useApi<Statistics>(ApiEndpoint.Stats);
-  const { data: statsPDF, get: getStatsPDF } = useApi<Blob>(ApiEndpoint.StatsPDF);
 
   const methods = useForm<StatisticsRequest>({
     resolver: zodResolver(statisticsSchema),
@@ -35,7 +31,7 @@ const StatsManagement = () => {
       includeStatisticsAboutUsers: false,
     },
   });
-  const { handleSubmit, formState, watch } = methods;
+  const { handleSubmit, formState } = methods;
   const { errors, isSubmitting } = formState;
 
   useEffect(() => {
@@ -45,33 +41,6 @@ const StatsManagement = () => {
     };
     getStats({ id: undefined, queryParams: data });
   }, []);
-
-  const downloadFile = async () => {
-    const data = watch();
-    let formettedData;
-    if (data.startDate.toString() === "" || data.endDate.toString() === "") {
-      formettedData = {
-        ...data,
-        startDate: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString(),
-        endDate: new Date().toISOString(),
-      };
-    } else {
-      formettedData = {
-        ...data,
-        startDate: DateFormatter.ParseDate(data.startDate.toString())?.toISOString(),
-        endDate: DateFormatter.ParseDate(data.endDate.toString())?.toISOString(),
-      };
-    }
-
-    await getStatsPDF({ id: undefined, queryParams: formettedData, isBlob: true });
-  };
-
-  useEffect(() => {
-    if (statsPDF.length !== 0) {
-      const fileName = `raport.pdf`;
-      BlobService.DownloadBlob(statsPDF[0], fileName);
-    }
-  }, [statsPDF]);
 
   const onSubmit: SubmitHandler<StatisticsRequest> = (data) => {
     const formattedData = {
@@ -160,15 +129,6 @@ const StatsManagement = () => {
                 icon={faChartLine}
                 iconSize={18}
                 text="Pokaż statystyki"
-              />
-              <Button
-                isFullWidth={true}
-                text="Pobierz"
-                icon={faDownload}
-                style={ButtonStyle.Secondary}
-                action={downloadFile}
-                height={64}
-                rounded="rounded-md"
               />
             </form>
           </FormProvider>

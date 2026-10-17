@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text.Json;
 using EventFlowAPI.Tests.Infrastructure;
 
@@ -54,18 +53,6 @@ namespace EventFlowAPI.Tests.Scenarios
                 var expected = section.Key == flag ? JsonValueKind.Object : JsonValueKind.Null;
                 json.GetProperty(section.Value).ValueKind.ShouldBe(expected, section.Value);
             }
-        }
-
-        [Fact]
-        public async Task Pdf_report_with_every_section_is_served()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var flags = string.Join("&", SectionsByFlag.Keys.Select(flag => flag + "=true"));
-
-            var response = await admin.GetAsync($"/api/Statistics/pdf-report?{Window()}&{flags}");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
-            response.Content.Headers.ContentType!.MediaType.ShouldBe("application/pdf");
         }
     }
 }
