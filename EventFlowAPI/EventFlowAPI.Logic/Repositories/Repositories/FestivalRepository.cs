@@ -11,7 +11,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         public sealed override async Task<IEnumerable<Festival>> GetAllAsync(Func<IQueryable<Festival>, IQueryable<Festival>>? query = null)
         {
             var _table = _context.Festival
-                        .Include(f => f.Details)
                         .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Category)
                         .Include(f => f.Events.OrderBy(e => e.Id))
@@ -28,7 +27,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         {
             return await _context.Festival
                         .AsSplitQuery()
-                        .Include(f => f.Details)
                         .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Category)
                         .Include(f => f.Events.OrderBy(e => e.Id))

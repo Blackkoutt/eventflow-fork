@@ -64,8 +64,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(userResult.Error);
             var user = userResult.Value;
 
-            var userData = userDataRequestDto.AsEntity<UserData>();
-            user.UserData = userData;
+            userDataRequestDto.MapTo(user);
 
             //Log.Information($"Hello {userDataRequestDto.UserPhoto}");
             var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: true);

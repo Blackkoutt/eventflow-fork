@@ -12,7 +12,6 @@ namespace EventFlowAPI.DB.Extensions
 
 
             // Seed Users
-            modelBuilder.SeedUsersData();
             modelBuilder.SeedUsers(today);
 
             // Seed Entities
@@ -22,14 +21,11 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<AdditionalServices>().Seed();            
             modelBuilder.Entity<Equipment>().Seed();
             modelBuilder.Entity<EventCategory>().Seed();
-            modelBuilder.Entity<EventDetails>().Seed();
             modelBuilder.Entity<EventPassType>().Seed();
-            modelBuilder.Entity<FestivalDetails>().Seed();
             modelBuilder.Entity<HallType>().Seed();
             modelBuilder.Entity<SeatType>().Seed();
             modelBuilder.Entity<TicketType>().Seed();
             modelBuilder.Entity<Festival>().Seed(today: today);
-            modelBuilder.Entity<HallDetails>().Seed();
             modelBuilder.Entity<Hall>().Seed();
             modelBuilder.Entity<HallType_Equipment>().Seed();
             modelBuilder.Entity<Festival_Partner>().Seed();

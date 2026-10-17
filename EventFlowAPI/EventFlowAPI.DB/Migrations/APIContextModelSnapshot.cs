@@ -230,6 +230,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LongDescription")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -253,7 +257,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasIndex("HallId");
 
-                    b.ToTable("Event", (string)null);
+                    b.ToTable("Event");
 
                     b.HasData(
                         new
@@ -265,6 +269,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"),
                             HallId = 6,
                             IsDeleted = false,
+                            LongDescription = "Koncert Mystic Waves to wyjątkowe wydarzenie muzyczne, które przeniesie Cię w świat atmosferycznych dźwięków. Zespół wystąpi z premierowym materiałem, łączącym elementy muzyki elektronicznej i ambientowej. Koncert odbędzie się w klimatycznej sali, z wykorzystaniem nowoczesnej technologii dźwiękowej i wizualnej, co zapewni niezapomniane przeżycia. Muzycy znani z licznych występów na scenach festiwalowych zaprezentują swoją najnowszą produkcję, która z pewnością oczaruje fanów muzyki eksperymentalnej.",
                             Name = "Koncert: Mystic Waves",
                             PhotoName = "koncert_mystic_waves.png",
                             ShortDescription = "Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.",
@@ -279,6 +284,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"),
                             HallId = 7,
                             IsDeleted = false,
+                            LongDescription = "Spektakl 'Cień Przeszłość' to wciągająca produkcja teatralna, która porusza tematykę przemijania i refleksji nad przeszłością. Historia opowiada o dwóch postaciach, które spotykają się po latach, by skonfrontować swoje wspomnienia i tajemnice. Reżyseria, mistrzowskie aktorstwo oraz emocjonalna głębia tej sztuki sprawiają, że jest to wydarzenie, które zostanie z widzami na długo. Spektakl jest pełen symboliki i zaskakujących zwrotów akcji, które skłonią do przemyśleń o upływającym czasie.",
                             Name = "Cień Przeszłości",
                             PhotoName = "cien_przeszlosci.png",
                             ShortDescription = "Dramatyczna opowieść o sekretach przeszłości, które powracają, by zmienić teraźniejszość.",
@@ -293,6 +299,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"),
                             HallId = 5,
                             IsDeleted = false,
+                            LongDescription = "Film 'Królestwo planety małp' to spektakularna produkcja science-fiction, która kontynuuje historię walczących o przetrwanie małp. Akcja filmu toczy się w post-apokaliptycznym świecie, w którym małpy zaczynają dominować nad ludźmi. W filmie zobaczymy dynamiczne sceny bitewne, dramatyczne decyzje bohaterów i wciągającą fabułę, która porusza kwestie moralności i przyszłości ludzkości. Wysoka jakość efektów specjalnych oraz rewelacyjna gra aktorska sprawiają, że jest to jeden z najważniejszych filmów tego roku.",
                             Name = "Królestwo planety małp",
                             PhotoName = "krolestwo_planety_malp.png",
                             ShortDescription = "Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.",
@@ -307,6 +314,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"),
                             HallId = 8,
                             IsDeleted = false,
+                            LongDescription = "Wystawa 'Nowe inspiracje' to wyjątkowa ekspozycja sztuki współczesnej, która gromadzi prace młodych artystów z całego świata. Wystawa skupia się na nowych nurtach artystycznych, które łączą tradycję z nowoczesnością. Można tu zobaczyć prace w różnych mediach, od malarstwa po instalacje interaktywne. Artyści eksperymentują z formą i materiałami, zapraszając widzów do interakcji z dziełami. Jest to przestrzeń, która otwiera umysł na nowe pomysły i inspiracje, zachęcając do refleksji nad współczesnym światem sztuki.",
                             Name = "Nowe inspiracje",
                             PhotoName = "nowe_inspiracje.png",
                             ShortDescription = "Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.",
@@ -321,6 +329,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"),
                             HallId = 10,
                             IsDeleted = false,
+                            LongDescription = "Koncert 'New Era' to wyjątkowe wydarzenie muzyczne, które łączy najnowsze trendy w muzyce elektronicznej z klasycznymi brzmieniami. Zespół zaprezentuje utwory z debiutanckiego albumu, który zdobył uznanie wśród krytyków muzycznych. Występ będzie pełen energetycznych melodii i przejmujących dźwięków, które z pewnością poruszą serca słuchaczy. Nowoczesne technologie audio-wizualne, wykorzystywane podczas koncertu, sprawią, że każdy utwór nabierze nowego wymiaru. Warto być częścią tego muzycznego doświadczenia!",
                             Name = "Koncert: New Era",
                             PhotoName = "new_era.png",
                             ShortDescription = "Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.",
@@ -335,6 +344,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"),
                             HallId = 9,
                             IsDeleted = false,
+                            LongDescription = "Film 'Gladiator' to epicka opowieść o wojowniku, który staje do walki nie tylko o swoje życie, ale także o wolność i sprawiedliwość. Akcja rozgrywa się w starożytnym Rzymie, gdzie główny bohater, Maximus, zostaje zdradzony przez cesarza, a jego rodzina zostaje zamordowana. Maximus trafia do areny, gdzie walczy o przetrwanie i zemstę. Film pełen jest emocjonujących walk, dramatycznych zwrotów akcji i wciągającej fabuły, która porusza tematy honoru, lojalności i zemsty.",
                             Name = "Gladiator",
                             PhotoName = "gladiator.png",
                             ShortDescription = "Legendarna opowieść o honorze i zemście w starożytnym Rzymie.",
@@ -349,6 +359,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"),
                             HallId = 11,
                             IsDeleted = false,
+                            LongDescription = "Wystawa 'Nowa sztuka' to prezentacja młodych artystów, którzy swoją twórczość ukierunkowali na przekroczenie granic tradycyjnej sztuki. Na wystawie można zobaczyć prace w różnorodnych technikach: od klasycznych obrazów po awangardowe instalacje. Artyści bawią się konwencjami, angażując widza w interaktywną formę prezentacji. Wystawa jest zaproszeniem do refleksji nad tym, czym współczesna sztuka może być i jakie emocje potrafi wywołać. To wydarzenie, które pokazuje, jak sztuka może zmieniać nasze postrzeganie świata.",
                             Name = "Nowa sztuka",
                             PhotoName = "",
                             ShortDescription = "Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.",
@@ -363,6 +374,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"),
                             HallId = 16,
                             IsDeleted = false,
+                            LongDescription = "Cień Nad Miastem to mroczny thriller teatralny, który przenosi widza w świat pełen tajemniczych wydarzeń, które zaczynają wstrząsać miastem po zmroku. Główna fabuła opowiada historię, w której pozornie spokojne miasto staje się areną niebezpiecznych wydarzeń, których rozwiązanie wciąga nie tylko bohaterów, ale również publiczność. W spektaklu dominują napięcie i atmosfera niepokoju, które potęgują świetnie dobrane efekty wizualne oraz świetne aktorstwo. Każda scena jest przemyślana, a dramaturgia składa się z zagadek i zwrotów akcji, które trzymają widza w ciągłym napięciu. To przedstawienie nie tylko o mrocznych wydarzeniach, ale także o ludzkich emocjach, które rodzą się w sytuacjach kryzysowych, zmieniając życie bohaterów na zawsze. W trakcie spektaklu widzowie będą mieli okazję odkryć tajemnice miasta i skonfrontować się z pytaniem, jak cienka jest granica między rzeczywistością a tym, co wytworzyła wyobraźnia.",
                             Name = "Cień Nad Miastem",
                             PhotoName = "cien_nad_miastem.png",
                             ShortDescription = "Mroczny thriller teatralny o tajemniczych wydarzeniach, które wstrząsają miastem po zmroku.",
@@ -377,6 +389,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"),
                             HallId = 17,
                             IsDeleted = false,
+                            LongDescription = "Jazzowe Brzmienia to wyjątkowy koncert, który przenosi uczestników w świat żywego jazzu. Podczas wydarzenia wystąpią znani artyści jazzowi, którzy zabiorą widzów w podróż po różnorodnych stylach tego gatunku. Atmosfera pełna emocji, improwizacji i magicznych dźwięków sprawia, że każda chwila staje się niezapomnianym doświadczeniem. Koncert jest idealną okazją, by poczuć autentyczną magię jazzu w wyjątkowym wykonaniu na żywo, a publiczność wciągnie się w niepowtarzalny klimat muzycznej ekspresji.",
                             Name = "Jazzowe Brzmienia",
                             PhotoName = "jazz.png",
                             ShortDescription = "Magiczny czas z jazzem na żywo – koncert znanych artystów jazzowych, którzy przeniosą Cię w świat wyjątkowych dźwięków.",
@@ -391,6 +404,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"),
                             HallId = 18,
                             IsDeleted = false,
+                            LongDescription = "Interstellar to epicka podróż w głąb kosmosu, która bada granice ludzkiej wytrzymałości, miłości i poświęcenia. Grupa astronautów, wyruszając na misję w poszukiwaniu nowego domu dla ludzkości, zmierzy się z niewyobrażalnymi wyzwaniami. Film porusza tematykę czasu, przestrzeni i ofiary, ukazując niesamowite krajobrazy kosmiczne oraz ludzką determinację w walce o przetrwanie. Każdy moment to prawdziwa uczta dla zmysłów, a historia miłości i poświęcenia łączy się z naukową fascynacją, tworząc niezapomniane doświadczenie filmowe.",
                             Name = "Interstellar",
                             PhotoName = "interstellar.jpg",
                             ShortDescription = "Epicka podróż kosmiczna, która bada granice ludzkiej wytrzymałości i miłości.",
@@ -405,6 +419,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"),
                             HallId = 19,
                             IsDeleted = false,
+                            LongDescription = "Spektakl 'Zatrzymać Przeznaczenie' to głęboka opowieść o postaci, która staje przed obliczem nieuchronnego przeznaczenia. Bohaterowie zmagają się z wyborem, który może zmienić bieg wydarzeń, a ich działania prowadzą do nieodwracalnych konsekwencji. Spektakl skłania do refleksji nad wolną wolą, nieuchronnością losu i odpowiedzialnością za własne wybory. Z pomocą wciągającej dramaturgii oraz poruszających dialogów, spektakl ukazuje, jak delikatna jest granica między tym, co możemy kontrolować, a tym, co jest zapisane w naszych losach.",
                             Name = "Zatrzymać Przeznaczenie",
                             PhotoName = "zatrzymac_przeznaczenie.jpg",
                             ShortDescription = "Spektakl o postaci, która staje w obliczu nieuchronnego przeznaczenia.",
@@ -419,6 +434,7 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"),
                             HallId = 20,
                             IsDeleted = false,
+                            LongDescription = "Wystawa 'Nowe Perspektywy' zaprasza do odkrywania sztuki współczesnej z zupełnie nowych punktów widzenia. Artyści wykorzystują różnorodne techniki, od tradycyjnych obrazów po innowacyjne instalacje, które angażują widza w interaktywną formę prezentacji. Każda praca na wystawie to zaproszenie do zastanowienia się nad tym, jak sztuka może zmieniać nasze postrzeganie rzeczywistości. To także próba przekroczenia granic tradycyjnych konwencji, poszukiwania nowych środków wyrazu i głębokiej refleksji nad naturą współczesnej sztuki.",
                             Name = "Nowe Perspektywy",
                             PhotoName = "nowe_perspektywy.jpg",
                             ShortDescription = "Wystawa sztuki współczesnej, która zaprasza do odkrywania świata z nowych punktów widzenia.",
@@ -489,82 +505,6 @@ namespace EventFlowAPI.DB.Migrations
                             Icon = "fa-solid fa-landmark",
                             IsDeleted = false,
                             Name = "Wystawa"
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LongDescription")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Event", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            LongDescription = "Koncert Mystic Waves to wyjątkowe wydarzenie muzyczne, które przeniesie Cię w świat atmosferycznych dźwięków. Zespół wystąpi z premierowym materiałem, łączącym elementy muzyki elektronicznej i ambientowej. Koncert odbędzie się w klimatycznej sali, z wykorzystaniem nowoczesnej technologii dźwiękowej i wizualnej, co zapewni niezapomniane przeżycia. Muzycy znani z licznych występów na scenach festiwalowych zaprezentują swoją najnowszą produkcję, która z pewnością oczaruje fanów muzyki eksperymentalnej."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            LongDescription = "Spektakl 'Cień Przeszłość' to wciągająca produkcja teatralna, która porusza tematykę przemijania i refleksji nad przeszłością. Historia opowiada o dwóch postaciach, które spotykają się po latach, by skonfrontować swoje wspomnienia i tajemnice. Reżyseria, mistrzowskie aktorstwo oraz emocjonalna głębia tej sztuki sprawiają, że jest to wydarzenie, które zostanie z widzami na długo. Spektakl jest pełen symboliki i zaskakujących zwrotów akcji, które skłonią do przemyśleń o upływającym czasie."
-                        },
-                        new
-                        {
-                            Id = 3,
-                            LongDescription = "Film 'Królestwo planety małp' to spektakularna produkcja science-fiction, która kontynuuje historię walczących o przetrwanie małp. Akcja filmu toczy się w post-apokaliptycznym świecie, w którym małpy zaczynają dominować nad ludźmi. W filmie zobaczymy dynamiczne sceny bitewne, dramatyczne decyzje bohaterów i wciągającą fabułę, która porusza kwestie moralności i przyszłości ludzkości. Wysoka jakość efektów specjalnych oraz rewelacyjna gra aktorska sprawiają, że jest to jeden z najważniejszych filmów tego roku."
-                        },
-                        new
-                        {
-                            Id = 4,
-                            LongDescription = "Wystawa 'Nowe inspiracje' to wyjątkowa ekspozycja sztuki współczesnej, która gromadzi prace młodych artystów z całego świata. Wystawa skupia się na nowych nurtach artystycznych, które łączą tradycję z nowoczesnością. Można tu zobaczyć prace w różnych mediach, od malarstwa po instalacje interaktywne. Artyści eksperymentują z formą i materiałami, zapraszając widzów do interakcji z dziełami. Jest to przestrzeń, która otwiera umysł na nowe pomysły i inspiracje, zachęcając do refleksji nad współczesnym światem sztuki."
-                        },
-                        new
-                        {
-                            Id = 5,
-                            LongDescription = "Koncert 'New Era' to wyjątkowe wydarzenie muzyczne, które łączy najnowsze trendy w muzyce elektronicznej z klasycznymi brzmieniami. Zespół zaprezentuje utwory z debiutanckiego albumu, który zdobył uznanie wśród krytyków muzycznych. Występ będzie pełen energetycznych melodii i przejmujących dźwięków, które z pewnością poruszą serca słuchaczy. Nowoczesne technologie audio-wizualne, wykorzystywane podczas koncertu, sprawią, że każdy utwór nabierze nowego wymiaru. Warto być częścią tego muzycznego doświadczenia!"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            LongDescription = "Film 'Gladiator' to epicka opowieść o wojowniku, który staje do walki nie tylko o swoje życie, ale także o wolność i sprawiedliwość. Akcja rozgrywa się w starożytnym Rzymie, gdzie główny bohater, Maximus, zostaje zdradzony przez cesarza, a jego rodzina zostaje zamordowana. Maximus trafia do areny, gdzie walczy o przetrwanie i zemstę. Film pełen jest emocjonujących walk, dramatycznych zwrotów akcji i wciągającej fabuły, która porusza tematy honoru, lojalności i zemsty."
-                        },
-                        new
-                        {
-                            Id = 7,
-                            LongDescription = "Wystawa 'Nowa sztuka' to prezentacja młodych artystów, którzy swoją twórczość ukierunkowali na przekroczenie granic tradycyjnej sztuki. Na wystawie można zobaczyć prace w różnorodnych technikach: od klasycznych obrazów po awangardowe instalacje. Artyści bawią się konwencjami, angażując widza w interaktywną formę prezentacji. Wystawa jest zaproszeniem do refleksji nad tym, czym współczesna sztuka może być i jakie emocje potrafi wywołać. To wydarzenie, które pokazuje, jak sztuka może zmieniać nasze postrzeganie świata."
-                        },
-                        new
-                        {
-                            Id = 8,
-                            LongDescription = "Cień Nad Miastem to mroczny thriller teatralny, który przenosi widza w świat pełen tajemniczych wydarzeń, które zaczynają wstrząsać miastem po zmroku. Główna fabuła opowiada historię, w której pozornie spokojne miasto staje się areną niebezpiecznych wydarzeń, których rozwiązanie wciąga nie tylko bohaterów, ale również publiczność. W spektaklu dominują napięcie i atmosfera niepokoju, które potęgują świetnie dobrane efekty wizualne oraz świetne aktorstwo. Każda scena jest przemyślana, a dramaturgia składa się z zagadek i zwrotów akcji, które trzymają widza w ciągłym napięciu. To przedstawienie nie tylko o mrocznych wydarzeniach, ale także o ludzkich emocjach, które rodzą się w sytuacjach kryzysowych, zmieniając życie bohaterów na zawsze. W trakcie spektaklu widzowie będą mieli okazję odkryć tajemnice miasta i skonfrontować się z pytaniem, jak cienka jest granica między rzeczywistością a tym, co wytworzyła wyobraźnia."
-                        },
-                        new
-                        {
-                            Id = 9,
-                            LongDescription = "Jazzowe Brzmienia to wyjątkowy koncert, który przenosi uczestników w świat żywego jazzu. Podczas wydarzenia wystąpią znani artyści jazzowi, którzy zabiorą widzów w podróż po różnorodnych stylach tego gatunku. Atmosfera pełna emocji, improwizacji i magicznych dźwięków sprawia, że każda chwila staje się niezapomnianym doświadczeniem. Koncert jest idealną okazją, by poczuć autentyczną magię jazzu w wyjątkowym wykonaniu na żywo, a publiczność wciągnie się w niepowtarzalny klimat muzycznej ekspresji."
-                        },
-                        new
-                        {
-                            Id = 10,
-                            LongDescription = "Interstellar to epicka podróż w głąb kosmosu, która bada granice ludzkiej wytrzymałości, miłości i poświęcenia. Grupa astronautów, wyruszając na misję w poszukiwaniu nowego domu dla ludzkości, zmierzy się z niewyobrażalnymi wyzwaniami. Film porusza tematykę czasu, przestrzeni i ofiary, ukazując niesamowite krajobrazy kosmiczne oraz ludzką determinację w walce o przetrwanie. Każdy moment to prawdziwa uczta dla zmysłów, a historia miłości i poświęcenia łączy się z naukową fascynacją, tworząc niezapomniane doświadczenie filmowe."
-                        },
-                        new
-                        {
-                            Id = 11,
-                            LongDescription = "Spektakl 'Zatrzymać Przeznaczenie' to głęboka opowieść o postaci, która staje przed obliczem nieuchronnego przeznaczenia. Bohaterowie zmagają się z wyborem, który może zmienić bieg wydarzeń, a ich działania prowadzą do nieodwracalnych konsekwencji. Spektakl skłania do refleksji nad wolną wolą, nieuchronnością losu i odpowiedzialnością za własne wybory. Z pomocą wciągającej dramaturgii oraz poruszających dialogów, spektakl ukazuje, jak delikatna jest granica między tym, co możemy kontrolować, a tym, co jest zapisane w naszych losach."
-                        },
-                        new
-                        {
-                            Id = 12,
-                            LongDescription = "Wystawa 'Nowe Perspektywy' zaprasza do odkrywania sztuki współczesnej z zupełnie nowych punktów widzenia. Artyści wykorzystują różnorodne techniki, od tradycyjnych obrazów po innowacyjne instalacje, które angażują widza w interaktywną formę prezentacji. Każda praca na wystawie to zaproszenie do zastanowienia się nad tym, jak sztuka może zmieniać nasze postrzeganie rzeczywistości. To także próba przekroczenia granic tradycyjnych konwencji, poszukiwania nowych środków wyrazu i głębokiej refleksji nad naturą współczesnej sztuki."
                         });
                 });
 
@@ -826,6 +766,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LongDescription")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -845,7 +789,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Festival", (string)null);
+                    b.ToTable("Festival");
 
                     b.HasData(
                         new
@@ -855,6 +799,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 12, 13, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("0e36fd43-030a-4459-88fa-f99f53e601a3"),
                             IsDeleted = false,
+                            LongDescription = "Festiwal Muzyki Hip-Hop to coroczne wydarzenie dedykowane nowoczesnym brzmieniom i eksperymentalnym kompozycjom. Na scenie pojawiają się zarówno uznani artyści, jak i młode talenty, prezentując innowacyjne podejście do muzyki. W programie znajdują się koncerty, warsztaty, spotkania z twórcami oraz panele dyskusyjne dotyczące przyszłości muzyki. Festiwal przyciąga miłośników dźwięków elektronicznych, jazzowych improwizacji, minimalistycznych kompozycji i nowych form ekspresji dźwiękowej. To wyjątkowa okazja, by odkryć najnowsze trendy muzyczne i poszerzyć swoje horyzonty artystyczne.",
                             Name = "Festiwal Muzyki Hip-Hop",
                             PhotoName = "festiwal_muzyki_hip_hop.png",
                             ShortDescription = "Największy festiwal hip-hopowy! Koncerty, freestyle battle, warsztaty DJ-skie i spotkania z artystami.",
@@ -867,6 +812,7 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 12, 15, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d946406d-7b80-40ca-aeff-c2966dcb6727"),
                             IsDeleted = false,
+                            LongDescription = "Festiwal Filmowy to wyjątkowe święto kina, które gromadzi pasjonatów filmów z różnych zakątków świata. W repertuarze znajdują się zarówno filmy fabularne, dokumentalne, jak i krótkometrażowe, reprezentujące różne nurty i stylistyki. Organizowane są spotkania z reżyserami, aktorami oraz warsztaty dla młodych filmowców. Każda edycja festiwalu poświęcona jest określonemu tematowi przewodniemu, który inspiruje twórców do dyskusji nad istotnymi kwestiami społecznymi, kulturowymi i artystycznymi. To doskonała okazja, by zobaczyć premiery, odkryć nowe talenty i zanurzyć się w magiczny świat kinematografii.",
                             Name = "Festiwal Filmowy",
                             PhotoName = "festiwal_filmowy.png",
                             ShortDescription = "Przegląd najlepszych filmów z całego świata! Premiera, spotkania z reżyserami i nocne maratony kinowe.",
@@ -879,41 +825,11 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 12, 16, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d96a3633-6a7f-42fb-ba84-94e5902adce7"),
                             IsDeleted = false,
+                            LongDescription = "Festiwal Sztuki to wydarzenie celebrujące kreatywność i nieograniczoną ekspresję artystyczną. W ramach festiwalu prezentowane są prace artystów, którzy eksperymentują z formą, kolorem i strukturą, tworząc unikalne dzieła sztuki nowoczesnej. Oprócz wystaw odbywają się warsztaty, podczas których uczestnicy mogą spróbować swoich sił w malarstwie, rzeźbie czy instalacjach multimedialnych. Festiwal to także przestrzeń do rozmów o współczesnych trendach w sztuce, spotkania z artystami oraz wykłady ekspertów. To niepowtarzalna okazja, by odkryć nowe inspiracje i spojrzeć na sztukę z innej perspektywy.",
                             Name = "Festiwal Sztuki",
                             PhotoName = "festiwal_sztuki.png",
                             ShortDescription = "Wystawy, instalacje i performanse! Odkryj nowoczesne formy sztuki i weź udział w kreatywnych warsztatach.",
                             StartDate = new DateTime(2026, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LongDescription")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Festival", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            LongDescription = "Festiwal Muzyki Hip-Hop to coroczne wydarzenie dedykowane nowoczesnym brzmieniom i eksperymentalnym kompozycjom. Na scenie pojawiają się zarówno uznani artyści, jak i młode talenty, prezentując innowacyjne podejście do muzyki. W programie znajdują się koncerty, warsztaty, spotkania z twórcami oraz panele dyskusyjne dotyczące przyszłości muzyki. Festiwal przyciąga miłośników dźwięków elektronicznych, jazzowych improwizacji, minimalistycznych kompozycji i nowych form ekspresji dźwiękowej. To wyjątkowa okazja, by odkryć najnowsze trendy muzyczne i poszerzyć swoje horyzonty artystyczne."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            LongDescription = "Festiwal Filmowy to wyjątkowe święto kina, które gromadzi pasjonatów filmów z różnych zakątków świata. W repertuarze znajdują się zarówno filmy fabularne, dokumentalne, jak i krótkometrażowe, reprezentujące różne nurty i stylistyki. Organizowane są spotkania z reżyserami, aktorami oraz warsztaty dla młodych filmowców. Każda edycja festiwalu poświęcona jest określonemu tematowi przewodniemu, który inspiruje twórców do dyskusji nad istotnymi kwestiami społecznymi, kulturowymi i artystycznymi. To doskonała okazja, by zobaczyć premiery, odkryć nowe talenty i zanurzyć się w magiczny świat kinematografii."
-                        },
-                        new
-                        {
-                            Id = 3,
-                            LongDescription = "Festiwal Sztuki to wydarzenie celebrujące kreatywność i nieograniczoną ekspresję artystyczną. W ramach festiwalu prezentowane są prace artystów, którzy eksperymentują z formą, kolorem i strukturą, tworząc unikalne dzieła sztuki nowoczesnej. Oprócz wystaw odbywają się warsztaty, podczas których uczestnicy mogą spróbować swoich sił w malarstwie, rzeźbie czy instalacjach multimedialnych. Festiwal to także przestrzeń do rozmów o współczesnych trendach w sztuce, spotkania z artystami oraz wykłady ekspertów. To niepowtarzalna okazja, by odkryć nowe inspiracje i spojrzeć na sztukę z innej perspektywy."
                         });
                 });
 
@@ -1100,263 +1016,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsVisible")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("RentalPricePerHour")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HallTypeId");
-
-                    b.ToTable("Hall", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DefaultId = 1,
-                            Floor = 2m,
-                            HallNr = 1,
-                            HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_1.pdf",
-                            IsCopy = false,
-                            IsVisible = true,
-                            RentalPricePerHour = 120.99m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DefaultId = 2,
-                            Floor = 1m,
-                            HallNr = 2,
-                            HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_2.pdf",
-                            IsCopy = false,
-                            IsVisible = true,
-                            RentalPricePerHour = 89.99m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DefaultId = 3,
-                            Floor = 2m,
-                            HallNr = 3,
-                            HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_3.pdf",
-                            IsCopy = false,
-                            IsVisible = true,
-                            RentalPricePerHour = 179.99m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DefaultId = 4,
-                            Floor = 1m,
-                            HallNr = 4,
-                            HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_4.pdf",
-                            IsCopy = false,
-                            IsVisible = true,
-                            RentalPricePerHour = 199.99m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DefaultId = 1,
-                            Floor = 2m,
-                            HallNr = 1,
-                            HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_5.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 120.99m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DefaultId = 2,
-                            Floor = 1m,
-                            HallNr = 2,
-                            HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_6.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 89.99m
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DefaultId = 3,
-                            Floor = 2m,
-                            HallNr = 3,
-                            HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_7.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 179.99m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DefaultId = 4,
-                            Floor = 1m,
-                            HallNr = 4,
-                            HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_8.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 199.99m
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DefaultId = 1,
-                            Floor = 2m,
-                            HallNr = 1,
-                            HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_9.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 120.99m
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DefaultId = 2,
-                            Floor = 1m,
-                            HallNr = 2,
-                            HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_10.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 89.99m
-                        },
-                        new
-                        {
-                            Id = 11,
-                            DefaultId = 4,
-                            Floor = 1m,
-                            HallNr = 4,
-                            HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_11.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 199.99m
-                        },
-                        new
-                        {
-                            Id = 12,
-                            DefaultId = 1,
-                            Floor = 2m,
-                            HallNr = 1,
-                            HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_12.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 120.99m
-                        },
-                        new
-                        {
-                            Id = 13,
-                            DefaultId = 2,
-                            Floor = 1m,
-                            HallNr = 2,
-                            HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_13.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 89.99m
-                        },
-                        new
-                        {
-                            Id = 14,
-                            DefaultId = 3,
-                            Floor = 2m,
-                            HallNr = 3,
-                            HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_14.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 179.99m
-                        },
-                        new
-                        {
-                            Id = 15,
-                            DefaultId = 4,
-                            Floor = 1m,
-                            HallNr = 4,
-                            HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_15.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 199.99m
-                        },
-                        new
-                        {
-                            Id = 16,
-                            DefaultId = 3,
-                            Floor = 2m,
-                            HallNr = 3,
-                            HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_16.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 179.99m
-                        },
-                        new
-                        {
-                            Id = 17,
-                            DefaultId = 2,
-                            Floor = 1m,
-                            HallNr = 2,
-                            HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_17.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 89.99m
-                        },
-                        new
-                        {
-                            Id = 18,
-                            DefaultId = 1,
-                            Floor = 2m,
-                            HallNr = 1,
-                            HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_18.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 120.99m
-                        },
-                        new
-                        {
-                            Id = 19,
-                            DefaultId = 3,
-                            Floor = 2m,
-                            HallNr = 3,
-                            HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_19.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 179.99m
-                        },
-                        new
-                        {
-                            Id = 20,
-                            DefaultId = 4,
-                            Floor = 1m,
-                            HallNr = 4,
-                            HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_20.pdf",
-                            IsCopy = true,
-                            IsVisible = false,
-                            RentalPricePerHour = 199.99m
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.HallDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("MaxNumberOfSeats")
                         .HasColumnType("NUMERIC(3)");
 
@@ -1368,6 +1027,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<decimal>("NumberOfSeats")
                         .HasColumnType("NUMERIC(3)");
+
+                    b.Property<decimal>("RentalPricePerHour")
+                        .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<decimal?>("StageLength")
                         .HasColumnType("NUMERIC(4,2)");
@@ -1383,16 +1045,26 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hall", (string)null);
+                    b.HasIndex("HallTypeId");
+
+                    b.ToTable("Hall");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_1.pdf",
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 255m,
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 120.99m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
                             TotalLength = 22m,
@@ -1401,20 +1073,36 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_2.pdf",
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
+                            RentalPricePerHour = 89.99m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
                         new
                         {
                             Id = 3,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_3.pdf",
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
+                            RentalPricePerHour = 179.99m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
                             TotalLength = 11m,
@@ -1423,10 +1111,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_4.pdf",
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 199.99m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
                             TotalLength = 17m,
@@ -1435,10 +1131,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 5,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_5.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 255m,
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 120.99m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
                             TotalLength = 22m,
@@ -1447,20 +1151,36 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 6,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_6.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
+                            RentalPricePerHour = 89.99m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
                         new
                         {
                             Id = 7,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_7.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
+                            RentalPricePerHour = 179.99m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
                             TotalLength = 11m,
@@ -1469,10 +1189,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 8,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_8.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 199.99m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
                             TotalLength = 17m,
@@ -1481,10 +1209,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 9,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_9.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 255m,
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 120.99m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
                             TotalLength = 22m,
@@ -1493,20 +1229,36 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 10,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_10.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
+                            RentalPricePerHour = 89.99m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
                         new
                         {
                             Id = 11,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_11.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 199.99m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
                             TotalLength = 17m,
@@ -1515,10 +1267,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 12,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_12.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 255m,
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 120.99m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
                             TotalLength = 22m,
@@ -1527,20 +1287,36 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 13,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_13.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
+                            RentalPricePerHour = 89.99m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
                         new
                         {
                             Id = 14,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_14.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
+                            RentalPricePerHour = 179.99m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
                             TotalLength = 11m,
@@ -1549,10 +1325,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 15,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_15.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 199.99m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
                             TotalLength = 17m,
@@ -1561,10 +1345,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 16,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_16.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
+                            RentalPricePerHour = 179.99m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
                             TotalLength = 11m,
@@ -1573,20 +1365,36 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 17,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_17.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
+                            RentalPricePerHour = 89.99m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
                         new
                         {
                             Id = 18,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_18.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 255m,
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 120.99m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
                             TotalLength = 22m,
@@ -1595,10 +1403,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 19,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_19.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
+                            RentalPricePerHour = 179.99m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
                             TotalLength = 11m,
@@ -1607,10 +1423,18 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 20,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_20.pdf",
+                            IsCopy = true,
+                            IsVisible = false,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
+                            RentalPricePerHour = 199.99m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
                             TotalLength = 17m,
@@ -3536,6 +3360,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -3543,6 +3371,12 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<decimal?>("FlatNumber")
+                        .HasColumnType("NUMERIC(3)");
+
+                    b.Property<decimal?>("HouseNumber")
+                        .HasColumnType("NUMERIC(3)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -3552,6 +3386,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("PhotoName")
                         .IsRequired()
@@ -3565,103 +3403,14 @@ namespace EventFlowAPI.DB.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("Street")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@gmail.com",
-                            Name = "Admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGuGsnP/NPzhnWuATv9aP1dULQrjmPSUU5Lnaftfuse3AiOfXJXbIF7N3Cad2JluJQ==",
-                            PhotoName = "admin.jpg",
-                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Role = "Admin",
-                            Surname = "Admin"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mateusz.strapczuk2@gmail.com",
-                            Name = "Mateusz2",
-                            PasswordHash = "AQAAAAIAAYagAAAAENRzXjomXhbu4D9ZcYubXQOOyo5yl/gp6gjzTvWYGyFWB4zpo6txFqMrRYmWzxh/ow==",
-                            PhotoName = "user2.jpg",
-                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Role = "User",
-                            Surname = "Strapczuk2"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mateusz.strapczuk3@gmail.com",
-                            Name = "Mateusz3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE4HQIVivtuLYM4Fwd7P462tG2SscYZwnvDj07rYCz755XCB3O7mDcjtHBT+fdeSrQ==",
-                            PhotoName = "user3.jpg",
-                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Role = "User",
-                            Surname = "Strapczuk3"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mateusz.strapczuk4@gmail.com",
-                            Name = "Mateusz4",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEsid3fU3R/GHG+IT0hkHQLU1yIbx7kE6ZQ2IMX7/ZGpkmvhNZ4UojrRpKJALHM1Aw==",
-                            PhotoName = "user4.jpg",
-                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Role = "User",
-                            Surname = "Strapczuk4"
-                        },
-                        new
-                        {
-                            Id = "5",
-                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mateusz.strapczuk1@gmail.com",
-                            Name = "Mateusz",
-                            PasswordHash = "AQAAAAIAAYagAAAAEO8tEn3je5QrqtBhReVLDGGi49kxRWDYNbrMJVhZ7nwzH3X1XYcNckGnHN7p5NnTqg==",
-                            PhotoName = "user5.jpg",
-                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Role = "User",
-                            Surname = "Strapczuk"
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("City")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal?>("FlatNumber")
-                        .HasColumnType("NUMERIC(3)");
-
-                    b.Property<decimal?>("HouseNumber")
-                        .HasColumnType("NUMERIC(3)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("Street")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ZipCode")
                         .HasMaxLength(6)
@@ -3669,48 +3418,99 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = "1",
                             City = "Warszawa",
+                            DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@gmail.com",
                             FlatNumber = 14m,
                             HouseNumber = 12m,
+                            Name = "Admin",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGuGsnP/NPzhnWuATv9aP1dULQrjmPSUU5Lnaftfuse3AiOfXJXbIF7N3Cad2JluJQ==",
                             PhoneNumber = "789456123",
+                            PhotoName = "admin.jpg",
+                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "Admin",
                             Street = "Wesoła",
+                            Surname = "Admin",
                             ZipCode = "15-264"
                         },
                         new
                         {
                             Id = "2",
                             City = "Poznań",
+                            DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mateusz.strapczuk2@gmail.com",
                             FlatNumber = 31m,
                             HouseNumber = 10m,
+                            Name = "Mateusz2",
+                            PasswordHash = "AQAAAAIAAYagAAAAENRzXjomXhbu4D9ZcYubXQOOyo5yl/gp6gjzTvWYGyFWB4zpo6txFqMrRYmWzxh/ow==",
                             PhoneNumber = "123456789",
+                            PhotoName = "user2.jpg",
+                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "User",
                             Street = "Wiejska",
+                            Surname = "Strapczuk2",
                             ZipCode = "01-342"
                         },
                         new
                         {
                             Id = "3",
                             City = "Białystok",
+                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mateusz.strapczuk3@gmail.com",
                             FlatNumber = 21m,
                             HouseNumber = 7m,
+                            Name = "Mateusz3",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE4HQIVivtuLYM4Fwd7P462tG2SscYZwnvDj07rYCz755XCB3O7mDcjtHBT+fdeSrQ==",
                             PhoneNumber = "147852369",
+                            PhotoName = "user3.jpg",
+                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "User",
                             Street = "Pogodna",
+                            Surname = "Strapczuk3",
                             ZipCode = "14-453"
                         },
                         new
                         {
                             Id = "4",
                             City = "Warszawa",
+                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mateusz.strapczuk4@gmail.com",
                             FlatNumber = 42m,
                             HouseNumber = 21m,
+                            Name = "Mateusz4",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEsid3fU3R/GHG+IT0hkHQLU1yIbx7kE6ZQ2IMX7/ZGpkmvhNZ4UojrRpKJALHM1Aw==",
                             PhoneNumber = "147852369",
+                            PhotoName = "user4.jpg",
+                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "User",
                             Street = "Słoneczna",
+                            Surname = "Strapczuk4",
                             ZipCode = "14-453"
+                        },
+                        new
+                        {
+                            Id = "5",
+                            City = "",
+                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "mateusz.strapczuk1@gmail.com",
+                            Name = "Mateusz",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO8tEn3je5QrqtBhReVLDGGi49kxRWDYNbrMJVhZ7nwzH3X1XYcNckGnHN7p5NnTqg==",
+                            PhoneNumber = "",
+                            PhotoName = "user5.jpg",
+                            RegisteredDate = new DateTime(2026, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Role = "User",
+                            Street = "",
+                            Surname = "Strapczuk",
+                            ZipCode = ""
                         });
                 });
 
@@ -3733,17 +3533,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Hall");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
-                        .WithOne("Details")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.EventDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventPass", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.EventPassType", "PassType")
@@ -3761,17 +3550,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("PassType");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
-                        .WithOne("Details")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.FestivalDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Festival");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Event", b =>
@@ -3813,17 +3591,6 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired();
 
                     b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.HallDetails", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Hall", "Hall")
-                        .WithOne("HallDetails")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.HallDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hall");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.HallRent", b =>
@@ -3963,21 +3730,8 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("TicketType");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.User", "User")
-                        .WithOne("UserData")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.UserData", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
                 {
-                    b.Navigation("Details");
-
                     b.Navigation("Tickets");
                 });
 
@@ -3998,17 +3752,12 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
-                    b.Navigation("Details");
-
                     b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Hall", b =>
                 {
                     b.Navigation("Events");
-
-                    b.Navigation("HallDetails")
-                        .IsRequired();
 
                     b.Navigation("Rents");
 
@@ -4042,8 +3791,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("HallRents");
 
                     b.Navigation("Reservations");
-
-                    b.Navigation("UserData");
                 });
 #pragma warning restore 612, 618
         }

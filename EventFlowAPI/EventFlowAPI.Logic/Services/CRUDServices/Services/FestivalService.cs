@@ -125,8 +125,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(festival.ShortDescription != requestDto!.ShortDescription)
                 festival.ShortDescription = requestDto!.ShortDescription; 
             
-            if(festival.Details != null && festival.Details.LongDescription != requestDto.LongDescription)
-                festival.Details.LongDescription = requestDto.LongDescription;
+            if(festival.LongDescription != null && festival.LongDescription != requestDto.LongDescription)
+                festival.LongDescription = requestDto.LongDescription;
 
             List<Event> newFestivalEventList = [];
 
@@ -268,7 +268,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var festivalStartDate = festivalEvents.First().StartDate;
             var festivalEndDate = festivalEvents.Last().EndDate;
-            var festivalDetails = string.IsNullOrEmpty(requestDto.LongDescription) ? null : new FestivalDetails { LongDescription = requestDto.LongDescription };
 
             return new Festival
             {
@@ -279,7 +278,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 EndDate = festivalEndDate,
                 DeleteDate = null,
                 IsDeleted = false,
-                Details = festivalDetails,
+                LongDescription = string.IsNullOrEmpty(requestDto.LongDescription) ? null : requestDto.LongDescription,
                 Events = festivalEvents,
                 Partners = festivalMediaPatrons.Concat(festivalOrganizers).Concat(festivalSponsors).ToList(),
             };
@@ -631,7 +630,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<FestivalResponseDto>();
-                responseDto.Details = entity.Details?.AsDto<FestivalDetailsResponseDto>();
+                responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<FestivalDetailsResponseDto>();
                 responseDto.Events = entity.Events.Select(e =>
                 {
                     var eventEntity = e.AsDto<EventResponseDto>();
@@ -669,7 +668,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override FestivalResponseDto MapAsDto(Festival entity)
         {
             var responseDto = entity.AsDto<FestivalResponseDto>();
-            responseDto.Details = entity.Details?.AsDto<FestivalDetailsResponseDto>();
+            responseDto.Details = string.IsNullOrEmpty(entity.LongDescription) ? null : entity.AsDto<FestivalDetailsResponseDto>();
             responseDto.Events = entity.Events.Select(e =>
             {
                 var eventEntity = e.AsDto<EventResponseDto>();

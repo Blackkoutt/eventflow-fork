@@ -60,7 +60,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         {
             var userDto = entity.AsDto<UserResponseDto>();
             userDto.EmailAddress = entity.Email!;
-            userDto.UserData = entity.UserData?.AsDto<UserDataResponseDto>();
+            userDto.UserData = entity.HasUserData ? entity.AsDto<UserDataResponseDto>() : null;
             userDto.PhotoEndpoint = $"/Users/info/image";
             userDto.UserRoles = new List<string> { entity.Role.ToString() };
             return userDto;

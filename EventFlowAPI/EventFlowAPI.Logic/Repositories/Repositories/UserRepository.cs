@@ -16,14 +16,12 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var lowerCaseEmail = email.ToLower();
 
             return await _context.Users
-                        .Include(u => u.UserData)
                         .FirstOrDefaultAsync(u => u.Email.ToLower() == lowerCaseEmail);
         }
 
         public async Task<User?> GetOneAsync(string id)
         {
             return await _context.Users
-                        .Include(u => u.UserData)
                         .Include(u => u.Reservations)
                         .Include(u => u.EventPasses)
                         .Include(u => u.HallRents)
@@ -32,7 +30,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync(QueryObject? query = null)
         {
-            IQueryable<User> users = _context.Users.Include(u => u.UserData);
+            IQueryable<User> users = _context.Users;
 
             if (query != null)
             {

@@ -46,7 +46,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 DrawCanvasBorder(canvas);
 
                 // Stage
-                DrawStage(canvas, hall.HallDetails!);
+                DrawStage(canvas, hall);
 
                 // Seats
                 await DrawSeats(canvas, hall);
@@ -235,7 +235,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var canvasBorderOptions = _hallSeatsConfig.CanvasBorderPrintingOptions;
             canvas.DrawRectangle(canvasBorderOptions);
         }
-        private void DrawStage(Image<Rgba32> canvas, HallDetails hallDetails)
+        private void DrawStage(Image<Rgba32> canvas, Hall hallDetails)
         {
             var stageOptions = _hallSeatsConfig.GetStageRectanglePrintingOptions(hallDetails.StageWidth, hallDetails.StageLength, (float)hallDetails.TotalWidth, (float)hallDetails.TotalLength);
             if (stageOptions is not null)
@@ -302,7 +302,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private async Task DrawSeats(Image<Rgba32> canvas, Hall hall)
         {
-            _hallSeatsConfig.PrepareToPrintSeats(hall.HallDetails!.MaxNumberOfSeatsColumns);
+            _hallSeatsConfig.PrepareToPrintSeats(hall.MaxNumberOfSeatsColumns);
 
             var seatsInHall = hall.Seats
                                 .OrderBy(s => s.GridRow)
@@ -316,7 +316,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
 
 
-            for (int gridRow = 1; gridRow <= hall.HallDetails!.MaxNumberOfSeatsRows; gridRow++)
+            for (int gridRow = 1; gridRow <= hall.MaxNumberOfSeatsRows; gridRow++)
             {
                 _hallSeatsConfig.SetSeatCursorXDefault();
                 DrawSeatRowNumber(canvas);
@@ -325,7 +325,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
                 }*/
 
-                for (int gridCol = 1; gridCol <= hall.HallDetails.MaxNumberOfSeatsColumns; gridCol++)
+                for (int gridCol = 1; gridCol <= hall.MaxNumberOfSeatsColumns; gridCol++)
                 {
                     if (gridRow == 1) DrawSeatColNumber(canvas);
 

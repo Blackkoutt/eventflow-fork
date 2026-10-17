@@ -11,7 +11,6 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<Equipment>().HasKey(x => x.Id);
             modelBuilder.Entity<Event>().HasKey(x => x.Id);
             modelBuilder.Entity<EventCategory>().HasKey(x => x.Id);
-            modelBuilder.Entity<EventDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<EventPass>().HasKey(x => x.Id);
             modelBuilder.Entity<EventPassType>().HasKey(x => x.Id);
             modelBuilder.Entity<Ticket>().HasKey(x => x.Id);
@@ -20,9 +19,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<Festival_Event>().HasKey(x => new { x.FestivalId, x.EventId });
             modelBuilder.Entity<Partner>().HasKey(x => x.Id);
             modelBuilder.Entity<Festival_Partner>().HasKey(x => new { x.FestivalId, x.PartnerId });
-            modelBuilder.Entity<FestivalDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<Hall>().HasKey(x => x.Id);
-            modelBuilder.Entity<HallDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<HallRent>().HasKey(x => x.Id);
             modelBuilder.Entity<HallRent_AdditionalServices>().HasKey(x => new { x.HallRentId, x.AdditionalServicesId });
             modelBuilder.Entity<HallType>().HasKey(x => x.Id);
@@ -32,7 +29,6 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<SeatType>().HasKey(x => x.Id);
             modelBuilder.Entity<Reservation_Seat>().HasKey(x => new { x.ReservationId, x.SeatId });
             modelBuilder.Entity<User>().HasKey(x => x.Id);
-            modelBuilder.Entity<UserData>().HasKey(x => x.Id);
         }
         public static void AddEntitiesConstraints(this ModelBuilder modelBuilder)
         {

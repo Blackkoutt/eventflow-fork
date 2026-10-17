@@ -30,9 +30,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateEventCategoryRequestDto, EventCategory>();
             CreateMap<EventCategory, EventCategoryResponseDto>();
 
-            //CreateMap<EventDetailsRequestDto, EventDetails>();
-            CreateMap<EventDetails, EventDetails>();
-            CreateMap<EventDetails, EventDetailsResponseDto>();
+            CreateMap<Event, EventDetailsResponseDto>();
 
             CreateMap<EventPass, EventPass>();
             CreateMap<EventPassRequestDto, EventPass>();
@@ -45,21 +43,23 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<EventPassType, EventPassTypeResponseDto>();
 
             CreateMap<Event, Event>();
-            CreateMap<UpdateEventRequestDto, Event>();
-            CreateMap<EventRequestDto, Event>();
+            CreateMap<UpdateEventRequestDto, Event>()
+                .ForMember(dest => dest.LongDescription, opt => opt.Ignore());
+            CreateMap<EventRequestDto, Event>()
+                .ForMember(dest => dest.LongDescription, opt => opt.Ignore());
             CreateMap<Event, EventResponseDto>();
 
             CreateMap<Ticket, Ticket>();
             CreateMap<TicketRequestDto, Ticket>();
             CreateMap<Ticket, TicketResponseDto>();
 
-            CreateMap<FestivalDetails, FestivalDetails>();
-            CreateMap<FestivalDetailsRequestDto, FestivalDetails>();
-            CreateMap<FestivalDetails, FestivalDetailsResponseDto>();
+            CreateMap<Festival, FestivalDetailsResponseDto>();
 
             CreateMap<Festival, Festival>();
-            CreateMap<UpdateFestivalRequestDto, Festival>();
-            CreateMap<FestivalRequestDto, Festival>();
+            CreateMap<UpdateFestivalRequestDto, Festival>()
+                .ForMember(dest => dest.LongDescription, opt => opt.Ignore());
+            CreateMap<FestivalRequestDto, Festival>()
+                .ForMember(dest => dest.LongDescription, opt => opt.Ignore());
             CreateMap<Festival, FestivalResponseDto>();
 
             CreateMap<HallRent, HallRent>();
@@ -75,11 +75,10 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<HallRent_HallRequestDto, Hall>();
             CreateMap<Hall, HallResponseDto>();
 
-            CreateMap<HallDetails, HallDetails>();
-            CreateMap<HallDetailsRequestDto, HallDetails>();
-            CreateMap<EventHallDetailsRequestDto, HallDetails>();
-            CreateMap<HallRent_HallDetailsRequestDto, HallDetails>();
-            CreateMap<HallDetails, HallDetailsResponseDto>();
+            CreateMap<HallDetailsRequestDto, Hall>();
+            CreateMap<EventHallDetailsRequestDto, Hall>();
+            CreateMap<HallRent_HallDetailsRequestDto, Hall>();
+            CreateMap<Hall, HallDetailsResponseDto>();
 
             CreateMap<HallType, HallType>();
             CreateMap<HallTypeRequestDto, HallType>();
@@ -127,14 +126,14 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateTicketTypeRequestDto, TicketType>();
             CreateMap<TicketType, TicketTypeResponseDto>();
 
-            CreateMap<UserData, UserData>();
-            CreateMap<UserDataRequestDto, UserData>();
-            CreateMap<UpdateUserDataRequestDto, UserData>();
-            CreateMap<UserData, UserDataResponseDto>();
+            CreateMap<UserDataRequestDto, User>();
+            CreateMap<UpdateUserDataRequestDto, User>();
+            CreateMap<User, UserDataResponseDto>();
 
             CreateMap<User, User>();
             CreateMap<UserRegisterRequestDto, User>();
-            CreateMap<User, UserResponseDto>();
+            CreateMap<User, UserResponseDto>()
+                .ForMember(dest => dest.UserData, opt => opt.MapFrom(src => src.HasUserData ? src : null));
         }
     }
 }

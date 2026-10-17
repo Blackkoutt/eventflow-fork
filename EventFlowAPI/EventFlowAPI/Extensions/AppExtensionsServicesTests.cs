@@ -120,19 +120,14 @@ namespace EventFlowAPI.Extensions
                         },
                     }
                 },
-                HallDetails = new HallDetails
-                {
-                    TotalLength = 20,
-                    TotalWidth = 40,
-                    StageLength = 4,
-                    StageWidth = 20,
-                    //NumberOfSeatsRows = 10,
-                    MaxNumberOfSeatsRows = 18,
-                    //NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 18,
-                    NumberOfSeats = 100,
-                    MaxNumberOfSeats = 225,
-                },
+                TotalLength = 20,
+                TotalWidth = 40,
+                StageLength = 4,
+                StageWidth = 20,
+                MaxNumberOfSeatsRows = 18,
+                MaxNumberOfSeatsColumns = 18,
+                NumberOfSeats = 100,
+                MaxNumberOfSeats = 225,
                 Seats = GetSeatList()
             };
         }

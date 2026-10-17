@@ -10,7 +10,6 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Equipment> Equipment{ get; set; }
         public DbSet<Event> Event { get; set; }
         public DbSet<EventCategory> EventCategory { get; set; }
-        public DbSet<EventDetails> EventDetails { get; set; }
         public DbSet<EventPass> EventPass { get; set; }
         public DbSet<EventPassType> EventPassType { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
@@ -19,9 +18,7 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Partner> Partner { get; set; }
         public DbSet<Festival_Event> Festival_Event { get; set; }
         public DbSet<Festival_Partner> Festival_Partner { get; set; }
-        public DbSet<FestivalDetails> FestivalDetails { get; set; }
         public DbSet<Hall> Hall { get; set; }
-        public DbSet<HallDetails> HallDetails { get; set; }
         public DbSet<HallRent> HallRent { get; set; }
         public DbSet<HallRent_AdditionalServices> HallRent_AdditionalServices { get; set; }
         public DbSet<HallType> HallType { get; set; }
@@ -30,7 +27,6 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Seat> Seat { get; set; }
         public DbSet<SeatType> SeatType { get; set; }
         public DbSet<Reservation_Seat> Reservation_Seat { get; set; }
-        public DbSet<UserData> UserData { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,9 +35,6 @@ namespace EventFlowAPI.DB.Context
 
             // Primary keys
             modelBuilder.AddEntitiesPrimaryKeys();
-
-            // Relations 1:1
-            modelBuilder.AddOneToOneRelations();
 
             // Constraints
             modelBuilder.AddEntitiesConstraints();

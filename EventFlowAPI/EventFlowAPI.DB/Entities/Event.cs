@@ -19,7 +19,6 @@ namespace EventFlowAPI.DB.Entities
         public int CategoryId { get; set; } 
         public int HallId { get; set; }
         public EventCategory Category { get; set; } = default!;
-        public EventDetails? Details { get; set; }
         public Hall Hall { get; set; } = default!;
         public ICollection<Festival> Festivals { get; set; } = [];
         public ICollection<Ticket> Tickets { get; set; } = [];
@@ -30,6 +29,9 @@ namespace EventFlowAPI.DB.Entities
         public DateTime? DeleteDate { get; set; }
         public Guid EventGuid { get; set; }
         public string PhotoName { get; set; } = string.Empty;
+
+        [MaxLength(2000)]
+        public string? LongDescription { get; set; }
 
         [NotMapped]
         public TimeSpan Duration => EndDate - StartDate;

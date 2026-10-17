@@ -20,7 +20,13 @@ namespace EventFlowAPI.DB.Extensions
                     Role = Roles.Admin,
                     PhotoName = "admin.jpg",
                     RegisteredDate = today,
-                    DateOfBirth = new DateTime(2000, 4, 3)
+                    DateOfBirth = new DateTime(2000, 4, 3),
+                    Street = "Wesoła",
+                    HouseNumber = 12,
+                    FlatNumber = 14,
+                    City = "Warszawa",
+                    ZipCode = "15-264",
+                    PhoneNumber = "789456123"
                 },
                 new User
                 {
@@ -32,7 +38,13 @@ namespace EventFlowAPI.DB.Extensions
                     Role = Roles.User,
                     PhotoName = "user2.jpg",
                     RegisteredDate = today,
-                    DateOfBirth = new DateTime(1985, 2, 1)
+                    DateOfBirth = new DateTime(1985, 2, 1),
+                    Street = "Wiejska",
+                    HouseNumber = 10,
+                    FlatNumber = 31,
+                    City = "Poznań",
+                    ZipCode = "01-342",
+                    PhoneNumber = "123456789"
                 },
                 new User
                 {
@@ -44,7 +56,13 @@ namespace EventFlowAPI.DB.Extensions
                     Role = Roles.User,
                     PhotoName = "user3.jpg",
                     RegisteredDate = today,
-                    DateOfBirth = new DateTime(1979, 12, 11)
+                    DateOfBirth = new DateTime(1979, 12, 11),
+                    Street = "Pogodna",
+                    HouseNumber = 7,
+                    FlatNumber = 21,
+                    City = "Białystok",
+                    ZipCode = "14-453",
+                    PhoneNumber = "147852369"
                 },
                 new User
                 {
@@ -56,7 +74,13 @@ namespace EventFlowAPI.DB.Extensions
                     Role = Roles.User,
                     PhotoName = "user4.jpg",
                     RegisteredDate = today,
-                    DateOfBirth = new DateTime(1979, 12, 11)
+                    DateOfBirth = new DateTime(1979, 12, 11),
+                    Street = "Słoneczna",
+                    HouseNumber = 21,
+                    FlatNumber = 42,
+                    City = "Warszawa",
+                    ZipCode = "14-453",
+                    PhoneNumber = "147852369"
                 },
                 new User
                 {
@@ -71,52 +95,6 @@ namespace EventFlowAPI.DB.Extensions
                     DateOfBirth = new DateTime(1979, 12, 11)
                 }
             );
-        }
-
-        public static void SeedUsersData(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UserData>().HasData(
-               new UserData
-               {
-                   Id = "1",
-                   Street = "Wesoła",
-                   HouseNumber = 12,
-                   FlatNumber = 14,
-                   City = "Warszawa",
-                   ZipCode = "15-264",
-                   PhoneNumber = "789456123"
-               },
-               new UserData
-               {
-                   Id = "2",
-                   Street = "Wiejska",
-                   HouseNumber = 10,
-                   FlatNumber = 31,
-                   City = "Poznań",
-                   ZipCode = "01-342",
-                   PhoneNumber = "123456789"
-               },
-               new UserData
-               {
-                   Id = "3",
-                   Street = "Pogodna",
-                   HouseNumber = 7,
-                   FlatNumber = 21,
-                   City = "Białystok",
-                   ZipCode = "14-453",
-                   PhoneNumber = "147852369"
-               },
-               new UserData
-               {
-                   Id = "4",
-                   Street = "Słoneczna",
-                   HouseNumber = 21,
-                   FlatNumber = 42,
-                   City = "Warszawa",
-                   ZipCode = "14-453",
-                   PhoneNumber = "147852369"
-               }
-           );
         }
     }
 }

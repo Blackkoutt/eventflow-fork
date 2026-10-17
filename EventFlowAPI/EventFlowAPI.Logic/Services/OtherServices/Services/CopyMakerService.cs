@@ -23,10 +23,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             _hallRepository.Detach(hallEntity);
             hallEntity.Id = 0;
 
-            // Copy Hall Details
-            _unitOfWork.GetRepository<HallDetails>().Detach(hallEntity.HallDetails!);
-            hallEntity.HallDetails!.Id = 0;
-
             // Copy Seats
             List<Seat> newSeatList = [];
             foreach (var seat in hallEntity.Seats)
