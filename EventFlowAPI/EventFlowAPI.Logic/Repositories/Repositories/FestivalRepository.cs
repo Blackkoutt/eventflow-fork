@@ -12,9 +12,9 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         {
             var _table = _context.Festival
                         .Include(f => f.Details)
-                        .Include(f => f.Events)
+                        .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Category)
-                        .Include(e => e.Events)
+                        .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Hall)
                         .Include(f => f.Partners)
                         .Include(f => f.Tickets)
@@ -29,9 +29,9 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             return await _context.Festival
                         .AsSplitQuery()
                         .Include(f => f.Details)
-                        .Include(f => f.Events)
+                        .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Category)
-                        .Include(e => e.Events)
+                        .Include(f => f.Events.OrderBy(e => e.Id))
                             .ThenInclude(e => e.Hall)
                         .Include(f => f.Partners)
                         .Include(f => f.Tickets)
