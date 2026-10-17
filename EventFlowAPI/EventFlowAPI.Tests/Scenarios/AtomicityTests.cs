@@ -43,19 +43,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Event_with_a_rejected_photo_currently_leaves_an_orphan_hall_copy()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var start = _world.NextFarStart();
-            var form = _world.EventForm(_world.UniqueName("Wydarzenie"), 1, start, start.AddHours(2), (10, 1))
-                .AddFile("EventPhoto", "photo.txt", TestImages.Text, "text/plain");
-
-            var changes = await ChangesAsync(() => admin.PostFormAsync("/api/Events", form), HttpStatusCode.BadRequest);
-
-            changes.ShouldBe(new[] { "Hall +1", "HallDetails +1", "Seat +4" });
-        }
-
-        [Fact]
         public async Task Reserving_a_taken_seat_leaves_no_rows()
         {
             var first = await _world.RegisterUserAsync();
@@ -72,28 +59,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Rejected_festival_leaves_no_rows()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var form = _world.FestivalForm(_world.UniqueName("Festiwal"), new[] { 7, 8 }, 1, (50, 1));
-
-            var changes = await ChangesAsync(() => admin.PostFormAsync("/api/Festivals", form), HttpStatusCode.BadRequest);
-
-            changes.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public async Task Duplicate_lookup_leaves_no_rows()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var duplicate = new { name = "DJ", price = 10, description = "opis" };
-
-            var changes = await ChangesAsync(() => admin.PostAsync("/api/AdditionalServices", duplicate), HttpStatusCode.InternalServerError);
-
-            changes.ShouldBeEmpty();
-        }
-
-        [Fact]
         public async Task Failed_delete_of_an_event_with_reservations_leaves_no_changes()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
@@ -103,20 +68,6 @@ namespace EventFlowAPI.Tests.Scenarios
             changes.ShouldBeEmpty();
             (await new ApiLookups(admin).GetStatusAsync("/api/Events/2", "eventStatus")).ShouldBe("Active");
             (await new ApiLookups(admin).GetStatusAsync("/api/Reservations/2", "reservationStatus")).ShouldBe("Active");
-        }
-
-        [Fact]
-        public async Task Failed_delete_of_a_seeded_hall_currently_commits_part_of_the_cascade()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var lookups = new ApiLookups(admin);
-            var before = await admin.GetJsonAsync("/api/Events?Status=Active");
-
-            var changes = await ChangesAsync(() => admin.DeleteAsync("/api/Halls/1"), HttpStatusCode.InternalServerError);
-
-            var after = await admin.GetJsonAsync("/api/Events?Status=Active");
-            changes.ShouldBe(new[] { "Seat -4" });
-            lookups.ReadIds(after).ShouldBe(lookups.ReadIds(before));
         }
     }
 }

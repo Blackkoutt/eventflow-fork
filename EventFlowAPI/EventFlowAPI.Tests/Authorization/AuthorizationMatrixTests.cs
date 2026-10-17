@@ -6,7 +6,8 @@ namespace EventFlowAPI.Tests.Authorization
     [Collection(ReadOnlyApiCollection.Name)]
     public class AuthorizationMatrixTests
     {
-        private const string StatisticsPdfRoute = "api/Statistics/pdf-report";
+        // Rendering PDFs and images is slow and covered by GeneratedFileTests.
+        private static bool IsGeneratedFile(EndpointInfo endpoint) => endpoint.Route.Contains("pdf") || endpoint.Route.Contains("jpg");
 
         private readonly ApiFactory _factory;
         private readonly EndpointCatalog _catalog;
@@ -105,7 +106,7 @@ namespace EventFlowAPI.Tests.Authorization
             var client = await _factory.CreateClientAsync(TestUsers.Admin);
             var failures = new List<string>();
 
-            foreach (var endpoint in _catalog.GetAll().Where(endpoint => endpoint.Method == "GET" && endpoint.Route != StatisticsPdfRoute))
+            foreach (var endpoint in _catalog.GetAll().Where(endpoint => endpoint.Method == "GET" && !IsGeneratedFile(endpoint)))
             {
                 try
                 {
