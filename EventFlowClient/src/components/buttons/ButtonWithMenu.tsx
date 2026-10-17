@@ -23,8 +23,6 @@ interface ButtonWithMenuProps {
 
 const ButtonWithMenu = ({
   text,
-  width,
-  height,
   bgColor = "#7B2CBF",
   textColor = "#fff",
   textSize = 14,

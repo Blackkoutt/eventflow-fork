@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import ApiClient, { api } from "../services/api/ApiClientService";
+import ApiClient from "../services/api/ApiClientService";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { HTTPMethod } from "../helpers/enums/HTTPMethodEnum";
 import { AxiosError } from "axios";
@@ -96,7 +96,7 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
           case HTTPMethod.PUT:
             // if (typeof body === undefined || body === undefined)
             //   throw Error("PUT Error: body is undefined");
-            const [putData, putCode] = await ApiClient.Put<TEntity, TPutEntity>(
+            const [, putCode] = await ApiClient.Put<TEntity, TPutEntity>(
               endpoint,
               body as TPutEntity,
               id
@@ -109,7 +109,7 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
           case HTTPMethod.PATCH:
             console.log("heloov2");
             console.log("endpoint", endpoint);
-            const [patchData, patchCode] = await ApiClient.Patch<TEntity, TPatchEntity>(
+            const [, patchCode] = await ApiClient.Patch<TEntity, TPatchEntity>(
               endpoint,
               body as TPatchEntity | undefined,
               id
@@ -124,7 +124,7 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
 
           case HTTPMethod.DELETE:
             if (id === undefined) throw Error("DELETE Error: id is undefined");
-            const [deleteData, deleteCode] = await ApiClient.Delete(endpoint, id);
+            const [, deleteCode] = await ApiClient.Delete(endpoint, id);
             //setData((prev) => prev.filter((item) => item.id !== id));
             resultCode = deleteCode as number;
             setStatusCode(resultCode);

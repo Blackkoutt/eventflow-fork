@@ -55,7 +55,7 @@ const CreateHallTypeDialog = forwardRef<HTMLDialogElement, CreateHallTypeDialogP
     const methods = useForm<HallTypeRequest>({
       resolver: zodResolver(HallTypeSchema),
     });
-    const { handleSubmit, formState, reset, getValues } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     console.log(errors);

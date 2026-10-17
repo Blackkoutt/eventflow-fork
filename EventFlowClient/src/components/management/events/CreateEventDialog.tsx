@@ -18,7 +18,6 @@ import DatePicker from "../../common/forms/DatePicker";
 import { EventFestivalTicketRequest } from "../../../models/create_schemas/EventFestivalTicketSchema";
 import AddEventTicket from "../tickets/AddEventTicket";
 import { EventTicketContext } from "../../../context/EventTicketContext";
-import { eventNames } from "process";
 import { toast } from "react-toastify";
 import DateFormatter from "../../../helpers/DateFormatter";
 
@@ -79,7 +78,7 @@ const CreateEventDialog = forwardRef<HTMLDialogElement, CreateEventDialogProps>(
     const methods = useForm<EventRequest>({
       resolver: zodResolver(EventSchema),
     });
-    const { handleSubmit, formState, reset, watch } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     const onSubmit: SubmitHandler<EventRequest> = async (data) => {

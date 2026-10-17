@@ -1,8 +1,5 @@
 import { z } from "zod";
-import { FestivalUpdate_EventSchema } from "./FestivalUpdate_EventSchema";
-import { FestivalDetailsSchema } from "../create_schemas/FestivalDetailsSchema";
 import { EventFestivalTicketSchema } from "../create_schemas/EventFestivalTicketSchema";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 export const FestivalUpdateSchema = z.object({
   name: z

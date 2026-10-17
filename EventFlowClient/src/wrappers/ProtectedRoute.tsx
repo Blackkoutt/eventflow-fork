@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 import { useAuth } from "../context/AuthContext";
-import AccessDenied from "../pages/AccessDeniedPage";
 import AccessDeniedPage from "../pages/AccessDeniedPage";
 
 type ProtectedRouteProps = PropsWithChildren & {

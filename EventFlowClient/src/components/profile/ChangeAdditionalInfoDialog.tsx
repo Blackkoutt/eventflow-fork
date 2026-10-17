@@ -41,7 +41,7 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
         phoneNumber: user.phoneNumber ?? null,
       },
     });
-    const { handleSubmit, formState, watch, setValue } = methods;
+    const { handleSubmit, formState } = methods;
     const { errors, isSubmitting } = formState;
 
     const validateCityName = (e: FormEvent<HTMLInputElement>) => {

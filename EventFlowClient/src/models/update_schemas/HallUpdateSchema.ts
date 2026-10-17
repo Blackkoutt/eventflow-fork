@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { SeatSchema } from "../create_schemas/SeatSchema";
-import { HallDetailsSchema } from "../create_schemas/HallDetailsSchema";
 
 export const HallUpdateSchema = z.object({
   hallNr: z.preprocess(

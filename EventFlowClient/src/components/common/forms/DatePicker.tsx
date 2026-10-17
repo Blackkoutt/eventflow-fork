@@ -14,7 +14,7 @@ export interface DatePickerProps extends React.InputHTMLAttributes<HTMLInputElem
 }
 
 const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, name, error, errorHeight, isTime = false, date, type = "text", ...props }, ref) => {
+  ({ label, name, error, errorHeight, isTime = false, date, type = "text", ...props }, _ref) => {
     const [isOpen, setIsOpen] = useState(false);
     //console.log(date != undefined ? DateFormatter.FormatDateForCalendar(date).split(" ")[1] : "");
     const [selectedDate, setSelectedDate] = useState<Date | null>(date ?? null);

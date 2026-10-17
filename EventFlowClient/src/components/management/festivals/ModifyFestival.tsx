@@ -34,7 +34,7 @@ interface ModifyFestivalProps {
 }
 
 const ModifyFestival = forwardRef<HTMLDialogElement, ModifyFestivalProps>(
-  ({ item, onDialogSuccess, onDialogClose }: ModifyFestivalProps, ref) => {
+  ({ item, onDialogSuccess, onDialogClose }: ModifyFestivalProps, _ref) => {
     const { statusCode: statusCode, put: putItem } = useApi<Festival, undefined, FormData>(
       ApiEndpoint.Festival
     );

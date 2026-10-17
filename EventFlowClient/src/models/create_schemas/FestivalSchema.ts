@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { FestivalDetailsSchema } from "./FestivalDetailsSchema";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { EventFestivalTicketSchema } from "./EventFestivalTicketSchema";
 import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 

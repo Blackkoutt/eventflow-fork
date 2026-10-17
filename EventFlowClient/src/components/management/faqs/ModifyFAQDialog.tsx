@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { EventPassType, FAQ } from "../../../models/response_models";
+import { FAQ } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -9,12 +9,7 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
-import {
-  EventPassTypeUpdateRequest,
-  EventPassTypeUpdateSchema,
-} from "../../../models/update_schemas/EventPassTypeUpdateSchema";
 import { FAQUpdateRequest, FAQUpdateSchema } from "../../../models/update_schemas/FAQUpdateSchema";
 import TextArea from "../../common/forms/TextArea";
 

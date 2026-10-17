@@ -6,8 +6,8 @@ import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createViewWeek, createViewMonthGrid } from "@schedule-x/calendar";
 import "@schedule-x/theme-default/dist/calendar.css";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
-import DateFormatter from "../../helpers/DateFormatter";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
+import DateFormatter from "../../helpers/DateFormatter";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import CreateFestivalDialog from "../../components/management/festivals/CreateFestivalDialog";
@@ -27,6 +27,8 @@ const FestivalsManagement = () => {
     setFestivals(items.filter((item) => item.festivalStatus === "Active"));
   }, [items]);
 
+  const [eventsService] = useState(() => createEventsServicePlugin());
+  const [dragAndDrop] = useState(() => createDragAndDropPlugin());
   const calendar = useCalendarApp({
     views: [createViewMonthGrid(), createViewWeek()],
     selectedDate: DateFormatter.FormatDateForCalendar(new Date()).split(" ")[0],
@@ -35,36 +37,31 @@ const FestivalsManagement = () => {
         onModify(calendarEvent as Festival);
       },
     },
-    plugins: [createEventsServicePlugin(), createDragAndDropPlugin()],
+    plugins: [eventsService, dragAndDrop],
     locale: "pl-PL",
   });
 
   useEffect(() => {
     console.log(festivals);
-    if (festivals && festivals.length > 0) {
+    if (calendar) {
       const formattedFestivals = festivals.map((e) => ({
         ...e,
         start: DateFormatter.FormatDateForCalendar(e.start),
         end: DateFormatter.FormatDateForCalendar(e.end),
       }));
       console.log(festivals);
-      calendar.eventsService.set(formattedFestivals);
-      console.log(calendar.eventsService.getAll());
+      eventsService.set(formattedFestivals);
+      console.log(eventsService.getAll());
     }
-  }, [festivals]);
+  }, [festivals, calendar, eventsService]);
 
   const {
     createDialog,
-    detailsDialog,
     modifyDialog,
-    itemToDelete,
-    itemToDetails,
     itemToModify,
     onDialogClose,
-    onDelete,
     onModify,
     onCreate,
-    onDetails,
     closeDialogsAndSetValuesToDefault,
   } = useDialogs<Festival>();
 

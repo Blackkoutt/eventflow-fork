@@ -26,6 +26,7 @@ const EventsManagement = () => {
     setEvents(items.filter((item) => item.eventStatus === "Active"));
   }, [items]);
 
+  const [eventsService] = useState(() => createEventsServicePlugin());
   const calendar = useCalendarApp({
     views: [createViewMonthGrid(), createViewWeek()],
     selectedDate: DateFormatter.FormatDateForCalendar(new Date()).split(" ")[0],
@@ -35,12 +36,12 @@ const EventsManagement = () => {
         //console.log("onEventClick", calendarEvent as EventEntity);
       },
     },
-    plugins: [createEventsServicePlugin()],
+    plugins: [eventsService],
     locale: "pl-PL",
   });
 
   useEffect(() => {
-    if (events && events.length > 0) {
+    if (calendar) {
       const formattedEvents = events.map((e) => ({
         ...e,
         start: DateFormatter.FormatDateForCalendar(e.start),
@@ -48,23 +49,18 @@ const EventsManagement = () => {
         location: `Sala nr ${e.hall?.hallNr}`,
       }));
       console.log(events);
-      calendar.eventsService.set(formattedEvents);
-      console.log(calendar.eventsService.getAll());
+      eventsService.set(formattedEvents);
+      console.log(eventsService.getAll());
     }
-  }, [events]);
+  }, [events, calendar, eventsService]);
 
   const {
     createDialog,
-    detailsDialog,
     modifyDialog,
-    itemToDelete,
-    itemToDetails,
     itemToModify,
     onDialogClose,
-    onDelete,
     onModify,
     onCreate,
-    onDetails,
     closeDialogsAndSetValuesToDefault,
   } = useDialogs<EventEntity>();
 

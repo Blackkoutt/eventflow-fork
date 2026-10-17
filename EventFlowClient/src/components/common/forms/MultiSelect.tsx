@@ -35,7 +35,7 @@ const MultiSelect = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState<SelectOption[]>(selectedOptions);
-  const { register, getValues, setValue, setFocus } = useFormContext();
+  const { register, setValue, setFocus } = useFormContext();
 
   useEffect(() => {
     if (selectedOptions.length > 0) {

@@ -1,6 +1,5 @@
 import target from "../assets/target.png";
 import tickets3d from "../assets/tickets3d.png";
-import concert from "../assets/concert.jpg";
 import hero from "../assets/hero_section_img.png";
 
 function AboutPage() {

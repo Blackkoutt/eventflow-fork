@@ -7,9 +7,8 @@ import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
@@ -129,7 +128,7 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                     labelWidth={100}
                     text={
                       reservation.ticket?.festival !== null
-                        ? reservation.ticket?.festival?.name
+                        ? reservation.ticket?.festival?.title
                         : "-"
                     }
                     gap={10}
@@ -143,7 +142,7 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                   <LabelText
                     label="Wydarzenie:"
                     labelWidth={100}
-                    text={reservation.ticket?.event?.name}
+                    text={reservation.ticket?.event?.title}
                     gap={10}
                   />
                   <LabelText
@@ -172,7 +171,7 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                     messageType={MessageType.Error}
                     isSemibold={true}
                     text={`Anulowanie tej rezerwacji jest równoznaczne z anulowaniem także
-                    wszystkich rezerwacji dotyczących festiwalu ${reservation.ticket.festival.name}.`}
+                    wszystkich rezerwacji dotyczących festiwalu ${reservation.ticket.festival.title}.`}
                   />
                 )}
                 {!isAdminCancel && (

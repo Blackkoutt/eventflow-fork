@@ -49,7 +49,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
     const [hallSeats, setHallSeats] = useState<Seat[]>([]);
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
     const [actionPerformed, setActionPerformed] = useState(false);
-    const [promisePending, setPromisePending] = useState(false);
+    const [, setPromisePending] = useState(false);
     const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
     const [selectedOption, setSelectedOption] = useState<SelectOption>();
 
@@ -225,7 +225,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
     const handleContextMenu = (
       event: React.MouseEvent,
       seatNumber: number,
-      rows: number,
+      _rows: number,
       cols: number
     ) => {
       event.preventDefault();

@@ -63,11 +63,10 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
+
+      - name: Frontend regression checks
+        run: npm test
 
       - name: Build
-        run: npx vite build
-
-      - name: Type check (existing errors, does not fail the build yet)
-        continue-on-error: true
-        run: npx tsc -b
+        run: npm run build

@@ -20,13 +20,12 @@ const RegisterPage = () => {
   const methods = useForm<UserRegisterRequest>({
     resolver: zodResolver(userRegisterSchema),
   });
-  const { register, handleSubmit, formState, watch } = methods;
+  const { handleSubmit, formState } = methods;
   const { errors, isSubmitting } = formState;
 
   const {
     statusCode: registerStatusCode,
     post: registerUser,
-    error: registerError,
   } = useApi<[], UserRegisterRequest>(ApiEndpoint.AuthRegister);
 
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { MediaPatron, Organizer, Partner, Sponsor } from "../../../models/response_models";
+import { Sponsor } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -11,14 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
 import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
-import {
-  MediaPatronUpdateRequest,
-  MediaPatronUpdateSchema,
-} from "../../../models/update_schemas/MediaPatronUpdateSchema";
-import { OrganizerRequest, OrganizerSchema } from "../../../models/create_schemas/OrganizerSchema";
-import { OrganizerUpdateRequest } from "../../../models/update_schemas/OrganizerUpdateSchema";
-import { PartnerRequest, PartnerSchema } from "../../../models/create_schemas/PartnerSchema";
-import { PartnerUpdateRequest } from "../../../models/update_schemas/PartnerUpdateSchema";
 import { SponsorRequest, SponsorSchema } from "../../../models/create_schemas/SponsorSchema";
 import { SponsorUpdateRequest } from "../../../models/update_schemas/SponsorUpdateSchema";
 

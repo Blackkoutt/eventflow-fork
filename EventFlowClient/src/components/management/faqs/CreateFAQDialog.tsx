@@ -10,7 +10,6 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
 import { toast } from "react-toastify";
-import Input from "../../common/forms/Input";
 import { FAQRequest, FAQSchema } from "../../../models/create_schemas/FAQSchema";
 import TextArea from "../../common/forms/TextArea";
 

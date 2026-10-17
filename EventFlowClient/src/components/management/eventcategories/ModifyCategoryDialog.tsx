@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { AdditionalServices, EventCategory } from "../../../models/response_models";
+import { EventCategory } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -9,10 +9,6 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import {
-  AdditionalServiceUpdateRequest,
-  AdditionalServiceUpdateSchema,
-} from "../../../models/update_schemas/AdditionalServicesUpdateSchema";
 import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
 import {

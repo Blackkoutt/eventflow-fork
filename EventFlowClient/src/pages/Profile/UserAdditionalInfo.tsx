@@ -3,19 +3,15 @@ import { User } from "../../models/response_models";
 import ProfileInfo from "../../components/profile/ProfileInfo";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { MutableRefObject, useRef } from "react";
+import { useRef } from "react";
 import ChangeAdditionalInfoDialog from "../../components/profile/ChangeAdditionalInfoDialog";
-
-interface UserAdditionalInfoProps {
-  onClickEditButton: () => void;
-}
 
 interface OutletContextProps {
   user: User;
   reloadAdditonalInfoComponent: () => void;
 }
 
-const UserAdditionalInfo = ({}: UserAdditionalInfoProps) => {
+const UserAdditionalInfo = () => {
   const { user, reloadAdditonalInfoComponent } = useOutletContext<OutletContextProps>();
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 

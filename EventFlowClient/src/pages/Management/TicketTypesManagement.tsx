@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { AdditionalServices, TicketType } from "../../models/response_models";
+import { TicketType } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";

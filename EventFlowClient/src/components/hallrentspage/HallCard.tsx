@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Hall, HallType } from "../../models/response_models";
+import { Hall } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 import Button, { ButtonStyle } from "../buttons/Button";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";

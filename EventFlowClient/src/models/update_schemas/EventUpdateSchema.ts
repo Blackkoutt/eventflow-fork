@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { EventFestivalTicketSchema } from "../create_schemas/EventFestivalTicketSchema";
 import DateFormatter from "../../helpers/DateFormatter";
 import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";

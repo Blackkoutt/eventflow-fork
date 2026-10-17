@@ -21,7 +21,6 @@ import HallInfoElement from "../components/hallrentspage/HallInfoElement";
 import HallInfoSectionHeader from "../components/hallrentspage/HallInfoSectionHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import RentHallDialog from "../components/hallrentspage/RentHallDialog";
-import { useAuth } from "../context/AuthContext";
 
 const RentPage = () => {
   const { hallId } = useParams();

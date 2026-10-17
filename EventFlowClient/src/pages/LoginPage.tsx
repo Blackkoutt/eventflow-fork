@@ -6,16 +6,14 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginHero from "../assets/loginHero.png";
 import Checkbox from "../components/common/Checkbox";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import FormButton from "../components/common/forms/FormButton";
-import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const {
     authenticated,
     handleLogin,
-    handleLogout,
   } = useAuth();
 
   const navigate = useNavigate();
@@ -23,7 +21,7 @@ const LoginPage = () => {
   const methods = useForm<UserLoginRequest>({
     resolver: zodResolver(userLoginSchema),
   });
-  const { handleSubmit, formState, watch } = methods;
+  const { handleSubmit, formState } = methods;
   const { errors, isSubmitting } = formState;
 
   // Login direct in application

@@ -1,5 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
-import { User } from "../models/response_models";
+import { AuthUser, User } from "../models/response_models";
 import { UserLogin } from "../models/response_models/UserLogin";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
@@ -12,11 +12,10 @@ import {
   setJWTTokenCookie,
 } from "../helpers/cookies/JWTCookie";
 import { APIError } from "../models/error/APIError";
-import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   authenticated?: boolean | null;
-  currentUser?: User | null;
+  currentUser?: AuthUser | null;
   handleLogin: (loginRequest: UserLoginRequest) => Promise<void>;
   performAuthentication: (token?: string, errorMessages?: APIError[]) => void;
   handleLogout: () => void;
@@ -28,7 +27,7 @@ type AuthProviderProps = PropsWithChildren;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(isJWTTokenCookieExist());
-  const [currentUser, setCurrentUser] = useState<User | null>(getUserFormCookie());
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(getUserFormCookie());
 
   // Login in application
   const { data: loginResponse, post: loginUser } = useApi<UserLogin, UserLoginRequest>(
@@ -53,7 +52,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(validatedUser[0]);
     if (validateUserError !== null) {
       setAuthenticated(false);
       setCurrentUser(null);
@@ -74,16 +72,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Set Cookie with JWT token if user is Authenticated
   useEffect(() => {
     const token = loginResponse.length > 0 ? loginResponse[0].token : undefined;
-    console.log("token", token);
 
     performAuthentication(token);
   }, [loginResponse]);
 
   const performAuthentication = (token?: string) => {
     if (token !== undefined) {
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      const userDecodedToken = decodedToken as User;
+      const decodedToken = jwtDecode<AuthUser & { exp?: number }>(token);
+
+      const userDecodedToken = decodedToken;
       let tokenExpirationDate: Date | undefined = undefined;
       if (decodedToken.exp !== undefined) {
         tokenExpirationDate = new Date(decodedToken.exp * 1000);

@@ -13,7 +13,6 @@ import { SelectOption } from "../../helpers/SelectOptions";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
 import LabelText from "../common/LabelText";
 import DateFormatter from "../../helpers/DateFormatter";
-import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import Button, { ButtonStyle } from "../buttons/Button";
 import FormButton from "../common/forms/FormButton";
 import { useAuth } from "../../context/AuthContext";
@@ -45,10 +44,11 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
     const { data: allRents, get: getAllRents } = useApi<HallRent>(ApiEndpoint.HallRent);
     const { data: allEvents, get: getAllEvents } = useApi<EventEntity>(ApiEndpoint.Event);
 
+    const [eventsService] = useState(() => createEventsServicePlugin());
     const calendar = useCalendarApp({
       views: [createViewMonthGrid(), createViewWeek()],
       selectedDate: DateFormatter.FormatDateForCalendar(new Date()).split(" ")[0],
-      plugins: [createEventsServicePlugin()],
+      plugins: [eventsService],
       locale: "pl-PL",
     });
 
@@ -63,7 +63,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
     const methods = useForm<HallRentRequest>({
       resolver: zodResolver(HallRentSchema),
     });
-    const { handleSubmit, formState, watch, setValue } = methods;
+    const { handleSubmit, formState, watch } = methods;
     const { errors, isSubmitting } = formState;
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
     }, []);
 
     useEffect(() => {
-      if (allRents && allRents.length > 0) {
+      if (calendar) {
         const formattedRents = allRents.map((r) => ({
           ...r,
           title: "Rezerwacja",
@@ -91,11 +91,11 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
         }));
 
         const allFormattedEvents = [...formattedRents, ...formattedEvents];
-        calendar.eventsService.set(allFormattedEvents);
-        console.log(calendar.events.getAll());
+        eventsService.set(allFormattedEvents);
+        console.log(eventsService.getAll());
       }
       console.log(allEvents);
-    }, [allRents, allEvents]);
+    }, [allRents, allEvents, calendar, eventsService, hall?.hallNr]);
 
     useEffect(() => {
       const selectOptions: SelectOption[] = services.map(

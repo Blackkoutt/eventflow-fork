@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { User } from "../../models/response_models";
+import { AuthUser } from "../../models/response_models";
 import { jwtDecode } from "jwt-decode";
 
 const jwtTokenCookieName = "EventFlowJWTCookie";
@@ -22,13 +22,13 @@ export const isJWTTokenCookieExist = () => {
 export const getUserFormCookie = () => {
   const token = Cookies.get(jwtTokenCookieName);
   if (token === undefined) return null;
-  const decodedToken = jwtDecode(token) as User;
-  console.log(decodedToken);
-  const user: User = {
+  const decodedToken = jwtDecode<AuthUser>(token);
+
+  const user: AuthUser = {
     id: decodedToken.id,
     name: decodedToken.name,
     surname: decodedToken.surname,
-    email: decodedToken.email,
+    emailAddress: decodedToken.emailAddress,
     dateOfBirth: decodedToken.dateOfBirth,
     userRoles: decodedToken.userRoles,
   };

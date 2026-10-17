@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { format, addDays, subDays, startOfMonth, endOfMonth, startOfWeek } from "date-fns";
+import { useContext, useEffect, useState } from "react";
+import { format, addDays, subDays } from "date-fns";
 import { pl } from "date-fns/locale"; // Importujemy lokalizację polską
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

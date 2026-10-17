@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useRef } from "react";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import { Slide, ToastContainer } from "react-toastify";
 
 interface DialogProps {
   children?: React.ReactNode;
@@ -24,7 +23,6 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
       minWidth,
       paddingLeft = 28,
       paddingRight = 28,
-      maxHeight,
       maxWidth,
       marginTop,
       onClose,

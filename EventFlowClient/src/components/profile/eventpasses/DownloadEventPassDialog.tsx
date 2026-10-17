@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
-import { EventPass, Reservation } from "../../../models/response_models";
+import { EventPass } from "../../../models/response_models";
 import Dialog from "../../common/Dialog";
 import RadioButton from "../../common/forms/RadioButton";
 import Button, { ButtonStyle } from "../../buttons/Button";

@@ -1,4 +1,4 @@
-import { faInfoCircle, faL, faWarning, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faWarning, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { MessageType } from "../../helpers/enums/MessageTypeEnum";

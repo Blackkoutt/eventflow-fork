@@ -2,7 +2,7 @@ import { User } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface ProfilePhotoProps {
   user: User;

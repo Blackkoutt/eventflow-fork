@@ -11,7 +11,7 @@ import useApi from "../../../hooks/useApi";
 import { useContext, useEffect, useState } from "react";
 import { SelectOption } from "../../../helpers/SelectOptions";
 import Select from "../../common/forms/Select";
-import { faPlus, faX, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { EventTicketContext } from "../../../context/EventTicketContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabelText from "../../common/LabelText";

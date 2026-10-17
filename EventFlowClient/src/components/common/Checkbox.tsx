@@ -19,7 +19,6 @@ const Checkbox = ({
   textColor,
   fontSize = 12,
   width = 16,
-  onCheck,
   height = 16,
 }: CheckboxProps) => {
   const [isChecked, setIsChecked] = useState(false);

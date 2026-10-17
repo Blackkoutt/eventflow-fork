@@ -46,7 +46,7 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
     const methods = useForm<EventPassUpdateRequest>({
       resolver: zodResolver(EventPassUpdateSchema),
     });
-    const { handleSubmit, formState, watch, setValue } = methods;
+    const { handleSubmit, formState, watch } = methods;
     const { errors, isSubmitting } = formState;
 
     const passTypeId = watch().passTypeId;

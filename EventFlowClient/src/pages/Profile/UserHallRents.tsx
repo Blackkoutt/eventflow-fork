@@ -62,7 +62,7 @@ const UserHallRents = () => {
     }
   }, [hallRentToModifyHall]);
 
-  const actionsTemplate = (rowData: HallRent, options: ColumnBodyOptions) => {
+  const actionsTemplate = (rowData: HallRent, _options: ColumnBodyOptions) => {
     return (
       <div className="flex flex-row justify-start items-start gap-3">
         {rowData.hallRentStatus === Status.Active && (
