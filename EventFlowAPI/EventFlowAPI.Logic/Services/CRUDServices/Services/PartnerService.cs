@@ -1,4 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.DTO.Interfaces;
@@ -12,7 +15,6 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
@@ -22,18 +24,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         IAuthService authService,
         IFileService fileService) :
-        GenericService<
-            Partner,
-            PartnerRequestDto,
-            UpdatePartnerRequestDto,
-            PartnerResponseDto,
-            PartnerQuery
-        >(unitOfWork, authService),
         IPartnerService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<Partner> _repository = unitOfWork.GetRepository<Partner>();
+
         private readonly IFileService _fileService = fileService;
 
-        public sealed override async Task<Result<IEnumerable<PartnerResponseDto>>> GetAllAsync(PartnerQuery query)
+        public async Task<Result<IEnumerable<PartnerResponseDto>>> GetAllAsync(PartnerQuery query)
         {
             var records = await _repository.GetAllAsync(q =>
             {
@@ -50,7 +49,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<PartnerResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<PartnerResponseDto>> AddAsync(PartnerRequestDto? requestDto)
+        public async Task<Result<PartnerResponseDto>> AddAsync(PartnerRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
@@ -72,7 +71,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<PartnerResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<PartnerResponseDto>> UpdateAsync(int id, UpdatePartnerRequestDto? requestDto)
+        public async Task<Result<PartnerResponseDto>> UpdateAsync(int id, UpdatePartnerRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
@@ -96,7 +95,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<PartnerResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -110,7 +109,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -143,7 +142,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             PartnerKind? kind = requestDto is PartnerRequestDto addRequestDto ? addRequestDto.Kind : null;
             if (kind == null && id != null)
@@ -163,7 +162,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override PartnerResponseDto MapAsDto(Partner entity)
+        private PartnerResponseDto MapAsDto(Partner entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/Partners/{responseDto.Id}/image";
@@ -174,8 +173,66 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         PartnerResponseDto IPartnerService.MapAsDto(Partner entity) => MapAsDto(entity);
 
-        protected override Partner MapAsEntity(PartnerRequestDto requestDto) => requestDto.ToEntity();
+        private Partner MapAsEntity(PartnerRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdatePartnerRequestDto requestDto, Partner oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdatePartnerRequestDto requestDto, Partner oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<PartnerResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<PartnerResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<PartnerResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<PartnerResponseDto>.Success(response);
+        }
+
+        private async Task DeleteEntity(Partner entity, bool isSoftDelete)
+        {
+            if (isSoftDelete)
+            {
+                entity.IsDeleted = true;
+                entity.DeleteDate = DateTime.Now;
+                _repository.Update(entity);
+            }
+            else
+            {
+                _repository.Delete(entity);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(Partner Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(Partner Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(Partner Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(Partner Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(Partner Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(Partner Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(Partner Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private IEnumerable<PartnerResponseDto> MapAsDto(IEnumerable<Partner> records)
+        {
+            return records.Select(entity => MapAsDto(entity));
+        }
     }
 }

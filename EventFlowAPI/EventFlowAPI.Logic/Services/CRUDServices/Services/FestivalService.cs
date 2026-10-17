@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -12,7 +14,6 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Serilog;
@@ -28,21 +29,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IReservationService reservationService,
         IPartnerService partnerService,
         IFileService fileService) :
-        GenericService<
-            Festival,
-            FestivalRequestDto,
-            UpdateFestivalRequestDto,
-            FestivalResponseDto,
-            FestivalQuery
-        >(unitOfWork, authService),
         IFestivalService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<Festival> _repository = unitOfWork.GetRepository<Festival>();
+
         private readonly ITicketService _ticketService = ticketService;
         private readonly IEventService _eventService = eventService;
         private readonly IReservationService _reservationService = reservationService;
         private readonly IFileService _fileService = fileService;
         private readonly IPartnerService _partnerService = partnerService;
-        public sealed override async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(FestivalQuery query)
+        public async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(FestivalQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.ByQuery(query)
                                                               .GetPage(query.PageNumber, query.PageSize));
@@ -52,7 +50,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<FestivalResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<FestivalResponseDto>> AddAsync(FestivalRequestDto? requestDto)
+        public async Task<Result<FestivalResponseDto>> AddAsync(FestivalRequestDto? requestDto)
         {          
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
@@ -76,7 +74,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<FestivalResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<FestivalResponseDto>> UpdateAsync(int id, UpdateFestivalRequestDto? requestDto)
+        public async Task<Result<FestivalResponseDto>> UpdateAsync(int id, UpdateFestivalRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
@@ -211,7 +209,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -285,7 +283,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -298,7 +296,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             var permissionError = await ValidateUserPermission();
             if (permissionError != Error.None)
@@ -626,7 +624,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override IEnumerable<FestivalResponseDto> MapAsDto(IEnumerable<Festival> records)
+        private IEnumerable<FestivalResponseDto> MapAsDto(IEnumerable<Festival> records)
         {
             return records.Select(entity =>
             {
@@ -662,7 +660,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override FestivalResponseDto MapAsDto(Festival entity)
+        private FestivalResponseDto MapAsDto(Festival entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.Events = entity.Events.Select(e =>
@@ -694,8 +692,57 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override Festival MapAsEntity(FestivalRequestDto requestDto) => requestDto.ToEntity();
+        private Festival MapAsEntity(FestivalRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdateFestivalRequestDto requestDto, Festival oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdateFestivalRequestDto requestDto, Festival oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<FestivalResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<FestivalResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<FestivalResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<FestivalResponseDto>.Success(response);
+        }
+
+        private async Task<Result<(Festival Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            if (entity.IsExpired)
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.EntityIsExpired);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(Festival Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(Festival Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private Status GetEntityStatus(Festival entity)
+        {
+            if (!entity.IsDeleted && entity.EndDate > DateTime.Now) return Status.Active;
+            else if (!entity.IsDeleted && entity.EndDate < DateTime.Now) return Status.Expired;
+            else if (entity.IsDeleted) return Status.Canceled;
+
+            return Status.Unknown;
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -12,7 +14,6 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
@@ -22,18 +23,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         IAuthService authService,
         IFileService fileService) :
-        GenericService<
-            News,
-            NewsRequestDto,
-            UpdateNewsRequestDto,
-            NewsResponseDto,
-            NewsQuery
-        >(unitOfWork, authService),
         INewsService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<News> _repository = unitOfWork.GetRepository<News>();
+
         private readonly IFileService _fileService = fileService;
 
-        public sealed override async Task<Result<IEnumerable<NewsResponseDto>>> GetAllAsync(NewsQuery query)
+        public async Task<Result<IEnumerable<NewsResponseDto>>> GetAllAsync(NewsQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
                                                               .GetPage(query.PageNumber, query.PageSize));
@@ -41,7 +39,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<NewsResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<NewsResponseDto>> AddAsync(NewsRequestDto? requestDto)
+        public async Task<Result<NewsResponseDto>> AddAsync(NewsRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
@@ -62,7 +60,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<NewsResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<NewsResponseDto>> UpdateAsync(int id, UpdateNewsRequestDto? requestDto)
+        public async Task<Result<NewsResponseDto>> UpdateAsync(int id, UpdateNewsRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
@@ -86,7 +84,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<NewsResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -96,12 +94,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = validationResult.Value.User;
 
             await _fileService.DeletePhoto(entity);
-            await DeleteEntity(entity, isSoftDelete: false);
+            await DeleteEntity(entity);
 
             return Result<object>.Success();
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -134,7 +132,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -145,7 +143,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected sealed override IEnumerable<NewsResponseDto> MapAsDto(IEnumerable<News> records)
+        private IEnumerable<NewsResponseDto> MapAsDto(IEnumerable<News> records)
         {
             return records.Select(entity =>
             {
@@ -155,15 +153,56 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             });
         }
 
-        protected sealed override NewsResponseDto MapAsDto(News entity)
+        private NewsResponseDto MapAsDto(News entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/News/{responseDto.Id}/image";
             return responseDto;
         }
 
-        protected override News MapAsEntity(NewsRequestDto requestDto) => requestDto.ToEntity();
+        private News MapAsEntity(NewsRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdateNewsRequestDto requestDto, News oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdateNewsRequestDto requestDto, News oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<NewsResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<NewsResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<NewsResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<NewsResponseDto>.Success(response);
+        }
+
+        private async Task DeleteEntity(News entity)
+        {
+            _repository.Delete(entity);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(News Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(News Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(News Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(News Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(News Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(News Entity, UserResponseDto User)>.Success((entity, user));
+        }
     }
 }

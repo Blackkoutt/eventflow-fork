@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -9,7 +10,6 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -32,21 +32,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         ICollisionCheckerService collisionChecker,
         IFileService fileService,
         IHttpContextAccessor httpContextAccessor) :
-        GenericService<
-            HallRent,
-            HallRentRequestDto,
-            UpdateHallRentRequestDto,
-            HallRentResponseDto,
-            HallRentQuery
-        >(unitOfWork, authService),
         IHallRentService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<HallRent> _repository = unitOfWork.GetRepository<HallRent>();
+
         private readonly ICopyMakerService _copyMaker = copyMaker;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
+        public async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
         {
             UserResponseDto? user = default!;
             if(query.GetAll != true)
@@ -82,9 +79,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
         }
 
-        public sealed override async Task<Result<HallRentResponseDto>> GetOneAsync(int id)
+        public async Task<Result<HallRentResponseDto>> GetOneAsync(int id)
         {
-            var hallRentResult = await base.GetOneAsync(id);
+            var hallRentResult = await GetOneResponse(id);
             if (!hallRentResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(hallRentResult.Error);
 
@@ -144,7 +141,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallRentResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -256,7 +253,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return totalPayment;
         }
 
-        protected sealed override IEnumerable<HallRentResponseDto> MapAsDto(IEnumerable<HallRent> records)
+        private IEnumerable<HallRentResponseDto> MapAsDto(IEnumerable<HallRent> records)
         {
             return records.Select(entity =>
             {
@@ -277,7 +274,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override HallRentResponseDto MapAsDto(HallRent entity)
+        private HallRentResponseDto MapAsDto(HallRent entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.User = entity.User.ToResponse();
@@ -294,7 +291,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -389,13 +386,115 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
         // Not used
-        protected sealed override Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             throw new NotImplementedException();
         }
 
-        protected override HallRent MapAsEntity(HallRentRequestDto requestDto) => requestDto.ToEntity();
+        private HallRent MapAsEntity(HallRentRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdateHallRentRequestDto requestDto, HallRent oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdateHallRentRequestDto requestDto, HallRent oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<HallRentResponseDto>> AddAsync(HallRentRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto);
+            if (error != Error.None)
+                return Result<HallRentResponseDto>.Failure(error);
+
+            var entity = MapAsEntity(requestDto!);
+
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(entity);
+
+            return Result<HallRentResponseDto>.Success(response);
+        }
+
+        public async Task<Result<HallRentResponseDto>> UpdateAsync(int id, UpdateHallRentRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<HallRentResponseDto>.Failure(error);
+
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<HallRentResponseDto>.Failure(Error.NotFound);
+
+            await UpdateEntity(oldEntity, requestDto!);
+
+            return Result<HallRentResponseDto>.Success();
+        }
+
+        private async Task UpdateEntity(HallRent oldEntity, UpdateHallRentRequestDto requestDto)
+        {
+            var newEntity = (HallRent)MapToEntity(requestDto, oldEntity);
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(HallRent Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            if (entity.IsExpired)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.EntityIsExpired);
+
+            var user = userResult.Value;
+            var premissionError = CheckUserPremission(user, entity.UserId);
+            if (premissionError != Error.None)
+                return Result<(HallRent Entity, UserResponseDto User)>.Failure(premissionError);
+
+            return Result<(HallRent Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private Error CheckUserPremission(UserResponseDto user, string? userId = null)
+        {
+            if (user.IsInRole(Roles.Admin))
+                return Error.None;
+            else if (user.IsInRole(Roles.User))
+            {
+                if (userId == user.Id)
+                    return Error.None;
+                else
+                    return AuthError.UserDoesNotHavePremissionToResource;
+            }
+            else
+                return AuthError.UserDoesNotHaveSpecificRole;
+        }
+
+        private Status GetEntityStatus(HallRent entity)
+        {
+            if (!entity.IsDeleted && entity.EndDate > DateTime.Now) return Status.Active;
+            else if (!entity.IsDeleted && entity.EndDate < DateTime.Now) return Status.Expired;
+            else if (entity.IsDeleted) return Status.Canceled;
+
+            return Status.Unknown;
+        }
+
+        private async Task<Result<HallRentResponseDto>> GetOneResponse(int id)
+        {
+            if (id < 0)
+                return Result<HallRentResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<HallRentResponseDto>.Failure(Error.NotFound);
+
+            return Result<HallRentResponseDto>.Success(MapAsDto(record));
+        }
     }
 }

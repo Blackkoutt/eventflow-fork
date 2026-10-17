@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.Logic.Mapper;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -7,7 +9,6 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
@@ -18,16 +19,13 @@ using EventFlowAPI.Logic.Identity.Services.Interfaces;
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class SeatTypeService(IUnitOfWork unitOfWork, IAuthService authService) :
-        GenericService<
-            SeatType,
-            SeatTypeRequestDto,
-            UpdateSeatTypeRequestDto,
-            SeatTypeResponseDto,
-            SeatTypeQuery
-        >(unitOfWork, authService),
         ISeatTypeService
     {
-        public sealed override async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<SeatType> _repository = unitOfWork.GetRepository<SeatType>();
+
+        public async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.Where(st => !st.IsDeleted)
                                                               .ByName(query)
@@ -37,7 +35,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<SeatTypeResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<SeatTypeResponseDto>> UpdateAsync(int id, UpdateSeatTypeRequestDto? requestDto)
+        public async Task<Result<SeatTypeResponseDto>> UpdateAsync(int id, UpdateSeatTypeRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
@@ -59,7 +57,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<SeatTypeResponseDto>.Success();
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -97,7 +95,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -133,7 +131,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -146,10 +144,68 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override SeatTypeResponseDto MapAsDto(SeatType entity) => entity.ToResponse();
+        private SeatTypeResponseDto MapAsDto(SeatType entity) => entity.ToResponse();
 
-        protected override SeatType MapAsEntity(SeatTypeRequestDto requestDto) => requestDto.ToEntity();
+        private SeatType MapAsEntity(SeatTypeRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdateSeatTypeRequestDto requestDto, SeatType oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdateSeatTypeRequestDto requestDto, SeatType oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<SeatTypeResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<SeatTypeResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<SeatTypeResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<SeatTypeResponseDto>.Success(response);
+        }
+
+        public async Task<Result<SeatTypeResponseDto>> AddAsync(SeatTypeRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto);
+            if (error != Error.None)
+                return Result<SeatTypeResponseDto>.Failure(error);
+
+            var entity = MapAsEntity(requestDto!);
+
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(entity);
+
+            return Result<SeatTypeResponseDto>.Success(response);
+        }
+
+        private async Task<Result<(SeatType Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(SeatType Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(SeatType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(SeatType Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(SeatType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(SeatType Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(SeatType Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private IEnumerable<SeatTypeResponseDto> MapAsDto(IEnumerable<SeatType> records)
+        {
+            return records.Select(entity => MapAsDto(entity));
+        }
     }
 }

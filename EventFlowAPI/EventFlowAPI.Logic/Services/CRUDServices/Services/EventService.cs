@@ -1,4 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -7,7 +9,6 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.DB.Entities.Enums;
@@ -30,15 +31,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFileService fileService,
         ICopyMakerService copyMaker
         ) :
-        GenericService<
-            Event,
-            EventRequestDto,
-            UpdateEventRequestDto,
-            EventResponseDto,
-            EventQuery
-            >(unitOfWork, authService),
         IEventService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<Event> _repository = unitOfWork.GetRepository<Event>();
+
         private readonly IReservationService _reservationService = reservationService;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly ITicketService _ticketService = ticketService;
@@ -46,7 +44,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ICopyMakerService _copyMaker = copyMaker;
 
 
-        public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(EventQuery query)
+        public async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(EventQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.ByQuery(query).GetPage(query.PageNumber, query.PageSize));
             var response = MapAsDto(records);
@@ -77,7 +75,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return deletedFestivals;
         }
 
-        public sealed override async Task<Result<EventResponseDto>> AddAsync(EventRequestDto? requestDto)
+        public async Task<Result<EventResponseDto>> AddAsync(EventRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
@@ -178,7 +176,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<(IEnumerable<Reservation>, Event, Event)>.Success((reservationsForEvent, eventEntity, oldEventEntity));
         }
 
-        public sealed override async Task<Result<EventResponseDto>> UpdateAsync(int id, UpdateEventRequestDto? requestDto)
+        public async Task<Result<EventResponseDto>> UpdateAsync(int id, UpdateEventRequestDto? requestDto)
         {
             var updateEventResult = await UpdateEvent(id, requestDto);
             if (!updateEventResult.IsSuccessful)
@@ -213,7 +211,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -393,7 +391,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<Hall>.Success(newHall);
         }     
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -488,7 +486,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var isSameEntityExistsInDb = (await _repository.GetAllAsync(q =>
                                           q.Where(entity =>
@@ -502,7 +500,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override Event MapAsEntity(EventRequestDto requestDto) =>
+        private Event MapAsEntity(EventRequestDto requestDto) =>
             PrepareEntity(requestDto.ToEntity(), requestDto.LongDescription);
 
         private Event PrepareEntity(Event eventEntity, string? longDescription)
@@ -512,7 +510,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return eventEntity;
         }
 
-        protected sealed override IEntity MapToEntity(UpdateEventRequestDto requestDto, Event oldEntity)
+        private IEntity MapToEntity(UpdateEventRequestDto requestDto, Event oldEntity)
         {
 
             var eventEntity = (Event)requestDto.ApplyTo(oldEntity);
@@ -521,7 +519,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return eventEntity;
         }
 
-        protected sealed override IEnumerable<EventResponseDto> MapAsDto(IEnumerable<Event> records)
+        private IEnumerable<EventResponseDto> MapAsDto(IEnumerable<Event> records)
         {
             return records.Select(entity =>
             {
@@ -546,7 +544,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override EventResponseDto MapAsDto(Event entity)
+        private EventResponseDto MapAsDto(Event entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.Category = entity.Category?.ToResponse();
@@ -567,5 +565,58 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
+        public async Task<Result<EventResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<EventResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<EventResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<EventResponseDto>.Success(response);
+        }
+
+        private async Task<Result<(Event Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(Event Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(Event Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(Event Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(Event Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            if (entity.IsExpired)
+                return Result<(Event Entity, UserResponseDto User)>.Failure(Error.EntityIsExpired);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(Event Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(Event Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private Status GetEntityStatus(Event entity)
+        {
+            if (!entity.IsDeleted && entity.EndDate > DateTime.Now) return Status.Active;
+            else if (!entity.IsDeleted && entity.EndDate < DateTime.Now) return Status.Expired;
+            else if (entity.IsDeleted) return Status.Canceled;
+
+            return Status.Unknown;
+        }
+
+        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
+        {
+            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
+        }
     }
 }
