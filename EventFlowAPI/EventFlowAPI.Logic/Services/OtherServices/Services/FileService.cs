@@ -348,7 +348,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<BlobResponseDto>.Failure(validationResult.Error);
 
             var reservation = validationResult.Value;
-            var ticketJPGNames = reservation.TicketJPGFileNames;
+            var ticketJPGNames = string.IsNullOrEmpty(reservation.TicketImagesFolder)
+                ? []
+                : await _blobService.ListFilesAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
 
             if (ticketJPGNames.Count == 0)
             {
@@ -363,6 +365,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     var blobRequest = new BlobRequestDto
                     {
                         Container = BlobContainer.TicketsJPG,
+                        Folder = reservation.TicketImagesFolder!,
                         FileName = ticketJPGName
                     };
 
@@ -395,9 +398,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<Error> DeleteTicketFiles(Reservation reservation)
         {
-            foreach (var ticketJPGName in reservation.TicketJPGFileNames)
+            if (!string.IsNullOrEmpty(reservation.TicketImagesFolder))
             {
-                await _blobService.DeleteAsync(new BlobRequestDto { Container = BlobContainer.TicketsJPG, FileName = ticketJPGName });
+                await _blobService.DeleteFolderAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
             }
 
             if (!string.IsNullOrEmpty(reservation.TicketPDFFileName))
@@ -472,7 +475,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Result<(List<byte[]> Bitmaps, List<string> FileNames)>> CreateTicketJPGBitmaps(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
+        public async Task<Result<(List<byte[]> Bitmaps, string Folder)>> CreateTicketJPGBitmaps(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
         {
             List<byte[]> ticketBitmaps = [];
             Reservation reservationEntity = reservationsList.First();
@@ -490,6 +493,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var ticketJpgBlobs = new TicketBlobsRequestDto
             {
                 ReservationGuid = reservationEntity.ReservationGuid,
+                Folder = reservationEntity.ReservationGuid.ToString(),
                 Container = BlobContainer.TicketsJPG,
                 ContentType = ContentType.JPEG,
                 DataList = ticketBitmaps
@@ -498,11 +502,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             if (!jpgBlobResult.IsSuccessful)
             {
-                return Result<(List<byte[]> Bitmaps, List<string> FileNames)>.Failure(jpgBlobResult.Error);
+                return Result<(List<byte[]> Bitmaps, string Folder)>.Failure(jpgBlobResult.Error);
             }
-            var fileNames = jpgBlobResult.Value;
 
-            return Result<(List<byte[]> Bitmaps, List<string> FileNames)>.Success((ticketBitmaps, fileNames));
+            return Result<(List<byte[]> Bitmaps, string Folder)>.Success((ticketBitmaps, ticketJpgBlobs.Folder));
         }
 
 

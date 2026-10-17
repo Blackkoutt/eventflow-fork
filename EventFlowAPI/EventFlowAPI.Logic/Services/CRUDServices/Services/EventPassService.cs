@@ -258,7 +258,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return deleteTicketFilesError;
 
                 firstRes.TicketPDFFileName = null;
-                firstRes.TicketJPGFileNames = [];
+                firstRes.TicketImagesFolder = null;
             }
             return Error.None;
         }

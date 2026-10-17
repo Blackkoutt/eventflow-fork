@@ -339,7 +339,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             foreach (var reservationWithSameGuid in reservationsWithSameGuid)
             {
                 reservationWithSameGuid.TicketPDFFileName = null;
-                reservationWithSameGuid.TicketJPGFileNames = [];
+                reservationWithSameGuid.TicketImagesFolder = null;
                 _repository.Update(reservationWithSameGuid);
             }
 
@@ -380,7 +380,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return ticketJPGFilesResult.Error;
 
             var ticketJPGBitmaps = ticketJPGFilesResult.Value.Bitmaps;
-            var ticketJPGFileNames = ticketJPGFilesResult.Value.FileNames;
+            var ticketImagesFolder = ticketJPGFilesResult.Value.Folder;
 
             // Create Ticket PDF 
             var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmap(reservation, ticketJPGBitmaps, isUpdate);
@@ -390,17 +390,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var ticketPDFFileName = ticketPDFFileResult.Value.FileName;
 
             // Update local database
-            await UpdateReservationsAfterCreatingFile(ticketJPGFileNames, ticketPDFFileName, reservationsList);
+            await UpdateReservationsAfterCreatingFile(ticketImagesFolder, ticketPDFFileName, reservationsList);
 
             return Error.None;
         }
 
-        private async Task UpdateReservationsAfterCreatingFile(List<string> ticketJPGFileNames, string ticketPDFFileName, List<Reservation> reservationsList)
+        private async Task UpdateReservationsAfterCreatingFile(string ticketImagesFolder, string ticketPDFFileName, List<Reservation> reservationsList)
         {
             foreach (var reservation in reservationsList)
             {
                 reservation.TicketPDFFileName = ticketPDFFileName;
-                reservation.TicketJPGFileNames = ticketJPGFileNames;
+                reservation.TicketImagesFolder = ticketImagesFolder;
 
                 _repository.Update(reservation);
             }

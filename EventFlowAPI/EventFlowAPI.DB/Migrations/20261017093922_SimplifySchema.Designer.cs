@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20261017092313_SimplifySchema")]
+    [Migration("20261017093922_SimplifySchema")]
     partial class SimplifySchema
     {
         /// <inheritdoc />
@@ -2299,8 +2299,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
-                    b.PrimitiveCollection<string>("TicketJPGFileNames")
-                        .IsRequired()
+                    b.Property<string>("TicketImagesFolder")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TicketPDFFileName")
@@ -2341,7 +2340,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
                             StartDate = new DateTime(2026, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.jpg\"]",
+                            TicketImagesFolder = "53538b58-f885-4f4a-b675-a4aa4063ccf3",
                             TicketPDFFileName = "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf",
                             TotalAdditionalPaymentAmount = 2.5m,
                             TotalAddtionalPaymentPercentage = 10m,
@@ -2359,7 +2358,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
                             StartDate = new DateTime(2026, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.jpg\"]",
+                            TicketImagesFolder = "ed8b9230-223b-4609-8d13-aa6017edad09",
                             TicketPDFFileName = "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
@@ -2377,7 +2376,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
                             StartDate = new DateTime(2026, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.jpg\"]",
+                            TicketImagesFolder = "f9a076c4-3475-4a28-a60c-6e0e3c03731a",
                             TicketPDFFileName = "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf",
                             TotalAdditionalPaymentAmount = 7.5m,
                             TotalAddtionalPaymentPercentage = 25m,
@@ -2395,7 +2394,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
                             StartDate = new DateTime(2026, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.jpg\"]",
+                            TicketImagesFolder = "de1d6773-f027-4888-996a-0296e5c52708",
                             TicketPDFFileName = "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
@@ -2413,7 +2412,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2026, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]",
+                            TicketImagesFolder = "0b74ec7b-933b-4163-afa5-e0997681dccd",
                             TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
@@ -2431,7 +2430,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2026, 12, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]",
+                            TicketImagesFolder = "0b74ec7b-933b-4163-afa5-e0997681dccd",
                             TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
@@ -2449,7 +2448,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2026, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]",
+                            TicketImagesFolder = "806cade1-2685-43dc-8cfc-682fc4229db6",
                             TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
@@ -2467,7 +2466,7 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2026, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 8,
-                            TicketJPGFileNames = "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]",
+                            TicketImagesFolder = "806cade1-2685-43dc-8cfc-682fc4229db6",
                             TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,

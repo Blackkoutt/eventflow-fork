@@ -335,11 +335,10 @@ namespace EventFlowAPI.DB.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "TicketJPGFileNames",
+                name: "TicketImagesFolder",
                 table: "Reservation",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "[]");
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "TicketPDFFileName",
@@ -804,57 +803,57 @@ namespace EventFlowAPI.DB.Migrations
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 1,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.jpg\"]", "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "53538b58-f885-4f4a-b675-a4aa4063ccf3", "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 2,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.jpg\"]", "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "ed8b9230-223b-4609-8d13-aa6017edad09", "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 3,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.jpg\"]", "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "f9a076c4-3475-4a28-a60c-6e0e3c03731a", "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 4,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.jpg\"]", "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "de1d6773-f027-4888-996a-0296e5c52708", "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 5,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]", "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "0b74ec7b-933b-4163-afa5-e0997681dccd", "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 6,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]", "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "0b74ec7b-933b-4163-afa5-e0997681dccd", "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 7,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]", "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "806cade1-2685-43dc-8cfc-682fc4229db6", "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 8,
-                columns: new[] { "TicketJPGFileNames", "TicketPDFFileName" },
-                values: new object[] { "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]", "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf" });
+                columns: new[] { "TicketImagesFolder", "TicketPDFFileName" },
+                values: new object[] { "806cade1-2685-43dc-8cfc-682fc4229db6", "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
@@ -981,7 +980,7 @@ namespace EventFlowAPI.DB.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "TicketJPGFileNames",
+                name: "TicketImagesFolder",
                 table: "Reservation");
 
             migrationBuilder.DropColumn(
