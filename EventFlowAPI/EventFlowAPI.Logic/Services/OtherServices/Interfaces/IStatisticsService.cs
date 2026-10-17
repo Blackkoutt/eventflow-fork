@@ -7,6 +7,5 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
     public interface IStatisticsService
     {
         Task<StatisticsResponseDto> GenerateStatistics(StatisticsRequestDto statisticsRequestDto);
-        Task<StatisticsToPDFDto> GenerateDataForStatisticsPDF(StatisticsRequestDto statisticsRequestDto);
     }
 }

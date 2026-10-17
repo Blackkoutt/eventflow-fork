@@ -18,34 +18,6 @@ namespace EventFlowAPI.Extensions
             // await app.AddHallRentPDFPreviewer();
             // await app.CreateHallRentSeatsJPGTest();
             // await app.CreateHallViewPDFTest();
-            // await app.CreateStatisticsPdf();
-        }
-
-        public async static Task CreateStatisticsPdf(this WebApplication app)
-        {
-            using (var scope = app.Services.CreateScope())
-            {
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var blobService = scope.ServiceProvider.GetRequiredService<IBlobService>();
-                var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-                var pdfBuilder = scope.ServiceProvider.GetRequiredService<IPdfBuilderService>();
-                var jpgCreatorService = scope.ServiceProvider.GetRequiredService<IJPGCreatorService>();
-                var statisticsService = scope.ServiceProvider.GetRequiredService<IStatisticsService>();
-                var fileService = new FileService(unitOfWork, blobService, authService, pdfBuilder, jpgCreatorService, statisticsService);
-                var statisticsRequestDto = new StatisticsRequestDto
-                {
-                    StartDate = new DateTime(2024, 09, 10),
-                    EndDate = new DateTime(2025, 01, 01),
-                    IncludeStatisticsAboutHallRent = true,
-                    IncludeStatisticsAboutEvent = true,
-                    IncludeStatisticsAboutEventPasses = true,
-                    IncludeStatisticsAboutFestivals = true,
-                    IncludeStatisticsAboutReservations = true,
-                    IncludeStatisticsAboutPayments = true,
-                    IncludeStatisticsAboutUsers = true
-                };
-                await fileService.CreateStatisticsPDF(statisticsRequestDto);
-            }
         }
 
         public async static Task CreateHallViewPDFTest(this WebApplication app)

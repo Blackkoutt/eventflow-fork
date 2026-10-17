@@ -100,9 +100,6 @@ export const ApiUrlConfig = {
   [ApiEndpoint.Stats]: {
     url: (_id?: number | string) => "/statistics",
   },
-  [ApiEndpoint.StatsPDF]: {
-    url: (_id?: number | string) => "/statistics/pdf-report",
-  },
   [ApiEndpoint.TicketType]: {
     url: (id?: number | string) => `/tickettypes${id ? `/${id}` : ""}`,
   },

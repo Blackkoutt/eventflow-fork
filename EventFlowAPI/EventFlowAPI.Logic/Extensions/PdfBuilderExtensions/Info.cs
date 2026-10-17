@@ -36,21 +36,6 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             });
         }
 
-        public static void AddStatisticsInfo(this IContainer column, InfoStatisticsOptions options)
-        {
-            column
-             .AlignLeft()
-             .ExtendHorizontal()
-             .PaddingLeft(options.PadLeft)
-             .Column(column =>
-             {
-                 column.AddTextItem(options.ReportNr);
-                 column.AddTextItem(options.ReportFromToDate);
-                 column.AddTextItem(options.ReportDate);
-                 column.AddTextItem(options.User);
-             });
-        }
-
 
         public static void AddHallViewInfo(this IContainer column, HallViewInfoOptions options)
         {

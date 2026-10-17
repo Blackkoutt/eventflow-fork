@@ -34,7 +34,6 @@ namespace EventFlowAPI.Tests.Authorization
         [InlineData("api/Users/{id}", EndpointCatalog.AdminAccess)]
         [InlineData("api/Users/info", EndpointCatalog.AuthenticatedAccess)]
         [InlineData("api/Statistics", EndpointCatalog.AdminAccess)]
-        [InlineData("api/Statistics/pdf-report", EndpointCatalog.AdminAccess)]
         [InlineData("api/Reservations/{id:int}", EndpointCatalog.AuthenticatedAccess)]
         [InlineData("api/HallRents/{id:int}", EndpointCatalog.AuthenticatedAccess)]
         [InlineData("api/EventPasses", EndpointCatalog.AuthenticatedAccess)]
