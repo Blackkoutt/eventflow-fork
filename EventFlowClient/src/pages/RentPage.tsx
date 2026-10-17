@@ -108,42 +108,42 @@ const RentPage = () => {
                   <HallInfoElement
                     text="Max ilość miejsc"
                     icon={faCouch}
-                    value={hall.hallDetails?.maxNumberOfSeats}
+                    value={hall.maxNumberOfSeats}
                   />
                   <HallInfoElement
                     text="Długość sali"
                     icon={faRulerVertical}
-                    value={hall.hallDetails?.totalLength.toString() + " m"}
+                    value={hall.totalLength.toString() + " m"}
                   />
                   <HallInfoElement
                     text="Szerokość sali"
                     icon={faRulerHorizontal}
-                    value={hall.hallDetails?.totalWidth.toString() + " m"}
+                    value={hall.totalWidth.toString() + " m"}
                   />
                   <HallInfoElement
                     text="Powierzchnia sali"
                     icon={faExpand}
-                    value={hall.hallDetails?.totalArea.toString() + " m²"}
+                    value={hall.totalArea.toString() + " m²"}
                   />
-                  {hall.hallDetails?.stageArea && (
+                  {hall.stageArea && (
                     <HallInfoElement
                       text="Długość sceny"
                       icon={faRulerVertical}
-                      value={hall.hallDetails?.stageLength?.toString() + " m"}
+                      value={hall.stageLength?.toString() + " m"}
                     />
                   )}
-                  {hall.hallDetails?.stageArea && (
+                  {hall.stageArea && (
                     <HallInfoElement
                       text="Szerokość sceny"
                       icon={faRulerHorizontal}
-                      value={hall.hallDetails?.stageWidth?.toString() + " m"}
+                      value={hall.stageWidth?.toString() + " m"}
                     />
                   )}
-                  {hall.hallDetails?.stageArea && (
+                  {hall.stageArea && (
                     <HallInfoElement
                       text="Powierzchnia sceny"
                       icon={faExpand}
-                      value={hall.hallDetails?.stageArea.toString() + " m²"}
+                      value={hall.stageArea.toString() + " m²"}
                     />
                   )}
                 </div>

@@ -12,17 +12,17 @@ const FestivalEventSeats = ({
   selectedSeatNumber,
   onSeatClick,
 }: FestivalEventSeatsProps) => {
-  const hallDetails = hallReservation?.hall.hallDetails;
+  const selectedHall = hallReservation?.hall;
 
   return (
     <>
       {!hallReservation && "Brak danych o sali"}
       {hallReservation &&
-        hallDetails?.maxNumberOfSeatsRows !== undefined &&
-        hallDetails?.maxNumberOfSeatsColumns !== undefined && (
+        selectedHall?.maxNumberOfSeatsRows !== undefined &&
+        selectedHall?.maxNumberOfSeatsColumns !== undefined && (
           <SeatsGrid
-            maxNumberOfSeatsRows={hallDetails.maxNumberOfSeatsRows}
-            maxNumberOfSeatsColumns={hallDetails.maxNumberOfSeatsColumns}
+            maxNumberOfSeatsRows={selectedHall.maxNumberOfSeatsRows}
+            maxNumberOfSeatsColumns={selectedHall.maxNumberOfSeatsColumns}
             seats={hallReservation.hall.seats}
             reservedSeatNumbers={hallReservation.seatNr}
             selectedSeatNumbers={selectedSeatNumber === undefined ? [] : [selectedSeatNumber]}

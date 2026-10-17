@@ -33,12 +33,12 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
     const methods = useForm<UserDataRequest>({
       resolver: zodResolver(UserDataSchema),
       defaultValues: {
-        street: user.userData?.street ?? null,
-        houseNumber: (user.userData?.houseNumber === 0 ? null : user.userData?.houseNumber) ?? null,
-        flatNumber: (user.userData?.flatNumber === 0 ? null : user.userData?.flatNumber) ?? null,
-        city: user.userData?.city ?? null,
-        zipCode: user.userData?.zipCode ?? null,
-        phoneNumber: user.userData?.phoneNumber ?? null,
+        street: user.street ?? null,
+        houseNumber: (user.houseNumber === 0 ? null : user.houseNumber) ?? null,
+        flatNumber: (user.flatNumber === 0 ? null : user.flatNumber) ?? null,
+        city: user.city ?? null,
+        zipCode: user.zipCode ?? null,
+        phoneNumber: user.phoneNumber ?? null,
       },
     });
     const { handleSubmit, formState, watch, setValue } = methods;

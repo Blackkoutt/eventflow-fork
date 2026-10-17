@@ -110,7 +110,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
             changeSeatType(
               selectedSeatNr,
               seatType,
-              hallWithDetails[0].hallDetails?.maxNumberOfSeatsColumns
+              hallWithDetails[0].maxNumberOfSeatsColumns
             );
         },
       }));
@@ -122,7 +122,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
             changeSeatType(
               selectedSeatNr,
               undefined,
-              hallWithDetails[0].hallDetails?.maxNumberOfSeatsColumns
+              hallWithDetails[0].maxNumberOfSeatsColumns
             );
         },
       });
@@ -276,8 +276,8 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
                   {/* <div>stage</div> */}
                   <div className="flex flex-col gap-2">
                     {getSeats(
-                      hallWithDetails[0]?.hallDetails?.maxNumberOfSeatsRows,
-                      hallWithDetails[0]?.hallDetails?.maxNumberOfSeatsColumns
+                      hallWithDetails[0]?.maxNumberOfSeatsRows,
+                      hallWithDetails[0]?.maxNumberOfSeatsColumns
                     )}
                     {contextMenu && (
                       <ContextMenu
@@ -307,7 +307,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
                     iconSize={18}
                     style={ButtonStyle.Primary}
                     action={() =>
-                      onModifyButtonClick(hallWithDetails[0].hallDetails?.maxNumberOfSeatsColumns)
+                      onModifyButtonClick(hallWithDetails[0].maxNumberOfSeatsColumns)
                     }
                   ></Button>
                 </div>
@@ -372,14 +372,14 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
                     labelWidth={120}
                     isTextLeft={true}
                     label="Pow sali (m2):"
-                    text={hallWithDetails[0]?.hallDetails?.totalArea}
+                    text={hallWithDetails[0]?.totalArea}
                   />
                   <LabelText
                     fontSize={14}
                     labelWidth={120}
                     isTextLeft={true}
                     label="Pow sceny (m2):"
-                    text={hallWithDetails[0]?.hallDetails?.stageArea}
+                    text={hallWithDetails[0]?.stageArea}
                   />
                   <LabelText
                     fontSize={14}
@@ -393,7 +393,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
                     labelWidth={120}
                     isTextLeft={true}
                     label="Max ilość miejsc:"
-                    text={hallWithDetails[0]?.hallDetails?.maxNumberOfSeats}
+                    text={hallWithDetails[0]?.maxNumberOfSeats}
                   />
                 </article>
                 <article className="self-start flex flex-col justify-center items-center mt-4 w-full">
