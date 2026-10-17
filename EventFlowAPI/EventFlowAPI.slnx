@@ -7,4 +7,7 @@
     <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
     <BuildDependency Project="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj" />
   </Project>
+  <Project Path="EventFlowAPI.Tests/EventFlowAPI.Tests.csproj">
+    <BuildDependency Project="EventFlowAPI/EventFlowAPI.csproj" />
+  </Project>
 </Solution>
