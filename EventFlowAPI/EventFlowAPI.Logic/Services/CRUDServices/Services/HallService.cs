@@ -66,8 +66,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var hallEntity = MapAsEntity(requestDto!);
 
-            var area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-            hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
             await _repository.AddAsync(hallEntity);
             await _unitOfWork.SaveChangesAsync();
 
@@ -810,8 +808,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 hallEntity.HallDetails = hallDetails.AsEntity<HallDetails>();
                 hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
                 hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
-                var area = hallDetails.TotalLength * hallDetails.TotalWidth;
-                hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
             }
 
             hallEntity.Seats = seats.Select(seat =>

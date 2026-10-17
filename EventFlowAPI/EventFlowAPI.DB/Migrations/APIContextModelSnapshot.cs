@@ -218,9 +218,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("Duration")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -264,7 +261,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 1,
-                            Duration = -3600L,
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"),
                             HallId = 6,
@@ -279,7 +275,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 3,
-                            Duration = -10800L,
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"),
                             HallId = 7,
@@ -294,7 +289,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 2,
-                            Duration = -7200L,
                             EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"),
                             HallId = 5,
@@ -309,7 +303,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 4,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 4,
-                            Duration = -10800L,
                             EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"),
                             HallId = 8,
@@ -324,7 +317,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 5,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 1,
-                            Duration = -3600L,
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"),
                             HallId = 10,
@@ -339,7 +331,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 6,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 2,
-                            Duration = -7200L,
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"),
                             HallId = 9,
@@ -354,7 +345,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 7,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 4,
-                            Duration = -10800L,
                             EndDate = new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"),
                             HallId = 11,
@@ -369,7 +359,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 8,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 3,
-                            Duration = 9000L,
                             EndDate = new DateTime(2025, 6, 2, 2, 30, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"),
                             HallId = 16,
@@ -384,7 +373,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 9,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 1,
-                            Duration = 7200L,
                             EndDate = new DateTime(2025, 3, 17, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"),
                             HallId = 17,
@@ -399,7 +387,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 10,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 2,
-                            Duration = 7200L,
                             EndDate = new DateTime(2025, 3, 16, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"),
                             HallId = 18,
@@ -414,7 +401,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 11,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 3,
-                            Duration = 7200L,
                             EndDate = new DateTime(2025, 3, 15, 5, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"),
                             HallId = 19,
@@ -429,7 +415,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 12,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 4,
-                            Duration = 7200L,
                             EndDate = new DateTime(2025, 3, 14, 6, 0, 0, 0, DateTimeKind.Unspecified),
                             EventGuid = new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"),
                             HallId = 20,
@@ -832,9 +817,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("Duration")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -870,7 +852,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2682000L,
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("0e36fd43-030a-4459-88fa-f99f53e601a3"),
                             IsDeleted = false,
@@ -883,7 +864,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2685600L,
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d946406d-7b80-40ca-aeff-c2966dcb6727"),
                             IsDeleted = false,
@@ -896,7 +876,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2602800L,
                             EndDate = new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d96a3633-6a7f-42fb-ba84-94e5902adce7"),
                             IsDeleted = false,
@@ -1396,9 +1375,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal?>("StageWidth")
                         .HasColumnType("NUMERIC(4,2)");
 
-                    b.Property<decimal>("TotalArea")
-                        .HasColumnType("NUMERIC(5,2)");
-
                     b.Property<decimal>("TotalLength")
                         .HasColumnType("NUMERIC(4,2)");
 
@@ -1419,7 +1395,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
-                            TotalArea = 308m,
                             TotalLength = 22m,
                             TotalWidth = 14m
                         },
@@ -1430,7 +1405,6 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 198m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
@@ -1443,7 +1417,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 60m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
-                            TotalArea = 99m,
                             TotalLength = 11m,
                             TotalWidth = 9m
                         },
@@ -1456,7 +1429,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
-                            TotalArea = 153m,
                             TotalLength = 17m,
                             TotalWidth = 9m
                         },
@@ -1469,7 +1441,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
-                            TotalArea = 108m,
                             TotalLength = 22m,
                             TotalWidth = 14m
                         },
@@ -1480,7 +1451,6 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 198m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
@@ -1493,7 +1463,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 60m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
-                            TotalArea = 99m,
                             TotalLength = 11m,
                             TotalWidth = 9m
                         },
@@ -1506,7 +1475,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
-                            TotalArea = 153m,
                             TotalLength = 17m,
                             TotalWidth = 9m
                         },
@@ -1519,7 +1487,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
-                            TotalArea = 308m,
                             TotalLength = 22m,
                             TotalWidth = 14m
                         },
@@ -1530,7 +1497,6 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 198m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
@@ -1543,7 +1509,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
-                            TotalArea = 153m,
                             TotalLength = 17m,
                             TotalWidth = 9m
                         },
@@ -1556,7 +1521,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
-                            TotalArea = 308m,
                             TotalLength = 22m,
                             TotalWidth = 14m
                         },
@@ -1567,7 +1531,6 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 198m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
@@ -1580,7 +1543,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 60m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
-                            TotalArea = 99m,
                             TotalLength = 11m,
                             TotalWidth = 9m
                         },
@@ -1593,7 +1555,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
-                            TotalArea = 153m,
                             TotalLength = 17m,
                             TotalWidth = 9m
                         },
@@ -1606,7 +1567,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 60m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
-                            TotalArea = 99m,
                             TotalLength = 11m,
                             TotalWidth = 9m
                         },
@@ -1617,7 +1577,6 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 198m,
                             TotalLength = 22m,
                             TotalWidth = 9m
                         },
@@ -1630,7 +1589,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 4.4m,
                             StageWidth = 7m,
-                            TotalArea = 308m,
                             TotalLength = 22m,
                             TotalWidth = 14m
                         },
@@ -1643,7 +1601,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 60m,
                             StageLength = 4.4m,
                             StageWidth = 5.6m,
-                            TotalArea = 99m,
                             TotalLength = 11m,
                             TotalWidth = 9m
                         },
@@ -1656,7 +1613,6 @@ namespace EventFlowAPI.DB.Migrations
                             NumberOfSeats = 100m,
                             StageLength = 6m,
                             StageWidth = 7.2m,
-                            TotalArea = 153m,
                             TotalLength = 17m,
                             TotalWidth = 9m
                         });
@@ -1672,9 +1628,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<long>("Duration")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -1719,7 +1672,6 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            Duration = 28800L,
                             EndDate = new DateTime(2025, 4, 19, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 12,
                             HallRentGuid = new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08"),
@@ -1734,7 +1686,6 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            Duration = 14400L,
                             EndDate = new DateTime(2025, 4, 20, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 13,
                             HallRentGuid = new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c"),
@@ -1749,7 +1700,6 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            Duration = 7200L,
                             EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 14,
                             HallRentGuid = new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5"),
@@ -1764,7 +1714,6 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
-                            Duration = 3600L,
                             EndDate = new DateTime(2025, 4, 22, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 15,
                             HallRentGuid = new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b"),
@@ -2205,9 +2154,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsFestivalReservation")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
 
@@ -2262,7 +2208,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = false,
                             PaymentAmount = 24.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2281,7 +2226,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = false,
                             PaymentAmount = 34.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2300,7 +2244,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = false,
                             PaymentAmount = 29.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2319,7 +2262,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 4,
                             EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = false,
                             PaymentAmount = 19.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2338,7 +2280,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 5,
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2357,7 +2298,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 6,
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2376,7 +2316,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 7,
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2395,7 +2334,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 8,
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),

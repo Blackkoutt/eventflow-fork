@@ -232,7 +232,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 HallRentGuid = Guid.NewGuid(),
                 StartDate = requestDto.StartDate,
                 EndDate = requestDto.EndDate,
-                DurationTimeSpan = requestDto.EndDate - requestDto.StartDate,
                 RentDate = DateTime.Now,
                 PaymentAmount = CalculatePaymentAmount(requestDto, hall, additionalServices),
                 PaymentTypeId = 1,

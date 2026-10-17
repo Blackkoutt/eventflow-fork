@@ -267,7 +267,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     bool deleteFestival = false;
                     var eventsInFestival = await _repository
                                                     .GetAllAsync(q => q.Where(r =>
-                                                    r.IsFestivalReservation &&
+                                                    r.Ticket.FestivalId != null &&
                                                     r.ReservationGuid == reservation.ReservationGuid &&
                                                     !r.IsDeleted));
 
@@ -428,7 +428,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return new Reservation
             {
                 ReservationGuid = Guid.NewGuid(),
-                IsFestivalReservation = false,
                 ReservationDate = DateTime.Now,
                 StartDate = ticket.Event.StartDate,
                 EndDate = ticket.Event.EndDate,
@@ -468,7 +467,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var reservationEntity = new Reservation
                 {
                     ReservationGuid = festivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = DateTime.Now,
                     StartDate = eventTicket.Event.StartDate,
                     EndDate = eventTicket.Event.EndDate,
@@ -556,7 +554,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         .GetAllAsync(q => q.Where(r =>
                         !r.IsDeleted &&
                         r.EndDate > DateTime.Now &&
-                        r.IsFestivalReservation && 
                         r.Ticket.FestivalId == festivalId));
         }
 

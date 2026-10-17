@@ -19,7 +19,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 1,
                     ReservationGuid = res1,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -36,7 +35,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 2,
                     ReservationGuid = res2,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -53,7 +51,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 3,
                     ReservationGuid = res3,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
@@ -70,7 +67,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 4,
                     ReservationGuid = res4,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
@@ -87,7 +83,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 5,
                     ReservationGuid = firstFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -104,7 +99,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 6,
                     ReservationGuid = firstFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(1),
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
@@ -121,7 +115,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 7,
                     ReservationGuid = secondFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -138,7 +131,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 8,
                     ReservationGuid = secondFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(3),
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),

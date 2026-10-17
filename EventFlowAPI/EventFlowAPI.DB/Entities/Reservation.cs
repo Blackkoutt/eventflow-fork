@@ -15,7 +15,9 @@ namespace EventFlowAPI.DB.Entities
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsFestivalReservation { get; set; }
+
+        [NotMapped]
+        public bool IsFestivalReservation => Ticket?.FestivalId != null;
 
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]

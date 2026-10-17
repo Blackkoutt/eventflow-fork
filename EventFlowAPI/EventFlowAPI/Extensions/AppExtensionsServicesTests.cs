@@ -124,7 +124,6 @@ namespace EventFlowAPI.Extensions
                 {
                     TotalLength = 20,
                     TotalWidth = 40,
-                    TotalArea = 800,
                     StageLength = 4,
                     StageWidth = 20,
                     //NumberOfSeatsRows = 10,
@@ -312,7 +311,6 @@ namespace EventFlowAPI.Extensions
                 HallRentGuid = Guid.NewGuid(),
                 StartDate = dateNow,
                 EndDate = dateNow.AddHours(2),
-                DurationTimeSpan = dateNow.AddHours(2) - dateNow,
                 RentDate = dateNow,
                 PaymentAmount = 1200m,
                 User = new User

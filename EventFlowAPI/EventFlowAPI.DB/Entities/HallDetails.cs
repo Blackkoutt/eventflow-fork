@@ -14,9 +14,8 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(4,2)")]
         public decimal TotalWidth { get; set; }
 
-        [Range(0.00, 999.99),
-         Column(TypeName = "NUMERIC(5,2)")]
-        public decimal TotalArea { get; set; }
+        [NotMapped]
+        public decimal TotalArea => Math.Round(TotalLength * TotalWidth, 2);
 
         [Range(10.00, 30.00),
             Column(TypeName = "NUMERIC(4,2)")]

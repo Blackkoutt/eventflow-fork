@@ -16,7 +16,6 @@ namespace EventFlowAPI.DB.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public Guid FestivalGuid { get; set; }
-        public long Duration { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
         public string PhotoName { get; set; } = string.Empty;
@@ -25,11 +24,7 @@ namespace EventFlowAPI.DB.Entities
         public bool IsExpired => EndDate < DateTime.Now;
 
         [NotMapped]
-        public TimeSpan DurationTimeSpan
-        {
-            get => TimeSpan.FromSeconds(Duration);
-            set => Duration = (long)value.TotalSeconds;
-        }
+        public TimeSpan Duration => EndDate - StartDate;
         public FestivalDetails? Details { get; set; }
         public ICollection<Event> Events { get; set; } = [];
         public ICollection<PartnerBase> Partners { get; set; } = [];

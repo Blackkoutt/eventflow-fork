@@ -207,8 +207,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
             if (isFestivalDateChanged)
             {
-                festival.DurationTimeSpan = festival.EndDate - festival.StartDate;
-                if (festival.DurationTimeSpan > TimeSpan.FromDays(14))
+                if (festival.Duration > TimeSpan.FromDays(14))
                     return FestivalError.FestivalIsTooLong;
             }
             return Error.None;
@@ -282,7 +281,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 AddDate = DateTime.Now,
                 StartDate = festivalStartDate,
                 EndDate = festivalEndDate,
-                DurationTimeSpan = festivalEndDate - festivalStartDate,
                 DeleteDate = null,
                 IsDeleted = false,
                 Details = festivalDetails,

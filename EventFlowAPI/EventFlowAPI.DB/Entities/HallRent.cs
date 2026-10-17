@@ -9,7 +9,6 @@ namespace EventFlowAPI.DB.Entities
         public Guid HallRentGuid { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public long Duration { get; set; }
         public DateTime RentDate { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
@@ -19,11 +18,7 @@ namespace EventFlowAPI.DB.Entities
 
 
         [NotMapped]
-        public TimeSpan DurationTimeSpan
-        {
-            get => TimeSpan.FromSeconds(Duration);
-            set => Duration = (long)value.TotalSeconds;
-        }
+        public TimeSpan Duration => EndDate - StartDate;
 
         [Range(0.00, 99999.99),
          Column(TypeName = "NUMERIC(7,2)")]

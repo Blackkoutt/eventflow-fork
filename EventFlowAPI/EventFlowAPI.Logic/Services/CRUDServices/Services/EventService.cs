@@ -85,7 +85,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var eventEntity = MapAsEntity(requestDto!);
 
-            eventEntity.DurationTimeSpan = eventEntity.EndDate - eventEntity.StartDate;
             eventEntity.AddDate = DateTime.Now;
 
             // Make copy of hall
@@ -148,7 +147,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (isAnyDateInEventChanged)
             {
-                eventEntity.DurationTimeSpan = eventEntity.EndDate - eventEntity.StartDate;
 
                 UpdateStartAndEndDateOfReservations(
                     reservationsForEvent: reservationsForEvent,
@@ -303,8 +301,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     }
                     if (isFestivalDateChanged)
                     {
-                        festival.DurationTimeSpan = festival.EndDate - festival.StartDate;
-                        if (festival.DurationTimeSpan > TimeSpan.FromDays(14))
+                        if (festival.Duration > TimeSpan.FromDays(14))
                             return FestivalError.FestivalIsTooLong;
                         _unitOfWork.GetRepository<Festival>().Update(festival);
                     }
@@ -519,7 +516,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
             var eventEntity = base.MapAsEntity(requestDto);
-            eventEntity.DurationTimeSpan = eventEntity.EndDate - eventEntity.StartDate;
             AddOrUpdateEventDetails(eventEntity, longDescription);
             return eventEntity;
         }
@@ -528,7 +524,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
 
             var eventEntity = (Event)base.MapToEntity(requestDto, oldEntity);
-            eventEntity.DurationTimeSpan = eventEntity.EndDate - eventEntity.StartDate;
             AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
             return eventEntity;
         }
