@@ -3,19 +3,18 @@ using EventFlowAPI.Tests.Infrastructure;
 
 namespace EventFlowAPI.Tests.Scenarios
 {
-    public record PhotoCase(string Route, string CreatePhotoField, string UpdatePhotoField, string NameField, bool Updatable = true, bool HasSeededImage = true);
+    public record PhotoCase(string Route, string CreatePhotoField, string UpdatePhotoField, string NameField, bool Updatable = true, bool HasSeededImage = true, string? Kind = null);
 
     public class PhotoEntityTests : IClassFixture<ApiFactory>
     {
         private static readonly Dictionary<string, PhotoCase> Cases = new()
         {
-            ["MediaPatrons"] = new("MediaPatrons", "MediaPatronPhoto", "MediaPatronPhoto", "Name"),
-            ["Organizers"] = new("Organizers", "OrganizerPhoto", "OrganizerPhoto", "Name"),
-            ["Sponsors"] = new("Sponsors", "SponsorPhoto", "SponosorPhoto", "Name"),
-            ["Partners"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name"),
+            ["MediaPatrons"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name", Kind: "MediaPatron"),
+            ["Organizers"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name", Kind: "Organizer"),
+            ["Sponsors"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name", Kind: "Sponsor"),
+            ["Partners"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name", Kind: "Partner"),
             ["News"] = new("News", "NewsPhoto", "NewsPhoto", "Title"),
             ["HallTypes"] = new("HallTypes", "HallTypePhoto", "HallTypePhoto", "Name"),
-            ["PaymentTypes"] = new("PaymentTypes", "PaymentTypePhoto", "PaymentTypePhoto", "Name", Updatable: false, HasSeededImage: false),
         };
 
         public static IEnumerable<object[]> Routes => Keys(_ => true);
@@ -39,6 +38,10 @@ namespace EventFlowAPI.Tests.Scenarios
         private FormData Form(PhotoCase photoCase, string name)
         {
             var form = new FormData().Add(photoCase.NameField, name);
+            if (photoCase.Kind != null)
+            {
+                form.Add("Kind", photoCase.Kind);
+            }
             if (photoCase.Route == "News")
             {
                 form.Add("ShortDescription", "krotki opis").Add("LongDescription", "dlugi opis wiadomosci");
