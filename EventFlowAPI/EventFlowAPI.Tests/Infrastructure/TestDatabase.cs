@@ -6,21 +6,27 @@ namespace EventFlowAPI.Tests.Infrastructure
     {
         public const string Collation = "Polish_CI_AS";
 
-        private readonly string _serverConnectionString;
+        private string _serverConnectionString = "";
 
         public string Name { get; }
-        public string ConnectionString { get; }
+        public string ConnectionString => new SqlConnectionStringBuilder(_serverConnectionString) { InitialCatalog = Name, ConnectTimeout = 60, MaxPoolSize = 1000 }.ConnectionString;
 
         public TestDatabase()
         {
-            _serverConnectionString = Environment.GetEnvironmentVariable("EVENTFLOW_TEST_SQL")
-                ?? "Server=.;Integrated Security=True;TrustServerCertificate=True";
             Name = $"EventFlowTests_{Guid.NewGuid():N}".Substring(0, 28);
-            ConnectionString = $"{_serverConnectionString};Database={Name};Connect Timeout=60;Max Pool Size=1000";
+        }
+
+        private async Task EnsureServerAsync()
+        {
+            if (_serverConnectionString == "")
+            {
+                _serverConnectionString = await TestSqlServer.GetConnectionStringAsync();
+            }
         }
 
         public async Task CreateAsync()
         {
+            await EnsureServerAsync();
             await using var connection = new SqlConnection(_serverConnectionString);
             await connection.OpenAsync();
             await using var command = connection.CreateCommand();
@@ -36,6 +42,7 @@ namespace EventFlowAPI.Tests.Infrastructure
 
         public async Task DropStaleAsync()
         {
+            await EnsureServerAsync();
             var staleNames = new List<string>();
             await using (var connection = new SqlConnection(_serverConnectionString))
             {

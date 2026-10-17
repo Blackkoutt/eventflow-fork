@@ -4,8 +4,9 @@ Characterization tests for the API. They describe what the application does toda
 
 ## Requirements
 
-- A local SQL Server reachable with Windows authentication (`Server=.`), or set `EVENTFLOW_TEST_SQL` to a connection string without a database name.
-- Every test class creates a throw-away database `EventFlowTests_*`, migrates it, shifts the seed dates to today, and drops it afterwards.
+- Docker. The tests start one throw-away SQL Server container (Testcontainers) for the whole run.
+- To use an existing SQL Server instead (e.g. LocalDB), set `EVENTFLOW_TEST_SQL` to a connection string without a database name.
+- Every test class creates a database `EventFlowTests_*` on that server, migrates it, shifts the seed dates to today, and drops it afterwards.
 
 ## Running
 
@@ -23,7 +24,7 @@ The test databases are created with the `Polish_CI_AS` collation and the tests r
 
 ## CI
 
-`.github/workflows/event-flow-ci.yml` builds the API and the client and runs these tests on every push to `develop` (Windows runner, SQL Server LocalDB, Central European time zone). When a test fails, the `.trx` results are uploaded as the `test-results` artifact.
+`.github/workflows/event-flow-ci.yml` builds the API and the client and runs these tests on every push to `develop` (Ubuntu runner, SQL Server in a Testcontainers container, Central European time zone). When a test fails, the `.trx` results are uploaded as the `test-results` artifact.
 
 ## Expected data
 
