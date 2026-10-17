@@ -29,7 +29,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IAuthService _authService = authService;
         private readonly IFileService _fileService = fileService;
 
-        public async Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserDataQuery query)
+        public async Task<Result<IEnumerable<UserResponseDto>>> GetAllAsync(UserQuery query)
         {
             var records = await _unitOfWork.Users.GetAllAsync(query);
             var response = MapAsDto(records);
@@ -57,17 +57,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return await _fileService.GetEntityPhoto(user);
         }
 
-        public async Task<Result<object>> SetUserInfo(UserDataRequestDto userDataRequestDto)
+        public async Task<Result<object>> SetUserInfo(UserInfoRequestDto userInfoRequestDto)
         {
             var userResult = await _authService.GetCurrentUserAsEntity();
             if (!userResult.IsSuccessful)
                 return Result<object>.Failure(userResult.Error);
             var user = userResult.Value;
 
-            userDataRequestDto.ApplyTo(user);
+            userInfoRequestDto.ApplyTo(user);
 
-            //Log.Information($"Hello {userDataRequestDto.UserPhoto}");
-            var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: true);
+            //Log.Information($"Hello {userInfoRequestDto.UserPhoto}");
+            var photoPostError = await _fileService.PostPhoto(user, userInfoRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: true);
             if (photoPostError != Error.None)
                 return Result<object>.Failure(photoPostError);
 

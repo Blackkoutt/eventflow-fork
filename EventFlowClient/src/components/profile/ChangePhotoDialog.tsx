@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useState } from "react";
 import { User } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { UserDataRequest, UserDataSchema } from "../../models/create_schemas/UserDataSchema";
+import { UserInfoRequest, UserInfoSchema } from "../../models/create_schemas/UserInfoSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../common/forms/Input";
 import FormButton from "../common/forms/FormButton";
@@ -27,8 +27,8 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<UserDataRequest>({
-      resolver: zodResolver(UserDataSchema),
+    const methods = useForm<UserInfoRequest>({
+      resolver: zodResolver(UserInfoSchema),
       defaultValues: {
         street: user.street ?? null,
         houseNumber: (user.houseNumber === 0 ? null : user.houseNumber) ?? null,
@@ -69,7 +69,7 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
       }
     }, [file]);
 
-    const onSubmit: SubmitHandler<UserDataRequest> = async (data) => {
+    const onSubmit: SubmitHandler<UserInfoRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
       formData.append("Street", data.street || "");

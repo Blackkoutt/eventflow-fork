@@ -26,7 +26,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetUsers([FromQuery] UserDataQuery query)
+        public async Task<IActionResult> GetUsers([FromQuery] UserQuery query)
         {
             var result = await _userService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
@@ -83,9 +83,9 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetUserInfo([FromForm] UserDataRequestDto userDataRequestDto)
+        public async Task<IActionResult> SetUserInfo([FromForm] UserInfoRequestDto userInfoRequestDto)
         {
-            var result = await _userService.SetUserInfo(userDataRequestDto);
+            var result = await _userService.SetUserInfo(userInfoRequestDto);
             return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }

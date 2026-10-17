@@ -3,7 +3,6 @@ using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
-using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 
 namespace EventFlowAPI.Logic.Mapper;
 
@@ -20,18 +19,7 @@ public static class UserMapping
         return target;
     }
 
-    public static User ApplyTo(this UserDataRequestDto source, User target)
-    {
-        target.Street = source.Street;
-        target.HouseNumber = source.HouseNumber;
-        target.FlatNumber = source.FlatNumber;
-        target.City = source.City;
-        target.ZipCode = source.ZipCode;
-        target.PhoneNumber = source.PhoneNumber;
-        return target;
-    }
-
-    public static User ApplyTo(this UpdateUserDataRequestDto source, User target)
+    public static User ApplyTo(this UserInfoRequestDto source, User target)
     {
         target.Street = source.Street;
         target.HouseNumber = source.HouseNumber;

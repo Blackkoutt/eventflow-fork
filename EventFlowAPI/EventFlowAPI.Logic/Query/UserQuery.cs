@@ -2,7 +2,7 @@
 
 namespace EventFlowAPI.Logic.Query
 {
-    public class UserDataQuery : QueryObject
+    public class UserQuery : QueryObject
     {
     }
 }

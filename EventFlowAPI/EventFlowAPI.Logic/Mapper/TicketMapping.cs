@@ -7,17 +7,6 @@ namespace EventFlowAPI.Logic.Mapper;
 
 public static class TicketMapping
 {
-    public static Ticket ToEntity(this TicketRequestDto source) => source is null ? null! : source.ApplyTo(new Ticket());
-
-    public static Ticket ApplyTo(this TicketRequestDto source, Ticket target)
-    {
-        target.Price = source.Price;
-        target.TicketTypeId = source.TicketTypeId;
-        target.EventId = source.EventId;
-        target.FestivalId = source.FestivalId;
-        return target;
-    }
-
     [return: NotNullIfNotNull(nameof(source))]
     public static TicketResponseDto? ToResponse(this Ticket? source) => source.ToResponse(new ResponseMappingContext());
 
