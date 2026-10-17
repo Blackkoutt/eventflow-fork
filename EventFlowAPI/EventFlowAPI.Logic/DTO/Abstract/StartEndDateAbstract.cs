@@ -18,9 +18,9 @@ namespace EventFlowAPI.Logic.DTO.Abstract
         public DateTime EndDate { get; set; }
 
         [JsonIgnore]
-        public abstract TimeSpan MaxDuration { get; }
+        public virtual TimeSpan? MaxDuration => null;
 
         [JsonIgnore]
-        public abstract string MaxDurationErrorMessage { get; }
+        public virtual string MaxDurationErrorMessage => string.Empty;
     }
 }

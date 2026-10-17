@@ -78,6 +78,16 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
+        public async Task A_rent_can_last_longer_than_a_day()
+        {
+            var user = await _world.RegisterUserAsync();
+
+            var response = await _world.RentAsync(user.Client, _world.NextFarStart(), 30 * 24);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Created, await user.Client.ReadErrorsAsync(response));
+        }
+
+        [Fact]
         public async Task Invalid_rents_are_rejected()
         {
             var user = await _world.RegisterUserAsync();
@@ -86,7 +96,6 @@ namespace EventFlowAPI.Tests.Scenarios
             {
                 ("ends before it starts", await _world.RentAsync(user.Client, start, -2), HttpStatusCode.BadRequest, null),
                 ("in the past", await _world.RentAsync(user.Client, DateTime.Today.AddDays(-5).AddHours(10)), HttpStatusCode.BadRequest, null),
-                ("longer than 24 hours", await _world.RentAsync(user.Client, _world.NextFarStart(), 30), HttpStatusCode.BadRequest, "24"),
                 ("unknown hall", await _world.RentAsync(user.Client, _world.NextFarStart(), hallId: 999), HttpStatusCode.BadRequest, "Sala o podanym ID nie istnieje w bazie danych."),
                 ("unknown service", await _world.RentAsync(user.Client, _world.NextFarStart(), services: new[] { 999 }), HttpStatusCode.NotFound, null),
             };

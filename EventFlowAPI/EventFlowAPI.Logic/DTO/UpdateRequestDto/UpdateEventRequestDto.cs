@@ -36,9 +36,9 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
 
 
         [JsonIgnore]
-        public sealed override TimeSpan MaxDuration => TimeSpan.FromHours(24);
+        public sealed override TimeSpan? MaxDuration => TimeSpan.FromHours(24);
 
         [JsonIgnore]
-        public override string MaxDurationErrorMessage => $"Czas trwania wydarzenia nie może przekraczać {MaxDuration.TotalHours} godzin.";
+        public override string MaxDurationErrorMessage => $"Czas trwania wydarzenia nie może przekraczać {MaxDuration!.Value.TotalHours} godzin.";
     }
 }

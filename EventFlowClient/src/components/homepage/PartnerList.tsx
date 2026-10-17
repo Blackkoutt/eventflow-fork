@@ -14,7 +14,7 @@ const PartnerList = () => {
   }, []);
 
   return (
-    <div className="flex flex-row justify-start items-center overflow-x-scroll hide-scrollbar overflow-y-hidden gap-6 pl-8">
+    <div className="flex flex-row justify-start items-center overflow-x-scroll hide-scrollbar overflow-y-hidden gap-6 pl-8 pb-10">
       <img src={fadeIn} alt="Fade in" className="absolute left-0" />
       {partners?.map((partner) =>
         partner ? <PartnerCard key={partner.id} partner={partner} /> : null

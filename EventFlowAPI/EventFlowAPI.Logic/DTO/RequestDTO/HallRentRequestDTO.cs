@@ -13,10 +13,5 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         public List<int> AdditionalServicesIds { get; set; } = [];
 
-        [JsonIgnore]
-        public sealed override TimeSpan MaxDuration => TimeSpan.FromHours(24);
-
-        [JsonIgnore]
-        public override string MaxDurationErrorMessage => $"Czas trwania rezerwacji nie może przekraczać {MaxDuration.TotalHours} godzin.";
     }
 }

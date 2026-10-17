@@ -12,7 +12,7 @@ namespace EventFlowAPI.Logic.DTO.Validators
             {
                 TimeSpan duration = datesObj.EndDate - datesObj.StartDate;
 
-                if (duration > datesObj.MaxDuration)
+                if (datesObj.MaxDuration != null && duration > datesObj.MaxDuration)
                 {
                     return new ValidationResult(datesObj.MaxDurationErrorMessage);
                 }

@@ -7,7 +7,7 @@ interface PartnerCardProps {
 const PartnerCard = ({ partner }: PartnerCardProps) => {
   return (
     <img
-      className="w-[305px] h-[208px] object-contain"
+      className="w-[240px] h-[164px] object-contain"
       src={ApiClient.GetPhotoEndpoint(partner.photoEndpoint)}
       alt={`Zdjęcie partnera ${partner.name}`}
     />

@@ -1,5 +1,5 @@
 import pass_png from "../assets/pass_png.png";
-import { EventPassType, isUserInRole } from "../models/response_models";
+import { EventPassType } from "../models/response_models";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
 import { useEffect, useRef, useState } from "react";
@@ -7,13 +7,12 @@ import SectionHeader from "../components/common/SectionHeader";
 import BuyEventPassType from "../components/eventpassespage/BuyEventPassType";
 import BuyEventPassDialog from "../components/eventpassespage/BuyEventPassDialog";
 import { useAuth } from "../context/AuthContext";
-import { Roles } from "../helpers/enums/UserRoleEnum";
 import { toast } from "react-toastify";
 
 const EventPassesPage = () => {
   const { data: items, get: getItems } = useApi<EventPassType>(ApiEndpoint.EventPassType);
   const [lowestPrice, setLowestPrice] = useState<number | undefined>(undefined);
-  const { currentUser, authenticated } = useAuth();
+  const { authenticated } = useAuth();
 
   const buyEventPassDialog = useRef<HTMLDialogElement>(null);
   const [eventPassTypeToBuy, setEventPassTypeToBuy] = useState<EventPassType | undefined>(
@@ -99,8 +98,6 @@ const EventPassesPage = () => {
                   onClick={() => {
                     if (!authenticated) {
                       toast.error("Musisz być zalogowany, aby kupić karnet.");
-                    } else if (isUserInRole(currentUser, Roles.Admin)) {
-                      toast.error("Zaloguj się jako użytkownik, aby kupić karnet.");
                     } else {
                       setEventPassTypeToBuy(item);
                       buyEventPassDialog.current?.showModal();

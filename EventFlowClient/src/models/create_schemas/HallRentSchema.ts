@@ -49,13 +49,6 @@ export const HallRentSchema = z
     {
       message: "Data zakończenia musi być co najmniej 5 minut po dacie początkowej",
     }
-  )
-  .refine(
-    (data) =>
-      new Date(data.endDate).getTime() - new Date(data.startDate).getTime() <= 24 * 60 * 60 * 1000,
-    {
-      message: `Czas trwania rezerwacji sali nie może przekraczać ${24} godzin`,
-    }
   );
 
 export type HallRentRequest = z.infer<typeof HallRentSchema>;
