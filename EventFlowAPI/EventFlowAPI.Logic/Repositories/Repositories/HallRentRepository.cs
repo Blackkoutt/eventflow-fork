@@ -12,7 +12,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         {
             var _table = _context.HallRent
                         .Include(hr => hr.User)
-                        .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
                             .ThenInclude(h => h.Type)
                                  .ThenInclude(t => t.Equipments)
@@ -27,7 +26,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             return await _context.HallRent
                         .AsSplitQuery()
                         .Include(hr => hr.User)
-                        .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
                             .ThenInclude(h => h.Type)
                                 .ThenInclude(t => t.Equipments)

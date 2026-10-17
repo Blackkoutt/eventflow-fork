@@ -4,18 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallRent : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
+    public class HallRent : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
     {
         public Guid HallRentGuid { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public long Duration { get; set; }
         public DateTime RentDate { get; set; }
-        public DateTime PaymentDate { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
@@ -36,7 +33,8 @@ namespace EventFlowAPI.DB.Entities
         public int PaymentTypeId { get; set; }   
         public int HallId { get; set; }
         public string UserId { get; set; } = string.Empty;
-        public PaymentType PaymentType { get; set; } = default!;
+        [NotMapped]
+        public PaymentType PaymentType => PaymentTypes.All.First(paymentType => paymentType.Id == PaymentTypeId);
         public Hall Hall { get; set; } = default!;
         public User User { get; set; } = default!;
         public ICollection<AdditionalServices> AdditionalServices { get; set; } = [];

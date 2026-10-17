@@ -61,7 +61,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (oldEntity == null)
                 return Result<EventCategoryResponseDto>.Failure(Error.NotFound);
 
-            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: oldEntity.Events.Any());
+            await UpdateEntity(oldEntity, requestDto!);
 
             return Result<EventCategoryResponseDto>.Success();
         }

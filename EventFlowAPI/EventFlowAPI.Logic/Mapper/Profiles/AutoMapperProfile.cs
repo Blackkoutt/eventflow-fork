@@ -62,7 +62,8 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<HallRent, HallRent>();
             CreateMap<HallRentRequestDto, HallRent>();
             CreateMap<UpdateHallRentRequestDto, HallRent>();
-            CreateMap<HallRent, HallRentResponseDto>();
+            CreateMap<HallRent, HallRentResponseDto>()
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.RentDate));
 
             CreateMap<Hall, Hall>();
             CreateMap<HallRequestDto, Hall>();
@@ -92,15 +93,13 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateOrganizerRequestDto, Organizer>();
             CreateMap<Organizer, OrganizerResponseDto>();
 
-            CreateMap<PaymentType, PaymentType>();
-            CreateMap<PaymentTypeRequestDto, PaymentType>();
-            CreateMap<UpdatePaymentTypeRequestDto, PaymentType>();
             CreateMap<PaymentType, PaymentTypeResponseDto>();
 
             CreateMap<Reservation, Reservation>();
             CreateMap<ReservationRequestDto, Reservation>();
             CreateMap<UpdateReservationRequestDto, Reservation>();
-            CreateMap<Reservation, ReservationResponseDto>();
+            CreateMap<Reservation, ReservationResponseDto>()
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.ReservationDate));
 
             CreateMap<Seat, Seat>();
             CreateMap<SeatRequestDto, Seat>();

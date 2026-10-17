@@ -50,8 +50,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var entity = MapAsEntity(requestDto!);
 
-            entity.MediaPatronGuid = Guid.NewGuid();
-            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.MediaPatronPhoto, $"{entity.Name}_{entity.MediaPatronGuid}", isUpdate: false);
+            entity.PartnerGuid = Guid.NewGuid();
+            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.MediaPatronPhoto, $"{entity.Name}_{entity.PartnerGuid}", isUpdate: false);
             if (photoPostError != Error.None)
                 return Result<MediaPatronResponseDto>.Failure(photoPostError);
 
@@ -75,7 +75,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newEntity = (MediaPatron)MapToEntity(requestDto!, oldEntity);
 
-            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.MediaPatronPhoto, $"{newEntity.Name}_{newEntity.MediaPatronGuid}", isUpdate: true);
+            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.MediaPatronPhoto, $"{newEntity.Name}_{newEntity.PartnerGuid}", isUpdate: true);
             if (photoPostError != Error.None)
                 return Result<MediaPatronResponseDto>.Failure(photoPostError);
 

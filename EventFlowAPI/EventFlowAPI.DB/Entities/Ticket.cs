@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Ticket : BaseEntity, ISoftDeleteable, IUpdateableEntity
+    public class Ticket : BaseEntity, ISoftDeleteable
     {
 
         [Range(0.00, 999.99),
@@ -12,8 +12,6 @@ namespace EventFlowAPI.DB.Entities
         public decimal Price { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public int TicketTypeId { get; set; }
         public int EventId { get; set; }
         public int? FestivalId { get; set; }

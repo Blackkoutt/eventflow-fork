@@ -31,7 +31,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _mediaPatrons = new MediaPatronRepository(_context);
             _hallDetails = new HallDetailsRepository(_context);
             _organizers = new OrganizerRespository(_context);
-            _paymentTypes = new PaymentTypeRepository(_context);
             _reservations = new ReservationRepository(_context);
             _seats = new SeatRepository(_context);
             _seatTypes = new SeatTypeRepository(_context);
@@ -39,8 +38,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _ticketTypes = new TicketTypeRepository(_context);
             _usersData = new UserDataRepository(_context);
             _users = new UserRepository(_context);
-            _ticketJPGs = new TicketJPGRepository(_context);
-            _ticketPDFs = new TicketPDFRepository(_context);
             _reservation_Seats = new Reservation_SeatRepository(_context);
             _festival_Events = new Festival_EventRepository(_context);
             _news = new NewsRepository(_context);
@@ -94,15 +91,12 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(HallDetails),  _hallDetails },
                 { typeof(MediaPatron), _mediaPatrons },
                 { typeof(Organizer), _organizers },
-                { typeof(PaymentType), _paymentTypes },
                 { typeof(Reservation), _reservations },
                 { typeof(Seat), _seats },
                 { typeof(SeatType), _seatTypes },
                 { typeof(Sponsor), _sponsors },
                 { typeof(TicketType), _ticketTypes },
                 { typeof(UserData), _usersData },
-                { typeof(TicketJPG), _ticketJPGs},
-                { typeof(TicketPDF), _ticketPDFs},
                 { typeof(Reservation_Seat), _reservation_Seats},
                 { typeof(Festival_Event), _festival_Events},
                 { typeof(News), _news},
@@ -127,7 +121,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly IHallTypeRepository _hallTypes;
         private readonly IMediaPatronRepository _mediaPatrons;
         private readonly IOrganizerRepository _organizers;
-        private readonly IPaymentTypeRepository _paymentTypes;
         private readonly IReservationRepository _reservations;
         private readonly ISeatRepository _seats;
         private readonly ISeatTypeRepository _seatTypes;
@@ -135,8 +128,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly ITicketTypeRepository _ticketTypes;
         private readonly IUserDataRepository _usersData;
         private readonly IUserRepository _users;
-        private readonly ITicketJPGRepository _ticketJPGs;
-        private readonly ITicketPDFRepository _ticketPDFs;
         private readonly IReservation_SeatRepository _reservation_Seats;
         private readonly IFestival_EventRepository _festival_Events;
         private readonly INewsRepository _news;

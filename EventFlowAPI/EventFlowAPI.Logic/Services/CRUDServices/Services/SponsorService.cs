@@ -49,8 +49,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var entity = MapAsEntity(requestDto!);
 
-            entity.SponsorGuid = Guid.NewGuid();
-            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.SponsorPhoto, $"{entity.Name}_{entity.SponsorGuid}", isUpdate: false);
+            entity.PartnerGuid = Guid.NewGuid();
+            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.SponsorPhoto, $"{entity.Name}_{entity.PartnerGuid}", isUpdate: false);
             if (photoPostError != Error.None)
                 return Result<SponsorResponseDto>.Failure(photoPostError);
 
@@ -74,7 +74,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newEntity = (Sponsor)MapToEntity(requestDto!, oldEntity);
 
-            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.SponosorPhoto, $"{newEntity.Name}_{newEntity.SponsorGuid}", isUpdate: true);
+            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.SponosorPhoto, $"{newEntity.Name}_{newEntity.PartnerGuid}", isUpdate: true);
             if (photoPostError != Error.None)
                 return Result<SponsorResponseDto>.Failure(photoPostError);
 

@@ -314,13 +314,7 @@ namespace EventFlowAPI.Extensions
                 EndDate = dateNow.AddHours(2),
                 DurationTimeSpan = dateNow.AddHours(2) - dateNow,
                 RentDate = dateNow,
-                PaymentDate = dateNow,
                 PaymentAmount = 1200m,
-                PaymentType = new PaymentType
-                {
-                    Id = 1,
-                    Name = "Płatność kartą"
-                },
                 User = new User
                 {
                     Id = "1",

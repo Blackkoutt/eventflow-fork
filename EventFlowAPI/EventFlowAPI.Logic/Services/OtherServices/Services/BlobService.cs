@@ -61,39 +61,31 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<string>.Success(newBlob.FileName);
         }
 
-        public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(TicketBlobsRequestDto request)
+        public async Task<Result<List<string>>> CreateTicketBlobs(TicketBlobsRequestDto request)
         {
-            List<IFileEntity> files = [];
+            List<string> fileNames = [];
             List<BlobRequestDto> addedBlobs = [];
 
             var ticketNumber = 1;
             foreach (var data in request.DataList)
             {
-                IFileEntity? file = request.ContentType switch
+                string? fileName = request.ContentType switch
                 {
-                    ContentType.PDF => new TicketPDF
-                    {
-                        FileName = string.Format(_ticketPDFFileNameTemplate, request.ReservationGuid),
-                        ReservationGuid = request.ReservationGuid
-                    },
-                    ContentType.JPEG => new TicketJPG
-                    {
-                        FileName = string.Format(_ticketJPGFileNameTemplate, request.ReservationGuid, ticketNumber),
-                        ReservationGuid = request.ReservationGuid
-                    },
+                    ContentType.PDF => string.Format(_ticketPDFFileNameTemplate, request.ReservationGuid),
+                    ContentType.JPEG => string.Format(_ticketJPGFileNameTemplate, request.ReservationGuid, ticketNumber),
                     _ => null
                 };
-                if (file is null)
+                if (fileName is null)
                 {
-                    return Result<List<IFileEntity>>.Failure(BlobError.UnsupportedContentType);
+                    return Result<List<string>>.Failure(BlobError.UnsupportedContentType);
                 }
 
-                files.Add(file);
+                fileNames.Add(fileName);
 
                 var newBlob = new BlobRequestDto
                 {
                     Container = request.Container,
-                    FileName = file.FileName,
+                    FileName = fileName,
                     ContentType = request.ContentType,
                     Data = data
                 };
@@ -106,12 +98,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     {
                         await DeleteAsync(addedBlob);
                     }
-                    return Result<List<IFileEntity>>.Failure(uploadResult.Error);
+                    return Result<List<string>>.Failure(uploadResult.Error);
                 }
 
                 ticketNumber++;
             }
-            return Result<List<IFileEntity>>.Success(files);
+            return Result<List<string>>.Success(fileNames);
         }
 
         public async Task<Result<object>> UploadAsync(BlobRequestDto blob)

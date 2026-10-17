@@ -156,15 +156,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newFestivalMediaPatrons = (await _unitOfWork.GetRepository<MediaPatron>().GetAllAsync(q =>
                                                 q.Where(mp => !mp.IsDeleted && requestDto!.MediaPatronIds.Contains(mp.Id)))).ToList();
-            festival.MediaPatrons = newFestivalMediaPatrons;
 
             var newFestivalOrganizers = (await _unitOfWork.GetRepository<Organizer>().GetAllAsync(q =>
                                                 q.Where(o => !o.IsDeleted && requestDto!.OrganizerIds.Contains(o.Id)))).ToList();
-            festival.Organizers = newFestivalOrganizers;
 
             var newFestivalSponsors = (await _unitOfWork.GetRepository<Sponsor>().GetAllAsync(q =>
                                                 q.Where(s => !s.IsDeleted && requestDto!.SponsorIds.Contains(s.Id)))).ToList();
-            festival.Sponsors = newFestivalSponsors;
+            festival.Partners = newFestivalMediaPatrons.Cast<PartnerBase>().Concat(newFestivalOrganizers).Concat(newFestivalSponsors).ToList();
 
             Log.Information("Updating tickets for festival. Festival Tickets: {FestivalTickets}",
     string.Join(", ", requestDto!.FestivalTickets.Select(t => $"Type ID: {t.TicketTypeId}, Price: {t.Price}")));
@@ -289,9 +287,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 IsDeleted = false,
                 Details = festivalDetails,
                 Events = festivalEvents,
-                MediaPatrons = festivalMediaPatrons,
-                Organizers = festivalOrganizers,
-                Sponsors = festivalSponsors,
+                Partners = festivalMediaPatrons.Cast<PartnerBase>().Concat(festivalOrganizers).Concat(festivalSponsors).ToList(),
             };
         }
 
@@ -523,7 +519,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return TicketTypeError.TicketDuplicates;
             }
 
-            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted && !tt.IsSoftUpdated));
+            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted));
             var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
             if (!ticketTypeIds.All(ticketTypeId => allTicketTypeIds.Contains(ticketTypeId)))
             {

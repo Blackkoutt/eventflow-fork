@@ -22,6 +22,12 @@ namespace EventFlowAPI.DB.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("EventIdSequence")
+                .StartsAt(13L);
+
+            modelBuilder.HasSequence<int>("FestivalIdSequence")
+                .StartsAt(4L);
+
             modelBuilder.Entity("EventFlowAPI.DB.Entities.AdditionalServices", b =>
                 {
                     b.Property<int>("Id")
@@ -40,12 +46,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -53,9 +53,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("NUMERIC(6,2)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -66,8 +63,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "DJ",
                             Price = 400.00m
                         },
@@ -75,8 +70,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Obsługa oświetlenia",
                             Price = 340.00m
                         },
@@ -84,8 +77,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Obsługa nagłośnienia",
                             Price = 250.00m
                         },
@@ -93,8 +84,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Fotograf",
                             Price = 200.00m
                         },
@@ -102,8 +91,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 5,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Promocja wydarzenia",
                             Price = 140.00m
                         },
@@ -111,8 +98,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 6,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Kamerzysta",
                             Price = 500.00m
                         },
@@ -120,8 +105,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 7,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Catering",
                             Price = 1000.00m
                         });
@@ -139,16 +122,10 @@ namespace EventFlowAPI.DB.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -159,77 +136,66 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             Description = "Nowoczesny projektor, idealny do prezentacji multimedialnych, z wysoką rozdzielczością i możliwością podłączenia różnych źródeł sygnału.",
-                            IsUpdated = false,
                             Name = "Projektor multimedialny"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Wysokiej klasy oświetlenie, umożliwiające regulację jasności i kolorów, idealne do sal konferencyjnych i eventów.",
-                            IsUpdated = false,
                             Name = "Oświetlenie"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Głośniki przeznaczone do odtwarzania filmów, zapewniające doskonałą jakość dźwięku przestrzennego w dużych przestrzeniach.",
-                            IsUpdated = false,
                             Name = "Nagłośnienie kinowe"
                         },
                         new
                         {
                             Id = 4,
                             Description = "Głośniki przeznaczone do koncertów, oferujące mocny dźwięk i wyrazistość w każdych warunkach, z możliwością regulacji.",
-                            IsUpdated = false,
                             Name = "Nagłośnienie koncertowe"
                         },
                         new
                         {
                             Id = 5,
                             Description = "Profesjonalne mikrofony bezprzewodowe, zapewniające czysty dźwięk i niezawodność w ruchu, idealne do konferencji i wystąpień.",
-                            IsUpdated = false,
                             Name = "Mikrofony bezprzewodowe"
                         },
                         new
                         {
                             Id = 6,
                             Description = "Tablica interaktywna do rysowania i prezentowania treści w sposób dynamiczny.",
-                            IsUpdated = false,
                             Name = "Tablica interaktywna"
                         },
                         new
                         {
                             Id = 7,
                             Description = "System klimatyzacji zapewniający komfortową temperaturę w sali podczas wydarzeń.",
-                            IsUpdated = false,
                             Name = "Klimatyzacja"
                         },
                         new
                         {
                             Id = 8,
                             Description = "Duży stół konferencyjny, idealny do spotkań biznesowych i prezentacji.",
-                            IsUpdated = false,
                             Name = "Stół konferencyjny"
                         },
                         new
                         {
                             Id = 9,
                             Description = "Kurtyna teatralna służąca do oddzielania sceny od widowni lub zmiany scenerii w trakcie przedstawienia.",
-                            IsUpdated = false,
                             Name = "Kurtyna"
                         },
                         new
                         {
                             Id = 10,
                             Description = "Tablice służące do umieszczania informacji o eksponatach.",
-                            IsUpdated = false,
                             Name = "Tablice informacyjne"
                         },
                         new
                         {
                             Id = 11,
                             Description = "Stojaki umożliwiają prezentowanie dzieł sztuki, takich jak obrazy, grafiki czy rzeźby.",
-                            IsUpdated = false,
                             Name = "Stojaki"
                         });
                 });
@@ -237,7 +203,11 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR [EventIdSequence]");
+
+                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"), "EventIdSequence");
 
                     b.Property<DateTime>("AddDate")
                         .HasColumnType("datetime2");
@@ -263,9 +233,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -283,16 +250,13 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("HallId");
 
-                    b.ToTable("Event");
+                    b.ToTable("Event", (string)null);
 
                     b.HasData(
                         new
@@ -305,7 +269,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"),
                             HallId = 6,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Koncert: Mystic Waves",
                             PhotoName = "koncert_mystic_waves.png",
                             ShortDescription = "Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.",
@@ -321,7 +284,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"),
                             HallId = 7,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Cień Przeszłości",
                             PhotoName = "cien_przeszlosci.png",
                             ShortDescription = "Dramatyczna opowieść o sekretach przeszłości, które powracają, by zmienić teraźniejszość.",
@@ -337,7 +299,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"),
                             HallId = 5,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Królestwo planety małp",
                             PhotoName = "krolestwo_planety_malp.png",
                             ShortDescription = "Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.",
@@ -353,7 +314,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"),
                             HallId = 8,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Nowe inspiracje",
                             PhotoName = "nowe_inspiracje.png",
                             ShortDescription = "Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.",
@@ -369,7 +329,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"),
                             HallId = 10,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Koncert: New Era",
                             PhotoName = "new_era.png",
                             ShortDescription = "Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.",
@@ -385,7 +344,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"),
                             HallId = 9,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Gladiator",
                             PhotoName = "gladiator.png",
                             ShortDescription = "Legendarna opowieść o honorze i zemście w starożytnym Rzymie.",
@@ -401,7 +359,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"),
                             HallId = 11,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Nowa sztuka",
                             PhotoName = "",
                             ShortDescription = "Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.",
@@ -417,7 +374,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"),
                             HallId = 16,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Cień Nad Miastem",
                             PhotoName = "cien_nad_miastem.png",
                             ShortDescription = "Mroczny thriller teatralny o tajemniczych wydarzeniach, które wstrząsają miastem po zmroku.",
@@ -433,7 +389,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"),
                             HallId = 17,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Jazzowe Brzmienia",
                             PhotoName = "jazz.png",
                             ShortDescription = "Magiczny czas z jazzem na żywo – koncert znanych artystów jazzowych, którzy przeniosą Cię w świat wyjątkowych dźwięków.",
@@ -449,7 +404,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"),
                             HallId = 18,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Interstellar",
                             PhotoName = "interstellar.jpg",
                             ShortDescription = "Epicka podróż kosmiczna, która bada granice ludzkiej wytrzymałości i miłości.",
@@ -465,7 +419,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"),
                             HallId = 19,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Zatrzymać Przeznaczenie",
                             PhotoName = "zatrzymac_przeznaczenie.jpg",
                             ShortDescription = "Spektakl o postaci, która staje w obliczu nieuchronnego przeznaczenia.",
@@ -481,7 +434,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventGuid = new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"),
                             HallId = 20,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Nowe Perspektywy",
                             PhotoName = "nowe_perspektywy.jpg",
                             ShortDescription = "Wystawa sztuki współczesnej, która zaprasza do odkrywania świata z nowych punktów widzenia.",
@@ -511,19 +463,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -536,8 +479,6 @@ namespace EventFlowAPI.DB.Migrations
                             Color = "#82CAFC",
                             Icon = "fa-solid fa-music",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Koncert"
                         },
                         new
@@ -546,8 +487,6 @@ namespace EventFlowAPI.DB.Migrations
                             Color = "#6BD49B",
                             Icon = "fa-solid fa-film",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Film"
                         },
                         new
@@ -556,8 +495,6 @@ namespace EventFlowAPI.DB.Migrations
                             Color = "#C33EB1",
                             Icon = "fa-solid fa-masks-theater",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Spektakl"
                         },
                         new
@@ -566,8 +503,6 @@ namespace EventFlowAPI.DB.Migrations
                             Color = "#FC5353",
                             Icon = "fa-solid fa-landmark",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Wystawa"
                         });
                 });
@@ -575,10 +510,7 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LongDescription")
                         .HasMaxLength(2000)
@@ -586,7 +518,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EventDetails");
+                    b.ToTable("Event", (string)null);
 
                     b.HasData(
                         new
@@ -677,9 +609,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<int>("PassTypeId")
                         .HasColumnType("int");
 
@@ -691,9 +620,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("PreviousEndDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("RenewalDate")
                         .HasColumnType("datetime2");
@@ -707,9 +633,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("TotalDiscountPercentage")
                         .HasColumnType("NUMERIC(4,2)");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -717,8 +640,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PassTypeId");
-
-                    b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("UserId");
 
@@ -733,7 +654,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventPassJPGName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg",
                             EventPassPDFName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -751,7 +671,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventPassJPGName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg",
                             EventPassPDFName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -769,7 +688,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventPassJPGName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg",
                             EventPassPDFName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
                             PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -795,12 +713,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -811,9 +723,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<decimal>("RenewalDiscountPercentage")
                         .HasColumnType("NUMERIC(4,2)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("ValidityPeriodInMonths")
                         .HasColumnType("NUMERIC(2)");
@@ -827,8 +736,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Karnet miesięczny",
                             Price = 89.99m,
                             RenewalDiscountPercentage = 5m,
@@ -838,8 +745,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Karnet kwartalny",
                             Price = 235.99m,
                             RenewalDiscountPercentage = 10m,
@@ -849,8 +754,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Karnet półroczny",
                             Price = 499.99m,
                             RenewalDiscountPercentage = 15m,
@@ -860,8 +763,6 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Karnet roczny",
                             Price = 999.99m,
                             RenewalDiscountPercentage = 20m,
@@ -919,7 +820,11 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR [FestivalIdSequence]");
+
+                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"), "FestivalIdSequence");
 
                     b.Property<DateTime>("AddDate")
                         .HasColumnType("datetime2");
@@ -939,9 +844,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -959,12 +861,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Festival");
+                    b.ToTable("Festival", (string)null);
 
                     b.HasData(
                         new
@@ -975,7 +874,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("0e36fd43-030a-4459-88fa-f99f53e601a3"),
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Festiwal Muzyki Hip-Hop",
                             PhotoName = "festiwal_muzyki_hip_hop.png",
                             ShortDescription = "Największy festiwal hip-hopowy! Koncerty, freestyle battle, warsztaty DJ-skie i spotkania z artystami.",
@@ -989,7 +887,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d946406d-7b80-40ca-aeff-c2966dcb6727"),
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Festiwal Filmowy",
                             PhotoName = "festiwal_filmowy.png",
                             ShortDescription = "Przegląd najlepszych filmów z całego świata! Premiera, spotkania z reżyserami i nocne maratony kinowe.",
@@ -1003,7 +900,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             FestivalGuid = new Guid("d96a3633-6a7f-42fb-ba84-94e5902adce7"),
                             IsDeleted = false,
-                            IsUpdated = false,
                             Name = "Festiwal Sztuki",
                             PhotoName = "festiwal_sztuki.png",
                             ShortDescription = "Wystawy, instalacje i performanse! Odkryj nowoczesne formy sztuki i weź udział w kreatywnych warsztatach.",
@@ -1014,10 +910,7 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LongDescription")
                         .HasMaxLength(2000)
@@ -1025,7 +918,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FestivalDetails");
+                    b.ToTable("Festival", (string)null);
 
                     b.HasData(
                         new
@@ -1092,144 +985,110 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_MediaPatron", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Partner", b =>
                 {
                     b.Property<int>("FestivalId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MediaPatronId")
+                    b.Property<int>("PartnerId")
                         .HasColumnType("int");
 
-                    b.HasKey("FestivalId", "MediaPatronId");
+                    b.HasKey("FestivalId", "PartnerId");
 
-                    b.HasIndex("MediaPatronId");
+                    b.HasIndex("PartnerId");
 
-                    b.ToTable("Festival_MediaPatron");
+                    b.ToTable("Festival_Partner");
 
                     b.HasData(
                         new
                         {
                             FestivalId = 1,
-                            MediaPatronId = 1
+                            PartnerId = 1
                         },
                         new
                         {
                             FestivalId = 1,
-                            MediaPatronId = 2
+                            PartnerId = 2
                         },
                         new
                         {
                             FestivalId = 2,
-                            MediaPatronId = 1
+                            PartnerId = 1
                         },
                         new
                         {
                             FestivalId = 2,
-                            MediaPatronId = 3
+                            PartnerId = 3
                         },
                         new
                         {
                             FestivalId = 3,
-                            MediaPatronId = 2
+                            PartnerId = 2
                         },
                         new
                         {
                             FestivalId = 3,
-                            MediaPatronId = 3
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Organizer", b =>
-                {
-                    b.Property<int>("FestivalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrganizerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FestivalId", "OrganizerId");
-
-                    b.HasIndex("OrganizerId");
-
-                    b.ToTable("Festival_Organizer");
-
-                    b.HasData(
-                        new
-                        {
-                            FestivalId = 1,
-                            OrganizerId = 1
+                            PartnerId = 3
                         },
                         new
                         {
                             FestivalId = 1,
-                            OrganizerId = 2
-                        },
-                        new
-                        {
-                            FestivalId = 2,
-                            OrganizerId = 1
-                        },
-                        new
-                        {
-                            FestivalId = 2,
-                            OrganizerId = 3
-                        },
-                        new
-                        {
-                            FestivalId = 3,
-                            OrganizerId = 2
-                        },
-                        new
-                        {
-                            FestivalId = 3,
-                            OrganizerId = 3
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Sponsor", b =>
-                {
-                    b.Property<int>("FestivalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SponsorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FestivalId", "SponsorId");
-
-                    b.HasIndex("SponsorId");
-
-                    b.ToTable("Festival_Sponsor");
-
-                    b.HasData(
-                        new
-                        {
-                            FestivalId = 1,
-                            SponsorId = 1
+                            PartnerId = 4
                         },
                         new
                         {
                             FestivalId = 1,
-                            SponsorId = 2
+                            PartnerId = 5
                         },
                         new
                         {
                             FestivalId = 2,
-                            SponsorId = 1
+                            PartnerId = 4
                         },
                         new
                         {
                             FestivalId = 2,
-                            SponsorId = 3
+                            PartnerId = 6
                         },
                         new
                         {
                             FestivalId = 3,
-                            SponsorId = 2
+                            PartnerId = 5
                         },
                         new
                         {
                             FestivalId = 3,
-                            SponsorId = 3
+                            PartnerId = 6
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            PartnerId = 7
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            PartnerId = 8
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            PartnerId = 7
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            PartnerId = 9
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            PartnerId = 8
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            PartnerId = 9
                         });
                 });
 
@@ -1259,23 +1118,17 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsCopy")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsVisible")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("RentalPricePerHour")
                         .HasColumnType("NUMERIC(5,2)");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HallTypeId");
 
-                    b.ToTable("Hall");
+                    b.ToTable("Hall", (string)null);
 
                     b.HasData(
                         new
@@ -1287,7 +1140,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 1,
                             HallViewFileName = "sala_5_5_1.pdf",
                             IsCopy = false,
-                            IsUpdated = false,
                             IsVisible = true,
                             RentalPricePerHour = 120.99m
                         },
@@ -1300,7 +1152,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 2,
                             HallViewFileName = "sala_5_5_2.pdf",
                             IsCopy = false,
-                            IsUpdated = false,
                             IsVisible = true,
                             RentalPricePerHour = 89.99m
                         },
@@ -1313,7 +1164,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 3,
                             HallViewFileName = "sala_5_5_3.pdf",
                             IsCopy = false,
-                            IsUpdated = false,
                             IsVisible = true,
                             RentalPricePerHour = 179.99m
                         },
@@ -1326,7 +1176,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 4,
                             HallViewFileName = "sala_5_5_4.pdf",
                             IsCopy = false,
-                            IsUpdated = false,
                             IsVisible = true,
                             RentalPricePerHour = 199.99m
                         },
@@ -1339,7 +1188,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 1,
                             HallViewFileName = "sala_5_5_5.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 120.99m
                         },
@@ -1352,7 +1200,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 2,
                             HallViewFileName = "sala_5_5_6.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 89.99m
                         },
@@ -1365,7 +1212,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 3,
                             HallViewFileName = "sala_5_5_7.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 179.99m
                         },
@@ -1378,7 +1224,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 4,
                             HallViewFileName = "sala_5_5_8.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 199.99m
                         },
@@ -1391,7 +1236,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 1,
                             HallViewFileName = "sala_5_5_9.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 120.99m
                         },
@@ -1404,7 +1248,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 2,
                             HallViewFileName = "sala_5_5_10.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 89.99m
                         },
@@ -1417,7 +1260,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 4,
                             HallViewFileName = "sala_5_5_11.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 199.99m
                         },
@@ -1430,7 +1272,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 1,
                             HallViewFileName = "sala_5_5_12.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 120.99m
                         },
@@ -1443,7 +1284,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 2,
                             HallViewFileName = "sala_5_5_13.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 89.99m
                         },
@@ -1456,7 +1296,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 3,
                             HallViewFileName = "sala_5_5_14.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 179.99m
                         },
@@ -1469,7 +1308,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 4,
                             HallViewFileName = "sala_5_5_15.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 199.99m
                         },
@@ -1482,7 +1320,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 3,
                             HallViewFileName = "sala_5_5_16.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 179.99m
                         },
@@ -1495,7 +1332,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 2,
                             HallViewFileName = "sala_5_5_17.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 89.99m
                         },
@@ -1508,7 +1344,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 1,
                             HallViewFileName = "sala_5_5_18.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 120.99m
                         },
@@ -1521,7 +1356,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 3,
                             HallViewFileName = "sala_5_5_19.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 179.99m
                         },
@@ -1534,7 +1368,6 @@ namespace EventFlowAPI.DB.Migrations
                             HallTypeId = 4,
                             HallViewFileName = "sala_5_5_20.pdf",
                             IsCopy = true,
-                            IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 199.99m
                         });
@@ -1574,7 +1407,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HallDetails");
+                    b.ToTable("Hall", (string)null);
 
                     b.HasData(
                         new
@@ -1858,14 +1691,8 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
@@ -1876,9 +1703,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -1886,8 +1710,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HallId");
-
-                    b.HasIndex("PaymentTypeId");
 
                     b.HasIndex("UserId");
 
@@ -1903,9 +1725,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentGuid = new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08"),
                             HallRentPDFName = "wynajem_sali_1.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PaymentAmount = 899.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -1920,9 +1740,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentGuid = new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c"),
                             HallRentPDFName = "wynajem_sali_2.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PaymentAmount = 699.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -1937,9 +1755,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentGuid = new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5"),
                             HallRentPDFName = "wynajem_sali_3.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PaymentAmount = 399.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -1954,9 +1770,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallRentGuid = new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b"),
                             HallRentPDFName = "wynajem_sali_4.pdf",
                             IsDeleted = false,
-                            IsUpdated = false,
                             PaymentAmount = 150.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2032,12 +1846,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -2046,9 +1854,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<string>("PhotoName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -2061,8 +1866,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Nowoczesna sala kinowa, wyposażona w wysokiej jakości projektor oraz system nagłośnienia Dolby Digital. Idealna do projekcji filmów w różnych formatach, zapewniająca doskonałe wrażenia wizualne i dźwiękowe. Pomieszczenie jest przystosowane do projekcji 2D i 3D, z przestronnymi fotelami zapewniającymi komfort podczas długotrwałego seansu.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala filmowa",
                             PhotoName = "filmowa.jpg"
                         },
@@ -2072,8 +1875,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Sala koncertowa o najwyższej jakości akustyce, przeznaczona do organizacji koncertów, recitali i występów muzycznych. Wyposażona w profesjonalny system nagłośnienia i adaptację akustyczną, która zapewnia doskonałe warunki dźwiękowe dla artystów oraz publiczności. Przestronny design, komfortowe siedzenia oraz nowoczesne oświetlenie sprawiają, że jest to idealne miejsce do wydarzeń muzycznych.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala koncertowa",
                             PhotoName = "koncertowa.jpg"
                         },
@@ -2083,8 +1884,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Sala teatralna o wysokiej jakości akustyce i estetyce, przystosowana do organizacji spektakli teatralnych, przedstawień, recitalów oraz wydarzeń artystycznych. Wyposażona w profesjonalne oświetlenie sceniczne, nagłośnienie oraz przestronną scenę, która zapewnia doskonałą widoczność i akustykę. To przestrzeń, która sprzyja artystycznemu wyrazowi i tworzeniu niezapomnianych doznań dla widzów.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala teatralna",
                             PhotoName = "teatralna.jpg"
                         },
@@ -2094,8 +1893,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Przestronna sala wystawowa dedykowana organizacji wystaw, targów i ekspozycji artystycznych. Zapewnia dużą powierzchnię do prezentacji dzieł sztuki, rzemiosła i innych ekspozycji. Zmodernizowane oświetlenie i możliwość aranżacji przestrzeni pozwalają na profesjonalne wyeksponowanie dzieł. Jest to przestrzeń elastyczna, doskonała do organizacji wydarzeń kulturalnych i wystaw artystycznych.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala wystawowa",
                             PhotoName = "wystawowa.jpg"
                         },
@@ -2105,8 +1902,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Sala ogólna to wszechstronna przestrzeń, która może być wykorzystana do różnorodnych wydarzeń, takich jak konferencje, szkolenia, spotkania biznesowe, czy kameralne wydarzenia kulturalne. Elastyczne ustawienie sali oraz nowoczesne wyposażenie audiowizualne sprawiają, że jest to idealne miejsce do organizacji wydarzeń o różnym charakterze. Wysoka jakość akustyki i komfortowe warunki zapewniają dogodną atmosferę.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala ogólna",
                             PhotoName = "ogolna.jpg"
                         },
@@ -2116,8 +1911,6 @@ namespace EventFlowAPI.DB.Migrations
                             Description = "Sala konferencyjna dedykowana organizacji spotkań biznesowych, konferencji, prezentacji i seminariów. Wyposażona w nowoczesny sprzęt audiowizualny, systemy do wideokonferencji oraz przestronną salę, która pomieści większą liczbę uczestników. Komfortowe, ergonomiczne fotele i stół konferencyjny sprzyjają profesjonalnym spotkaniom, a elastyczne ustawienie sali pozwala dostosować ją do różnych formatów spotkań.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Sala konferencyjna",
                             PhotoName = "konferencyjna.jpg"
                         });
@@ -2255,72 +2048,6 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.MediaPatron", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("MediaPatronGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PhotoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MediaPatron");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            MediaPatronGuid = new Guid("ae371ef5-1408-4a99-9df5-c02da3894a64"),
-                            Name = "Gazeta Nowoczesna",
-                            PhotoName = "gazeta_nowoczesna.png"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            MediaPatronGuid = new Guid("1888ac98-9879-49d8-b5a0-a9bdedf65b79"),
-                            Name = "Nowy świat TV",
-                            PhotoName = "nowy_swiat.png"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            MediaPatronGuid = new Guid("21721629-b1aa-4fd0-8fce-689d78d6c326"),
-                            Name = "Tygodnik Nowiny",
-                            PhotoName = "tygodnik_nowiny.png"
-                        });
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.News", b =>
                 {
                     b.Property<int>("Id")
@@ -2418,7 +2145,7 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Organizer", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.PartnerBase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2432,69 +2159,15 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("OrganizerGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PhotoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Organizer");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "EventFlow",
-                            OrganizerGuid = new Guid("4656853b-fbf1-4407-8a15-9f60fe367343"),
-                            PhotoName = "eventflow.png"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Snowflake",
-                            OrganizerGuid = new Guid("175c000d-26c4-4519-b49d-c9d1d7935699"),
-                            PhotoName = "snowflake.png"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Aura",
-                            OrganizerGuid = new Guid("d044fdef-73a3-4f97-962f-d85e36760f4e"),
-                            PhotoName = "aura.png"
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Partner", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PartnerGuid")
                         .HasColumnType("uniqueidentifier");
@@ -2505,101 +2178,11 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Partner");
+                    b.ToTable("Partner", (string)null);
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Basel",
-                            PartnerGuid = new Guid("8e0ab6f0-ebbd-4d96-ae19-574b276e985c"),
-                            PhotoName = "basel.png"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Aura",
-                            PartnerGuid = new Guid("fa1fefc3-3a92-4162-a5cc-30aafea11323"),
-                            PhotoName = "aura.png"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Vision",
-                            PartnerGuid = new Guid("bb243a20-bf87-4534-b9b2-a994004f00c4"),
-                            PhotoName = "vision.png"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Snowflake",
-                            PartnerGuid = new Guid("2a1dbe6b-42f3-4fec-ab63-dffba70184b7"),
-                            PhotoName = "snowflake.png"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Waveless",
-                            PartnerGuid = new Guid("20f68122-1bdf-4881-8ce4-f808701648a5"),
-                            PhotoName = "waveless.png"
-                        });
-                });
+                    b.HasDiscriminator<string>("Kind").HasValue("PartnerBase");
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.PaymentType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<Guid>("PaymentTypeGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PhotoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "PayU",
-                            PaymentTypeGuid = new Guid("2aa93a32-7232-48e7-a05b-8364c8aafffc"),
-                            PhotoName = ""
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Karnet",
-                            PaymentTypeGuid = new Guid("1938093d-7427-40e5-a736-c2aa4305dc16"),
-                            PhotoName = ""
-                        });
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
@@ -2625,14 +2208,8 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsFestivalReservation")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
@@ -2649,8 +2226,12 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TicketPDFId")
-                        .HasColumnType("int");
+                    b.PrimitiveCollection<string>("TicketJPGFileNames")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TicketPDFFileName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalAdditionalPaymentAmount")
                         .HasColumnType("NUMERIC(6,2)");
@@ -2661,9 +2242,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("TotalDiscount")
                         .HasColumnType("NUMERIC(7,2)");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -2672,11 +2250,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasIndex("EventPassId");
 
-                    b.HasIndex("PaymentTypeId");
-
                     b.HasIndex("TicketId");
-
-                    b.HasIndex("TicketPDFId");
 
                     b.HasIndex("UserId");
 
@@ -2689,15 +2263,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
-                            IsUpdated = false,
                             PaymentAmount = 24.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
-                            TicketPDFId = 1,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf",
                             TotalAdditionalPaymentAmount = 2.5m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2709,15 +2282,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
-                            IsUpdated = false,
                             PaymentAmount = 34.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
-                            TicketPDFId = 2,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2729,15 +2301,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
-                            IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
                             StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
-                            TicketPDFId = 3,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf",
                             TotalAdditionalPaymentAmount = 7.5m,
                             TotalAddtionalPaymentPercentage = 25m,
                             TotalDiscount = 0m,
@@ -2749,15 +2320,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
-                            IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
                             StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
-                            TicketPDFId = 4,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2769,15 +2339,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
-                            IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
-                            TicketPDFId = 5,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2789,15 +2358,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
-                            IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
-                            TicketPDFId = 5,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg\",\"eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2809,15 +2377,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
-                            IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
-                            TicketPDFId = 6,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2829,15 +2396,14 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
-                            IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 8,
-                            TicketPDFId = 6,
+                            TicketJPGFileNames = "[\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg\",\"eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg\"]",
+                            TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2902,83 +2468,6 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation_TicketJPG", b =>
-                {
-                    b.Property<int>("ReservationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketJPGId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReservationId", "TicketJPGId");
-
-                    b.HasIndex("TicketJPGId");
-
-                    b.ToTable("Reservation_TicketJPG");
-
-                    b.HasData(
-                        new
-                        {
-                            ReservationId = 1,
-                            TicketJPGId = 1
-                        },
-                        new
-                        {
-                            ReservationId = 2,
-                            TicketJPGId = 2
-                        },
-                        new
-                        {
-                            ReservationId = 3,
-                            TicketJPGId = 3
-                        },
-                        new
-                        {
-                            ReservationId = 4,
-                            TicketJPGId = 4
-                        },
-                        new
-                        {
-                            ReservationId = 5,
-                            TicketJPGId = 5
-                        },
-                        new
-                        {
-                            ReservationId = 5,
-                            TicketJPGId = 6
-                        },
-                        new
-                        {
-                            ReservationId = 6,
-                            TicketJPGId = 5
-                        },
-                        new
-                        {
-                            ReservationId = 6,
-                            TicketJPGId = 6
-                        },
-                        new
-                        {
-                            ReservationId = 7,
-                            TicketJPGId = 7
-                        },
-                        new
-                        {
-                            ReservationId = 7,
-                            TicketJPGId = 8
-                        },
-                        new
-                        {
-                            ReservationId = 8,
-                            TicketJPGId = 7
-                        },
-                        new
-                        {
-                            ReservationId = 8,
-                            TicketJPGId = 8
-                        });
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Seat", b =>
                 {
                     b.Property<int>("Id")
@@ -2999,9 +2488,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("HallId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("Row")
                         .HasColumnType("NUMERIC(2)");
 
@@ -3010,9 +2496,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<int>("SeatTypeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -3030,7 +2513,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 1,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 1
@@ -3042,7 +2524,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 1,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 1
@@ -3054,7 +2535,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 1,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3066,7 +2546,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 1,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 1
@@ -3078,7 +2557,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 2,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 2
@@ -3090,7 +2568,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 2,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 2
@@ -3102,7 +2579,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 2,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3114,7 +2590,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 2,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 2
@@ -3126,7 +2601,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 3,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3138,7 +2612,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 3,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 3
@@ -3150,7 +2623,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 3,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 3
@@ -3162,7 +2634,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 3,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 3
@@ -3174,7 +2645,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 4,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3186,7 +2656,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 5,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 1
@@ -3198,7 +2667,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 5,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 1
@@ -3210,7 +2678,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 5,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3222,7 +2689,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 5,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 1
@@ -3234,7 +2700,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 9,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 1
@@ -3246,7 +2711,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 9,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 1
@@ -3258,7 +2722,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 9,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3270,7 +2733,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 9,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 1
@@ -3282,7 +2744,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 12,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 1
@@ -3294,7 +2755,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 12,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 1
@@ -3306,7 +2766,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 12,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3318,7 +2777,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 12,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 1
@@ -3330,7 +2788,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 6,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 2
@@ -3342,7 +2799,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 6,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 2
@@ -3354,7 +2810,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 6,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3366,7 +2821,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 6,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 2
@@ -3378,7 +2832,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 10,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 2
@@ -3390,7 +2843,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 10,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 2
@@ -3402,7 +2854,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 10,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3414,7 +2865,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 10,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 2
@@ -3426,7 +2876,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 13,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 2
@@ -3438,7 +2887,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 13,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 2
@@ -3450,7 +2898,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 13,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3462,7 +2909,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 13,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 2
@@ -3474,7 +2920,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 7,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3486,7 +2931,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 7,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 3
@@ -3498,7 +2942,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 7,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 3
@@ -3510,7 +2953,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 7,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 3
@@ -3522,7 +2964,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 14,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3534,7 +2975,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 14,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 3
@@ -3546,7 +2986,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 14,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 3
@@ -3558,7 +2997,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 14,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 3
@@ -3570,7 +3008,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 8,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3582,7 +3019,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 11,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3594,7 +3030,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 15,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3606,7 +3041,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 16,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3618,7 +3052,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 16,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 3
@@ -3630,7 +3063,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 16,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 3
@@ -3642,7 +3074,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 16,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 3
@@ -3654,7 +3085,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 17,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 2
@@ -3666,7 +3096,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 17,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 2
@@ -3678,7 +3107,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 17,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3690,7 +3118,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 17,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 2
@@ -3702,7 +3129,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 18,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 1
@@ -3714,7 +3140,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 18,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 1
@@ -3726,7 +3151,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 18,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 1
@@ -3738,7 +3162,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 18,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 1
@@ -3750,7 +3173,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 19,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3762,7 +3184,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 2m,
                             GridRow = 1m,
                             HallId = 19,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 2m,
                             SeatTypeId = 3
@@ -3774,7 +3195,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 3m,
                             GridRow = 1m,
                             HallId = 19,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 3m,
                             SeatTypeId = 3
@@ -3786,7 +3206,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 4m,
                             GridRow = 1m,
                             HallId = 19,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 4m,
                             SeatTypeId = 3
@@ -3798,7 +3217,6 @@ namespace EventFlowAPI.DB.Migrations
                             GridColumn = 1m,
                             GridRow = 1m,
                             HallId = 20,
-                            IsUpdated = false,
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
@@ -3826,12 +3244,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -3840,9 +3252,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<string>("SeatColor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -3855,8 +3264,6 @@ namespace EventFlowAPI.DB.Migrations
                             AddtionalPaymentPercentage = 25.00m,
                             Description = "Opis miejsca VIP",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Miejsce VIP",
                             SeatColor = "#9803fc"
                         },
@@ -3866,8 +3273,6 @@ namespace EventFlowAPI.DB.Migrations
                             AddtionalPaymentPercentage = 10.00m,
                             Description = "Opis miejsca klasy premium",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Miejsce klasy premium",
                             SeatColor = "#ffa600"
                         },
@@ -3877,76 +3282,8 @@ namespace EventFlowAPI.DB.Migrations
                             AddtionalPaymentPercentage = 0.00m,
                             Description = "Opis miejsca zwykłego",
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Miejsce zwykłe",
                             SeatColor = "#039aff"
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Sponsor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("PhotoName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("SponsorGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sponsor");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Basel",
-                            PhotoName = "basel.png",
-                            SponsorGuid = new Guid("423d7369-b70c-4471-97a8-968d001718a7")
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Vision",
-                            PhotoName = "vision.png",
-                            SponsorGuid = new Guid("6ba10301-43f6-4207-835c-15f03d7904c7")
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            IsUpdated = false,
-                            Name = "Waveless",
-                            PhotoName = "waveless.png",
-                            SponsorGuid = new Guid("ca9f16d2-cfa6-47dc-9aff-a0821ce6bf79")
                         });
                 });
 
@@ -3970,17 +3307,11 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<int>("TicketTypeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -3998,7 +3329,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             EventId = 1,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 24.99m,
                             TicketTypeId = 1
                         },
@@ -4007,7 +3337,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             EventId = 2,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 34.99m,
                             TicketTypeId = 1
                         },
@@ -4016,7 +3345,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             EventId = 3,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 29.99m,
                             TicketTypeId = 1
                         },
@@ -4025,7 +3353,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 4,
                             EventId = 4,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 19.99m,
                             TicketTypeId = 1
                         },
@@ -4035,7 +3362,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventId = 1,
                             FestivalId = 1,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 19.99m,
                             TicketTypeId = 1
                         },
@@ -4045,7 +3371,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventId = 5,
                             FestivalId = 1,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 19.99m,
                             TicketTypeId = 1
                         },
@@ -4055,7 +3380,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventId = 2,
                             FestivalId = 2,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 29.99m,
                             TicketTypeId = 2
                         },
@@ -4065,7 +3389,6 @@ namespace EventFlowAPI.DB.Migrations
                             EventId = 6,
                             FestivalId = 2,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 29.99m,
                             TicketTypeId = 2
                         },
@@ -4074,7 +3397,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 9,
                             EventId = 5,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 24.99m,
                             TicketTypeId = 1
                         },
@@ -4083,7 +3405,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 10,
                             EventId = 6,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 32.99m,
                             TicketTypeId = 1
                         },
@@ -4092,7 +3413,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 11,
                             EventId = 7,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 34.99m,
                             TicketTypeId = 1
                         },
@@ -4101,137 +3421,8 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 12,
                             EventId = 8,
                             IsDeleted = false,
-                            IsUpdated = false,
                             Price = 19.99m,
                             TicketTypeId = 1
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketJPG", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReservationGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TicketJPG");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FileName = "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.jpg",
-                            ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3")
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FileName = "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.jpg",
-                            ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09")
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FileName = "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.jpg",
-                            ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a")
-                        },
-                        new
-                        {
-                            Id = 4,
-                            FileName = "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.jpg",
-                            ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708")
-                        },
-                        new
-                        {
-                            Id = 5,
-                            FileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg",
-                            ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd")
-                        },
-                        new
-                        {
-                            Id = 6,
-                            FileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg",
-                            ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd")
-                        },
-                        new
-                        {
-                            Id = 7,
-                            FileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg",
-                            ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6")
-                        },
-                        new
-                        {
-                            Id = 8,
-                            FileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg",
-                            ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6")
-                        });
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketPDF", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReservationGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TicketPDF");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FileName = "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf",
-                            ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3")
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FileName = "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf",
-                            ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09")
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FileName = "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf",
-                            ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a")
-                        },
-                        new
-                        {
-                            Id = 4,
-                            FileName = "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf",
-                            ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708")
-                        },
-                        new
-                        {
-                            Id = 5,
-                            FileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
-                            ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd")
-                        },
-                        new
-                        {
-                            Id = 6,
-                            FileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
-                            ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6")
                         });
                 });
 
@@ -4249,19 +3440,10 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSoftUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpdated")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -4272,24 +3454,18 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Bilet normalny"
                         },
                         new
                         {
                             Id = 2,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Bilet ulgowy"
                         },
                         new
                         {
                             Id = 3,
                             IsDeleted = false,
-                            IsSoftUpdated = false,
-                            IsUpdated = false,
                             Name = "Bilet rodzinny"
                         });
                 });
@@ -4338,7 +3514,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -4432,7 +3608,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserData");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -4477,6 +3653,154 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.MediaPatron", b =>
+                {
+                    b.HasBaseType("EventFlowAPI.DB.Entities.PartnerBase");
+
+                    b.HasDiscriminator().HasValue("MediaPatron");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "Gazeta Nowoczesna",
+                            PartnerGuid = new Guid("ae371ef5-1408-4a99-9df5-c02da3894a64"),
+                            PhotoName = "gazeta_nowoczesna.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "Nowy świat TV",
+                            PartnerGuid = new Guid("1888ac98-9879-49d8-b5a0-a9bdedf65b79"),
+                            PhotoName = "nowy_swiat.png"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "Tygodnik Nowiny",
+                            PartnerGuid = new Guid("21721629-b1aa-4fd0-8fce-689d78d6c326"),
+                            PhotoName = "tygodnik_nowiny.png"
+                        });
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Organizer", b =>
+                {
+                    b.HasBaseType("EventFlowAPI.DB.Entities.PartnerBase");
+
+                    b.HasDiscriminator().HasValue("Organizer");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 4,
+                            IsDeleted = false,
+                            Name = "EventFlow",
+                            PartnerGuid = new Guid("4656853b-fbf1-4407-8a15-9f60fe367343"),
+                            PhotoName = "eventflow.png"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsDeleted = false,
+                            Name = "Snowflake",
+                            PartnerGuid = new Guid("175c000d-26c4-4519-b49d-c9d1d7935699"),
+                            PhotoName = "snowflake.png"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsDeleted = false,
+                            Name = "Aura",
+                            PartnerGuid = new Guid("d044fdef-73a3-4f97-962f-d85e36760f4e"),
+                            PhotoName = "aura.png"
+                        });
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Partner", b =>
+                {
+                    b.HasBaseType("EventFlowAPI.DB.Entities.PartnerBase");
+
+                    b.HasDiscriminator().HasValue("Partner");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 10,
+                            IsDeleted = false,
+                            Name = "Basel",
+                            PartnerGuid = new Guid("8e0ab6f0-ebbd-4d96-ae19-574b276e985c"),
+                            PhotoName = "basel.png"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            IsDeleted = false,
+                            Name = "Aura",
+                            PartnerGuid = new Guid("fa1fefc3-3a92-4162-a5cc-30aafea11323"),
+                            PhotoName = "aura.png"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            IsDeleted = false,
+                            Name = "Vision",
+                            PartnerGuid = new Guid("bb243a20-bf87-4534-b9b2-a994004f00c4"),
+                            PhotoName = "vision.png"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            IsDeleted = false,
+                            Name = "Snowflake",
+                            PartnerGuid = new Guid("2a1dbe6b-42f3-4fec-ab63-dffba70184b7"),
+                            PhotoName = "snowflake.png"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            IsDeleted = false,
+                            Name = "Waveless",
+                            PartnerGuid = new Guid("20f68122-1bdf-4881-8ce4-f808701648a5"),
+                            PhotoName = "waveless.png"
+                        });
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Sponsor", b =>
+                {
+                    b.HasBaseType("EventFlowAPI.DB.Entities.PartnerBase");
+
+                    b.HasDiscriminator().HasValue("Sponsor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 7,
+                            IsDeleted = false,
+                            Name = "Basel",
+                            PartnerGuid = new Guid("423d7369-b70c-4471-97a8-968d001718a7"),
+                            PhotoName = "basel.png"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsDeleted = false,
+                            Name = "Vision",
+                            PartnerGuid = new Guid("6ba10301-43f6-4207-835c-15f03d7904c7"),
+                            PhotoName = "vision.png"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsDeleted = false,
+                            Name = "Waveless",
+                            PartnerGuid = new Guid("ca9f16d2-cfa6-47dc-9aff-a0821ce6bf79"),
+                            PhotoName = "waveless.png"
+                        });
+                });
+
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.EventCategory", "Category")
@@ -4491,17 +3815,20 @@ namespace EventFlowAPI.DB.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.EventDetails", "Details")
-                        .WithOne("Event")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.Event", "Id")
+                    b.Navigation("Category");
+
+                    b.Navigation("Hall");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
+                        .WithOne("Details")
+                        .HasForeignKey("EventFlowAPI.DB.Entities.EventDetails", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
-                    b.Navigation("Details");
-
-                    b.Navigation("Hall");
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventPass", b =>
@@ -4509,12 +3836,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasOne("EventFlowAPI.DB.Entities.EventPassType", "PassType")
                         .WithMany("EventPasses")
                         .HasForeignKey("PassTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
-                        .WithMany("EventPasses")
-                        .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -4526,20 +3847,18 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Navigation("PassType");
 
-                    b.Navigation("PaymentType");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.FestivalDetails", "Details")
-                        .WithOne("Festival")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.Festival", "Id")
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
+                        .WithOne("Details")
+                        .HasForeignKey("EventFlowAPI.DB.Entities.FestivalDetails", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Details");
+                    b.Navigation("Festival");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Event", b =>
@@ -4557,7 +3876,7 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_MediaPatron", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Partner", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
                         .WithMany()
@@ -4565,39 +3884,9 @@ namespace EventFlowAPI.DB.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.MediaPatron", null)
+                    b.HasOne("EventFlowAPI.DB.Entities.PartnerBase", null)
                         .WithMany()
-                        .HasForeignKey("MediaPatronId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Organizer", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
-                        .WithMany()
-                        .HasForeignKey("FestivalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.Organizer", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Sponsor", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
-                        .WithMany()
-                        .HasForeignKey("FestivalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.Sponsor", null)
-                        .WithMany()
-                        .HasForeignKey("SponsorId")
+                        .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -4632,12 +3921,6 @@ namespace EventFlowAPI.DB.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
-                        .WithMany("HallRents")
-                        .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EventFlowAPI.DB.Entities.User", "User")
                         .WithMany("HallRents")
                         .HasForeignKey("UserId")
@@ -4645,8 +3928,6 @@ namespace EventFlowAPI.DB.Migrations
                         .IsRequired();
 
                     b.Navigation("Hall");
-
-                    b.Navigation("PaymentType");
 
                     b.Navigation("User");
                 });
@@ -4687,21 +3968,11 @@ namespace EventFlowAPI.DB.Migrations
                         .WithMany("Reservations")
                         .HasForeignKey("EventPassId");
 
-                    b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
-                        .WithMany("Reservations")
-                        .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EventFlowAPI.DB.Entities.Ticket", "Ticket")
                         .WithMany("Reservations")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.TicketPDF", "TicketPDF")
-                        .WithMany("Reservations")
-                        .HasForeignKey("TicketPDFId");
 
                     b.HasOne("EventFlowAPI.DB.Entities.User", "User")
                         .WithMany("Reservations")
@@ -4711,11 +3982,7 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Navigation("EventPass");
 
-                    b.Navigation("PaymentType");
-
                     b.Navigation("Ticket");
-
-                    b.Navigation("TicketPDF");
 
                     b.Navigation("User");
                 });
@@ -4737,21 +4004,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Reservation");
 
                     b.Navigation("Seat");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation_TicketJPG", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Reservation", null)
-                        .WithMany()
-                        .HasForeignKey("ReservationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.TicketJPG", null)
-                        .WithMany()
-                        .HasForeignKey("TicketJPGId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Seat", b =>
@@ -4811,17 +4063,14 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
                 {
+                    b.Navigation("Details");
+
                     b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventCategory", b =>
                 {
                     b.Navigation("Events");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
-                {
-                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventPass", b =>
@@ -4836,19 +4085,17 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
-                    b.Navigation("Tickets");
-                });
+                    b.Navigation("Details");
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
-                {
-                    b.Navigation("Festival");
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Hall", b =>
                 {
                     b.Navigation("Events");
 
-                    b.Navigation("HallDetails");
+                    b.Navigation("HallDetails")
+                        .IsRequired();
 
                     b.Navigation("Rents");
 
@@ -4860,26 +4107,12 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Halls");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.PaymentType", b =>
-                {
-                    b.Navigation("EventPasses");
-
-                    b.Navigation("HallRents");
-
-                    b.Navigation("Reservations");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.SeatType", b =>
                 {
                     b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketPDF", b =>
                 {
                     b.Navigation("Reservations");
                 });

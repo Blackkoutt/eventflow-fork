@@ -28,7 +28,6 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<HallType>().Seed();
             modelBuilder.Entity<MediaPatron>().Seed();
             modelBuilder.Entity<Organizer>().Seed();
-            modelBuilder.Entity<PaymentType>().Seed();
             modelBuilder.Entity<SeatType>().Seed();
             modelBuilder.Entity<Sponsor>().Seed();
             modelBuilder.Entity<TicketType>().Seed();
@@ -36,9 +35,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<HallDetails>().Seed();
             modelBuilder.Entity<Hall>().Seed();
             modelBuilder.Entity<HallType_Equipment>().Seed();
-            modelBuilder.Entity<Festival_MediaPatron>().Seed();
-            modelBuilder.Entity<Festival_Organizer>().Seed();
-            modelBuilder.Entity<Festival_Sponsor>().Seed();
+            modelBuilder.Entity<Festival_Partner>().Seed();
             modelBuilder.Entity<Event>().Seed(today: today);
             modelBuilder.Entity<Seat>().Seed();
             modelBuilder.Entity<EventPass>().Seed(today: today);
@@ -46,10 +43,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<Ticket>().Seed();
             modelBuilder.Entity<Festival_Event>().Seed();
             modelBuilder.Entity<HallRent_AdditionalServices>().Seed();
-            modelBuilder.Entity<TicketJPG>().Seed();
-            modelBuilder.Entity<TicketPDF>().Seed();
             modelBuilder.Entity<Reservation>().Seed(today: today);
-            modelBuilder.Entity<Reservation_TicketJPG>().Seed();
             modelBuilder.Entity<Reservation_Seat>().Seed();
         }
     }

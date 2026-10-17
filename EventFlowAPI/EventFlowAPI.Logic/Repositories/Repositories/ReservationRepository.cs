@@ -14,7 +14,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         {
             var _table = _context.Reservation
                                 .Include(r => r.User)
-                                .Include(r => r.PaymentType)
                                 .Include(r => r.Seats)
                                     .ThenInclude(s => s.SeatType)
                                 .Include(r => r.Ticket)
@@ -37,7 +36,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             return await _context.Reservation
                          .AsSplitQuery()
                         .Include(r => r.User)
-                        .Include(r => r.PaymentType)
                         .Include(r => r.Seats)
                             .ThenInclude(s => s.SeatType)
                         .Include(r => r.Ticket)

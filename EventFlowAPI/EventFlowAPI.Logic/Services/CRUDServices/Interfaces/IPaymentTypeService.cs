@@ -1,20 +1,14 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.DTO.ResponseDto;
-using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+﻿using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Query;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.ResultObject;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface IPaymentTypeService :
-        IGenericService<
-            PaymentType,
-            PaymentTypeRequestDto,
-            UpdatePaymentTypeRequestDto,
-            PaymentTypeResponseDto,
-            PaymentTypeQuery
-        >
+    public interface IPaymentTypeService
     {
+        Task<Result<IEnumerable<PaymentTypeResponseDto>>> GetAllAsync(PaymentTypeQuery query);
+        Task<Result<PaymentTypeResponseDto>> GetOneAsync(int id);
+        Task<Result<BlobResponseDto>> GetImageAsync(int id);
     }
 }

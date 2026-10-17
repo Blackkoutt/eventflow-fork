@@ -123,14 +123,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
 
             Log.Information("Creating new Hall entity with the following properties:");
-            Log.Information("DefaultId: {DefaultId}, HallNr: {HallNr}, RentalPricePerHour: {RentalPricePerHour}, IsCopy: {IsCopy}, IsVisible: {IsVisible}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, Floor: {Floor}, HallViewFileName: {HallViewFileName}, HallTypeId: {HallTypeId}",
+            Log.Information("DefaultId: {DefaultId}, HallNr: {HallNr}, RentalPricePerHour: {RentalPricePerHour}, IsCopy: {IsCopy}, IsVisible: {IsVisible}, Floor: {Floor}, HallViewFileName: {HallViewFileName}, HallTypeId: {HallTypeId}",
                 newHallEntity.DefaultId,
                 newHallEntity.HallNr,
                 newHallEntity.RentalPricePerHour,
                 newHallEntity.IsCopy,
                 newHallEntity.IsVisible,
-                newHallEntity.IsUpdated,
-                newHallEntity.UpdateDate,
                 newHallEntity.Floor,
                 newHallEntity.HallViewFileName,
                 newHallEntity.HallTypeId);
@@ -155,15 +153,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (newHallEntity.Type != null)
             {
-                Log.Information("HallType: Name: {Name}, Description: {Description}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, IsDeleted: {IsDeleted}, HallTypeGuid: {HallTypeGuid}, DeleteDate: {DeleteDate}, IsSoftUpdated: {IsSoftUpdated}, PhotoName: {PhotoName}",
+                Log.Information("HallType: Name: {Name}, Description: {Description}, IsDeleted: {IsDeleted}, HallTypeGuid: {HallTypeGuid}, DeleteDate: {DeleteDate}, PhotoName: {PhotoName}",
                     newHallEntity.Type.Name,
                     newHallEntity.Type.Description,
-                    newHallEntity.Type.IsUpdated,
-                    newHallEntity.Type.UpdateDate,
                     newHallEntity.Type.IsDeleted,
                     newHallEntity.Type.HallTypeGuid,
                     newHallEntity.Type.DeleteDate,
-                    newHallEntity.Type.IsSoftUpdated,
                     newHallEntity.Type.PhotoName);
             }
             else
@@ -180,29 +175,24 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     // Logowanie właściwości głównego obiektu Seat
                     Log.Information("Logging Seat details:");
-                    Log.Information("SeatNr: {SeatNr}, Row: {Row}, GridRow: {GridRow}, Column: {Column}, GridColumn: {GridColumn}, SeatTypeId: {SeatTypeId}, HallId: {HallId}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}",
+                    Log.Information("SeatNr: {SeatNr}, Row: {Row}, GridRow: {GridRow}, Column: {Column}, GridColumn: {GridColumn}, SeatTypeId: {SeatTypeId}, HallId: {HallId}",
                         seat.SeatNr,
                         seat.Row,
                         seat.GridRow,
                         seat.Column,
                         seat.GridColumn,
                         seat.SeatTypeId,
-                        seat.HallId,
-                        seat.IsUpdated,
-                        seat.UpdateDate);
+                        seat.HallId);
 
                     // Logowanie właściwości powiązanego obiektu SeatType
                     if (seat.SeatType != null)
                     {
                         Log.Information("SeatType details:");
-                        Log.Information("Name: {Name}, Description: {Description}, IsDeleted: {IsDeleted}, DeleteDate: {DeleteDate}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, IsSoftUpdated: {IsSoftUpdated}, AddtionalPaymentPercentage: {AddtionalPaymentPercentage}, SeatColor: {SeatColor}",
+                        Log.Information("Name: {Name}, Description: {Description}, IsDeleted: {IsDeleted}, DeleteDate: {DeleteDate}, AddtionalPaymentPercentage: {AddtionalPaymentPercentage}, SeatColor: {SeatColor}",
                             seat.SeatType.Name,
                             seat.SeatType.Description,
                             seat.SeatType.IsDeleted,
                             seat.SeatType.DeleteDate,
-                            seat.SeatType.IsUpdated,
-                            seat.SeatType.UpdateDate,
-                            seat.SeatType.IsSoftUpdated,
                             seat.SeatType.AddtionalPaymentPercentage,
                             seat.SeatType.SeatColor);
                     }

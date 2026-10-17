@@ -114,9 +114,9 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.MaxDuration != null) queryable = queryable.Where(x => x.Duration <= query.MaxDuration.Value.TotalSeconds);
             if (query.MinEventsCount != null) queryable = queryable.Where(x => x.Events.Count >= query.MinEventsCount);
             if (query.MaxEventsCount != null) queryable = queryable.Where(x => x.Events.Count <= query.MaxEventsCount);    
-            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.MediaPatrons.Any(mp => mp.Id == query.MediaPatronId));
-            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Organizers.Any(o => o.Id == query.OrganizerId));
-            if (query.SponsorId != null) queryable = queryable.Where(x => x.Sponsors.Any(s => s.Id == query.SponsorId));
+            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is MediaPatron && p.Id == query.MediaPatronId));
+            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is Organizer && p.Id == query.OrganizerId));
+            if (query.SponsorId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is Sponsor && p.Id == query.SponsorId));
             if (query.TicketTypeId != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Id == query.TicketTypeId));
             if (query.MinTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price >= query.MinTicketPrice));
             if (query.MaxTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price <= query.MaxTicketPrice));

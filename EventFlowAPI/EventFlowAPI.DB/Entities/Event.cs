@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Event : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IUpdateableEntity, IPhotoEntity
+    public class Event : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IPhotoEntity
     {
 
         [MaxLength(60)]
@@ -29,8 +29,6 @@ namespace EventFlowAPI.DB.Entities
         public bool IsExpired => EndDate < DateTime.Now;
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public Guid EventGuid { get; set; }
         public string PhotoName { get; set; } = string.Empty;
 

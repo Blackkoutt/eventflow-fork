@@ -49,8 +49,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var entity = MapAsEntity(requestDto!);
 
-            entity.OrganizerGuid = Guid.NewGuid();
-            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.OrganizerPhoto, $"{entity.Name}_{entity.OrganizerGuid}", isUpdate: false);
+            entity.PartnerGuid = Guid.NewGuid();
+            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.OrganizerPhoto, $"{entity.Name}_{entity.PartnerGuid}", isUpdate: false);
             if (photoPostError != Error.None)
                 return Result<OrganizerResponseDto>.Failure(photoPostError);
 
@@ -74,7 +74,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newEntity = (Organizer)MapToEntity(requestDto!, oldEntity);
 
-            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.OrganizerPhoto, $"{newEntity.Name}_{newEntity.OrganizerGuid}", isUpdate: true);
+            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.OrganizerPhoto, $"{newEntity.Name}_{newEntity.PartnerGuid}", isUpdate: true);
             if (photoPostError != Error.None)
                 return Result<OrganizerResponseDto>.Failure(photoPostError);
 

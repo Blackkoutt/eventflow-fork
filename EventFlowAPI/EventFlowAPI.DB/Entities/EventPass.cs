@@ -4,16 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
+    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
     {
         public Guid EventPassGuid { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime? RenewalDate { get; set; } = null;
         public DateTime EndDate { get; set; }
-        public DateTime? PreviousEndDate { get; set; } = null;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
@@ -38,7 +35,8 @@ namespace EventFlowAPI.DB.Entities
         public int PaymentTypeId { get; set; }
         public EventPassType PassType { get; set; } = default!;
         public User User { get; set; } = default!;
-        public PaymentType PaymentType { get; set; } = default!;
+        [NotMapped]
+        public PaymentType PaymentType => PaymentTypes.All.First(paymentType => paymentType.Id == PaymentTypeId);
         public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

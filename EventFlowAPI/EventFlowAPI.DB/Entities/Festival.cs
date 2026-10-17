@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Festival : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IUpdateableEntity, IPhotoEntity
+    public class Festival : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IPhotoEntity
     {
 
         [MaxLength(60)]
@@ -19,8 +19,6 @@ namespace EventFlowAPI.DB.Entities
         public long Duration { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public string PhotoName { get; set; } = string.Empty;
 
         [NotMapped]
@@ -34,9 +32,16 @@ namespace EventFlowAPI.DB.Entities
         }
         public FestivalDetails? Details { get; set; }
         public ICollection<Event> Events { get; set; } = [];
-        public ICollection<MediaPatron> MediaPatrons { get; set; } = [];
-        public ICollection<Organizer> Organizers { get; set; } = [];
-        public ICollection<Sponsor> Sponsors { get; set; } = [];
+        public ICollection<PartnerBase> Partners { get; set; } = [];
+
+        [NotMapped]
+        public IEnumerable<MediaPatron> MediaPatrons => Partners.OfType<MediaPatron>();
+
+        [NotMapped]
+        public IEnumerable<Organizer> Organizers => Partners.OfType<Organizer>();
+
+        [NotMapped]
+        public IEnumerable<Sponsor> Sponsors => Partners.OfType<Sponsor>();
         public ICollection<Ticket> Tickets { get; set; } = [];
     }
 }

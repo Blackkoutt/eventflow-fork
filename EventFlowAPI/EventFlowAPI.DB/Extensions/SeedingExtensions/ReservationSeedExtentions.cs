@@ -23,14 +23,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2.5m,
                     PaymentAmount = 24.99m,
                     UserId = "4",
                     PaymentTypeId = 1,
                     TicketId = 1,
-                    TicketPDFId = 1
+                    TicketPDFFileName = $"eventflow_bilet_test_{res1}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{res1}.jpg"]
                 },
                 new Reservation
                 {
@@ -40,14 +40,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 34.99m,
                     UserId = "2",
                     PaymentTypeId = 1,
                     TicketId = 2,
-                    TicketPDFId = 2
+                    TicketPDFFileName = $"eventflow_bilet_test_{res2}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{res2}.jpg"]
                 },
                 new Reservation
                 {
@@ -57,14 +57,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 25m,
                     TotalAdditionalPaymentAmount = 7.5m,
                     PaymentAmount = 29.99m,
                     UserId = "3",
                     PaymentTypeId = 1,
                     TicketId = 3,
-                    TicketPDFId = 3
+                    TicketPDFFileName = $"eventflow_bilet_test_{res3}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{res3}.jpg"]
                 },
                 new Reservation
                 {
@@ -74,14 +74,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 19.99m,
                     UserId = "3",
                     PaymentTypeId = 1,
                     TicketId = 4,
-                    TicketPDFId = 4
+                    TicketPDFFileName = $"eventflow_bilet_test_{res4}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{res4}.jpg"]
                 },
                 new Reservation
                 {
@@ -91,14 +91,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
                     PaymentTypeId = 1,
                     TicketId = 5,
-                    TicketPDFId = 5
+                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{firstFestivalGuid}_1.jpg", $"eventflow_bilet_test_{firstFestivalGuid}_2.jpg"]
                 },
                 new Reservation
                 {
@@ -108,14 +108,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(1),
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
                     PaymentTypeId = 1,
                     TicketId = 6,
-                    TicketPDFId = 5
+                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{firstFestivalGuid}_1.jpg", $"eventflow_bilet_test_{firstFestivalGuid}_2.jpg"]
                 },
                 new Reservation
                 {
@@ -125,14 +125,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
                     PaymentTypeId = 1,
                     TicketId = 7,
-                    TicketPDFId = 6
+                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{secondFestivalGuid}_1.jpg", $"eventflow_bilet_test_{secondFestivalGuid}_2.jpg"]
                 },
                 new Reservation
                 {
@@ -142,14 +142,14 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(3),
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
                     PaymentTypeId = 1,
                     TicketId = 8,
-                    TicketPDFId = 6
+                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
+                    TicketJPGFileNames = [$"eventflow_bilet_test_{secondFestivalGuid}_1.jpg", $"eventflow_bilet_test_{secondFestivalGuid}_2.jpg"]
                 }
             );
         }

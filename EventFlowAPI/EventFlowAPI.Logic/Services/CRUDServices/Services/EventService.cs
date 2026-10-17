@@ -464,7 +464,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var ticketTypeIds = eventTickets.Select(et => et.TicketTypeId);
             if (ticketTypeIds.Count() != ticketTypeIds.Distinct().Count())
                 return TicketTypeError.TicketDuplicates;
-            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted && !tt.IsSoftUpdated));
+            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted));
             var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
             if (!ticketTypeIds.All(id => allTicketTypeIds.Contains(id)))
                 return TicketTypeError.NotFound;
