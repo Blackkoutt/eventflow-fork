@@ -23,15 +23,11 @@ The test databases are created with the `Polish_CI_AS` collation and the tests r
 
 ## CI
 
-`.github/workflows/event-flow-ci.yml` builds the API and the client and runs these tests on every push to `develop` (Windows runner, SQL Server LocalDB, Central European time zone). When a snapshot differs, the `*.received.*` files are uploaded as the `test-results` artifact.
+`.github/workflows/event-flow-ci.yml` builds the API and the client and runs these tests on every push to `develop` (Windows runner, SQL Server LocalDB, Central European time zone). When a test fails, the `.trx` results are uploaded as the `test-results` artifact.
 
-## Snapshots
+## Expected data
 
-Responses of the seeded data, filters, sorting and paging are stored as Verify snapshots (`*.verified.*`). Dates are written relative to today. After an intended behaviour change, review the diff and accept it:
-
-```
-set EVENTFLOW_ACCEPT_SNAPSHOTS=1
-```
+The seeded responses, filters, sorting and paging are asserted in code: `Queries/QueryFilterTests.cs` lists the ids every query is expected to return (in order), `Queries/SeededResponseTests.cs` asserts the key fields of single records and who sees which records. Dates are compared relative to today. After an intended behaviour change, update the expected values in the test.
 
 ## Layout
 

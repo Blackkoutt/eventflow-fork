@@ -1,4 +1,0 @@
-﻿Status=Active => 200 [2,3]
-MinPrice=100 => 200 [2,3]
-SortBy=PaymentAmount&SortDirection=DESC => 200 [2,3]
-PageNumber=1&PageSize=1 => 200 [2]

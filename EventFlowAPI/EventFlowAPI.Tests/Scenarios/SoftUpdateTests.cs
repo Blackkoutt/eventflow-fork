@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using EventFlowAPI.Tests.Infrastructure;
 
@@ -15,14 +14,9 @@ namespace EventFlowAPI.Tests.Scenarios
             _world = new ScenarioWorld(factory);
         }
 
-        private string DescribeList(JsonElement list, string nameProperty)
+        private static Dictionary<int, string?> NamesById(JsonElement list)
         {
-            var lines = new StringBuilder();
-            foreach (var item in list.EnumerateArray())
-            {
-                lines.AppendLine($"{item.GetProperty("id").GetInt32()}: {item.GetProperty(nameProperty).GetString()}");
-            }
-            return lines.ToString();
+            return list.EnumerateArray().ToDictionary(item => item.GetProperty("id").GetInt32(), item => item.GetProperty("name").GetString());
         }
 
         [Fact]
@@ -44,18 +38,15 @@ namespace EventFlowAPI.Tests.Scenarios
 
             var reserved = await user.Client.GetJsonAsync($"/api/Reservations/{reservationId}");
             var eventTickets = await admin.GetJsonAsync($"/api/Events/{eventId}");
-            var snapshot = new StringBuilder()
-                .AppendLine($"status: {(int)response.StatusCode}")
-                .AppendLine("ticket types:")
-                .Append(DescribeList(await admin.GetJsonAsync("/api/TicketTypes"), "name"))
-                .AppendLine($"reserved ticket type: {reserved.GetProperty("ticket").GetProperty("ticketType").GetProperty("name").GetString()}")
-                .AppendLine("event ticket types:");
-            foreach (var ticket in eventTickets.GetProperty("tickets").EnumerateArray())
-            {
-                snapshot.AppendLine($"{ticket.GetProperty("ticketType").GetProperty("id").GetInt32()}: {ticket.GetProperty("ticketType").GetProperty("name").GetString()}");
-            }
-
-            await Verifier.Verify(snapshot.ToString()).UseDirectory("SoftUpdateSnapshots");
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+            var ticketTypes = NamesById(await admin.GetJsonAsync("/api/TicketTypes"));
+            ticketTypes[1].ShouldBe("Bilet normalny");
+            ticketTypes[2].ShouldBe("Bilet ulgowy");
+            ticketTypes[3].ShouldBe("Bilet zmieniony");
+            reserved.GetProperty("ticket").GetProperty("ticketType").GetProperty("name").GetString().ShouldBe("Bilet zmieniony");
+            var eventTicketTypes = eventTickets.GetProperty("tickets").EnumerateArray()
+                .ToDictionary(ticket => ticket.GetProperty("ticketType").GetProperty("id").GetInt32(), ticket => ticket.GetProperty("ticketType").GetProperty("name").GetString());
+            eventTicketTypes.ShouldBe(new Dictionary<int, string?> { [1] = "Bilet normalny", [3] = "Bilet zmieniony" }, ignoreOrder: true);
         }
 
         [Fact]
@@ -72,18 +63,13 @@ namespace EventFlowAPI.Tests.Scenarios
             var reservation = await user.Client.GetJsonAsync($"/api/Reservations/{reservationId}");
             var eventJson = await admin.GetJsonAsync($"/api/Events/{eventId}");
             var hall = await admin.GetJsonAsync($"/api/Halls/{eventJson.GetProperty("hall").GetProperty("id").GetInt32()}");
-            var snapshot = new StringBuilder()
-                .AppendLine($"status: {(int)response.StatusCode}")
-                .AppendLine("seat types:")
-                .Append(DescribeList(await admin.GetJsonAsync("/api/SeatTypes"), "name"))
-                .AppendLine($"reserved seat type: {reservation.GetProperty("seats")[0].GetProperty("seatType").GetProperty("name").GetString()}")
-                .AppendLine("event hall seats:");
-            foreach (var seat in hall.GetProperty("seats").EnumerateArray())
-            {
-                snapshot.AppendLine($"{seat.GetProperty("seatNr").GetInt32()}: {seat.GetProperty("seatType").GetProperty("name").GetString()}");
-            }
-
-            await Verifier.Verify(snapshot.ToString()).UseDirectory("SoftUpdateSnapshots");
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+            var seatTypes = NamesById(await admin.GetJsonAsync("/api/SeatTypes"));
+            seatTypes[1].ShouldBe("Miejsce VIP zmienione");
+            seatTypes[2].ShouldBe("Miejsce klasy premium");
+            seatTypes[3].ShouldBe("Miejsce zwykłe");
+            reservation.GetProperty("seats")[0].GetProperty("seatType").GetProperty("name").GetString().ShouldBe("Miejsce VIP zmienione");
+            hall.GetProperty("seats").EnumerateArray().ShouldAllBe(seat => seat.GetProperty("seatType").GetProperty("name").GetString() == "Miejsce VIP zmienione");
         }
 
         [Fact]
@@ -99,14 +85,13 @@ namespace EventFlowAPI.Tests.Scenarios
             var rent = await user.Client.GetJsonAsync($"/api/HallRents/{rentId}");
             var rentedHall = await admin.GetJsonAsync($"/api/Halls/{rent.GetProperty("hall").GetProperty("id").GetInt32()}");
             var baseHall = await admin.GetJsonAsync("/api/Halls/1");
-            var snapshot = new StringBuilder()
-                .AppendLine($"status: {(int)response.StatusCode}")
-                .AppendLine("hall types:")
-                .Append(DescribeList(await admin.GetJsonAsync("/api/HallTypes"), "name"))
-                .AppendLine($"rented hall type: {rentedHall.GetProperty("type").GetProperty("name").GetString()}")
-                .AppendLine($"base hall type: {baseHall.GetProperty("type").GetProperty("name").GetString()}");
-
-            await Verifier.Verify(snapshot.ToString()).UseDirectory("SoftUpdateSnapshots");
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+            var hallTypes = NamesById(await admin.GetJsonAsync("/api/HallTypes"));
+            hallTypes.Count.ShouldBe(6);
+            hallTypes[1].ShouldBe("Sala filmowa zmieniona");
+            hallTypes[2].ShouldBe("Sala koncertowa");
+            rentedHall.GetProperty("type").GetProperty("name").GetString().ShouldBe("Sala filmowa zmieniona");
+            baseHall.GetProperty("type").GetProperty("name").GetString().ShouldBe("Sala filmowa zmieniona");
         }
     }
 }

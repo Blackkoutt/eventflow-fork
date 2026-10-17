@@ -1,5 +1,0 @@
-﻿Status=Active => 200 [2,5,6,7,8]
-MinPrice=30 => 200 [2]
-SortBy=PaymentAmount&SortDirection=DESC => 200 [2,7,8,5,6]
-PageNumber=1&PageSize=2 => 200 [2,5]
-GetAll=true&PageNumber=1&PageSize=3 => 200 [1,2,3]
