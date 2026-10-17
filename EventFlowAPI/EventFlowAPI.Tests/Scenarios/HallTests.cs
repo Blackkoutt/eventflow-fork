@@ -83,44 +83,28 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Duplicate_seat_numbers_return_400()
+        public async Task Invalid_halls_return_400()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
+            var invalid = new (string Reason, object Payload, string? Message)[]
+            {
+                ("duplicate seat numbers", HallPayload(NextHallNumber(), seats: new[] { SeatPayload(1), SeatPayload(1) }), null),
+                ("seat outside the hall grid", HallPayload(NextHallNumber(), seats: new[] { SeatPayload(1, row: 9) }), null),
+                ("unknown hall type", HallPayload(NextHallNumber(), hallTypeId: 999), "Typ sali o podanym ID nie istnieje w bazie danych."),
+                ("empty hall", new { hallNr = 0 }, null),
+            };
+            var failures = new List<string>();
 
-            var response = await admin.PostAsync("/api/Halls", HallPayload(NextHallNumber(), seats: new[] { SeatPayload(1), SeatPayload(1) }));
+            foreach (var (reason, payload, message) in invalid)
+            {
+                var response = await admin.PostAsync("/api/Halls", payload);
+                if (response.StatusCode != HttpStatusCode.BadRequest || (message != null && await admin.ReadErrorsAsync(response) != message))
+                {
+                    failures.Add($"{reason}: {(int)response.StatusCode}");
+                }
+            }
 
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Seat_outside_the_hall_grid_returns_400()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            var response = await admin.PostAsync("/api/Halls", HallPayload(NextHallNumber(), seats: new[] { SeatPayload(1, row: 9) }));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Unknown_hall_type_returns_400()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            var response = await admin.PostAsync("/api/Halls", HallPayload(NextHallNumber(), hallTypeId: 999));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await admin.ReadErrorsAsync(response)).ShouldBe("Typ sali o podanym ID nie istnieje w bazie danych.");
-        }
-
-        [Fact]
-        public async Task Invalid_hall_returns_400()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            var response = await admin.PostAsync("/api/Halls", new { hallNr = 0 });
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            failures.ShouldBeEmpty();
         }
 
         [Fact]

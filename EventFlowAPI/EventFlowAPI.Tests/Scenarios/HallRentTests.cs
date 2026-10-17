@@ -78,47 +78,30 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Rent_ending_before_it_starts_returns_400()
+        public async Task Invalid_rents_are_rejected()
         {
             var user = await _world.RegisterUserAsync();
             var start = _world.NextFarStart();
+            var invalid = new (string Reason, HttpResponseMessage Response, HttpStatusCode Status, string? Message)[]
+            {
+                ("ends before it starts", await _world.RentAsync(user.Client, start, -2), HttpStatusCode.BadRequest, null),
+                ("in the past", await _world.RentAsync(user.Client, DateTime.Today.AddDays(-5).AddHours(10)), HttpStatusCode.BadRequest, null),
+                ("longer than 24 hours", await _world.RentAsync(user.Client, _world.NextFarStart(), 30), HttpStatusCode.BadRequest, "24"),
+                ("unknown hall", await _world.RentAsync(user.Client, _world.NextFarStart(), hallId: 999), HttpStatusCode.BadRequest, "Sala o podanym ID nie istnieje w bazie danych."),
+                ("unknown service", await _world.RentAsync(user.Client, _world.NextFarStart(), services: new[] { 999 }), HttpStatusCode.NotFound, null),
+            };
+            var failures = new List<string>();
 
-            var response = await _world.RentAsync(user.Client, start, -2);
+            foreach (var (reason, response, status, message) in invalid)
+            {
+                var errors = await user.Client.ReadErrorsAsync(response);
+                if (response.StatusCode != status || (message != null && !errors.Contains(message)))
+                {
+                    failures.Add($"{reason}: {(int)response.StatusCode} {errors}");
+                }
+            }
 
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Rent_in_the_past_returns_400()
-        {
-            var user = await _world.RegisterUserAsync();
-
-            var response = await _world.RentAsync(user.Client, DateTime.Today.AddDays(-5).AddHours(10));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Rent_of_an_unknown_hall_returns_400()
-        {
-            var user = await _world.RegisterUserAsync();
-            var start = _world.NextFarStart();
-
-            var response = await _world.RentAsync(user.Client, start, hallId: 999);
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await user.Client.ReadErrorsAsync(response)).ShouldBe("Sala o podanym ID nie istnieje w bazie danych.");
-        }
-
-        [Fact]
-        public async Task Rent_with_an_unknown_service_returns_404()
-        {
-            var user = await _world.RegisterUserAsync();
-            var start = _world.NextFarStart();
-
-            var response = await _world.RentAsync(user.Client, start, services: new[] { 999 });
-
-            response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            failures.ShouldBeEmpty();
         }
 
         [Fact]

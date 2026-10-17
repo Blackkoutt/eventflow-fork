@@ -129,16 +129,28 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Event_in_the_past_or_ending_before_it_starts_returns_400()
+        public async Task Events_with_invalid_times_return_400()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
             var start = _world.NextFarStart();
+            var invalid = new (string Reason, HttpResponseMessage Response, string? Message)[]
+            {
+                ("in the past", await CreateRawAsync(admin, 2, DateTime.Today.AddDays(-10).AddHours(18), DateTime.Today.AddDays(-10).AddHours(20), (10, 1)), null),
+                ("ends before it starts", await CreateRawAsync(admin, 2, start.AddHours(2), start, (10, 1)), null),
+                ("longer than 24 hours", await CreateRawAsync(admin, 4, start, start.AddHours(30), (10, ApiLookups.NormalTicketTypeId)), "24"),
+            };
+            var failures = new List<string>();
 
-            var past = await CreateRawAsync(admin, 2, DateTime.Today.AddDays(-10).AddHours(18), DateTime.Today.AddDays(-10).AddHours(20), (10, 1));
-            var reversed = await CreateRawAsync(admin, 2, start.AddHours(2), start, (10, 1));
+            foreach (var (reason, response, message) in invalid)
+            {
+                var errors = await admin.ReadErrorsAsync(response);
+                if (response.StatusCode != HttpStatusCode.BadRequest || (message != null && !errors.Contains(message)))
+                {
+                    failures.Add($"{reason}: {(int)response.StatusCode} {errors}");
+                }
+            }
 
-            past.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            reversed.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            failures.ShouldBeEmpty();
         }
 
         [Fact]

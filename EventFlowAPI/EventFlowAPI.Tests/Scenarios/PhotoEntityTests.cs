@@ -3,7 +3,7 @@ using EventFlowAPI.Tests.Infrastructure;
 
 namespace EventFlowAPI.Tests.Scenarios
 {
-    public record PhotoCase(string Route, string CreatePhotoField, string UpdatePhotoField, string NameField);
+    public record PhotoCase(string Route, string CreatePhotoField, string UpdatePhotoField, string NameField, bool Updatable = true, bool HasSeededImage = true);
 
     public class PhotoEntityTests : IClassFixture<ApiFactory>
     {
@@ -15,17 +15,18 @@ namespace EventFlowAPI.Tests.Scenarios
             ["Partners"] = new("Partners", "PartnerPhoto", "PartnerPhoto", "Name"),
             ["News"] = new("News", "NewsPhoto", "NewsPhoto", "Title"),
             ["HallTypes"] = new("HallTypes", "HallTypePhoto", "HallTypePhoto", "Name"),
+            ["PaymentTypes"] = new("PaymentTypes", "PaymentTypePhoto", "PaymentTypePhoto", "Name", Updatable: false, HasSeededImage: false),
         };
 
-        public static IEnumerable<object[]> Routes
+        public static IEnumerable<object[]> Routes => Keys(_ => true);
+
+        public static IEnumerable<object[]> UpdatableRoutes => Keys(photoCase => photoCase.Updatable);
+
+        public static IEnumerable<object[]> SeededImageRoutes => Keys(photoCase => photoCase.HasSeededImage);
+
+        private static IEnumerable<object[]> Keys(Func<PhotoCase, bool> filter)
         {
-            get
-            {
-                foreach (var key in Cases.Keys)
-                {
-                    yield return new object[] { key };
-                }
-            }
+            return Cases.Where(item => filter(item.Value)).Select(item => new object[] { item.Key });
         }
 
         private readonly ApiFactory _factory;
@@ -133,7 +134,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Theory]
-        [MemberData(nameof(Routes))]
+        [MemberData(nameof(UpdatableRoutes))]
         public async Task Updating_changes_the_name_and_replaces_the_photo(string key)
         {
             var photoCase = Cases[key];
@@ -152,7 +153,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Theory]
-        [MemberData(nameof(Routes))]
+        [MemberData(nameof(UpdatableRoutes))]
         public async Task Updating_an_unknown_item_returns_404(string key)
         {
             var photoCase = Cases[key];
@@ -179,7 +180,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Theory]
-        [MemberData(nameof(Routes))]
+        [MemberData(nameof(SeededImageRoutes))]
         public async Task Seeded_image_is_served(string key)
         {
             var photoCase = Cases[key];
@@ -189,6 +190,29 @@ namespace EventFlowAPI.Tests.Scenarios
 
             image.StatusCode.ShouldBe(HttpStatusCode.OK);
             (await image.Content.ReadAsByteArrayAsync()).Length.ShouldBeGreaterThan(1000);
+        }
+
+        [Fact]
+        public async Task Photo_larger_than_10_MB_is_currently_accepted_because_the_size_validator_never_fires()
+        {
+            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
+            var big = new byte[10 * 1024 * 1024 + 1];
+            var form = new FormData().Add("Name", UniqueName()).AddFile("MediaPatronPhoto", "big.png", big, "image/png");
+
+            var response = await admin.PostFormAsync("/api/MediaPatrons", form);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        }
+
+        [Fact]
+        [Trait(TestCategories.Name, TestCategories.DatabaseSpecific)]
+        public async Task Deleting_a_referenced_payment_type_currently_succeeds()
+        {
+            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
+
+            var response = await admin.DeleteAsync("/api/PaymentTypes/2");
+
+            response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         }
     }
 }

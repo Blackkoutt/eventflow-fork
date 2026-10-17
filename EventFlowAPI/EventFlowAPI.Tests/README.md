@@ -33,7 +33,7 @@ The seeded responses, filters, sorting and paging are asserted in code: `Queries
 
 - `Authorization` – access level of every endpoint and the 401/403 behaviour.
 - `Queries` – seeded responses per role, filters, sorting and paging of every list endpoint.
-- `Scenarios` – write flows: reservations, passes, hall rents, halls, events, festivals, lookups, photos, files, statistics, validation.
+- `Scenarios` – write flows: reservations, passes, hall rents, halls, events, festivals, lookups, photos (incl. payment types), files, statistics.
   - `CascadeTests` – side effects between halls, events, festivals, passes, rents and reservations.
   - `AtomicityTests` – rows left in the database after a rejected write (`DatabaseProbe` counts rows of every table).
   - `SoftUpdateTests` – updates of lookup types that are already referenced.
@@ -49,4 +49,4 @@ Tests marked `Category=DatabaseSpecific` assert details of SQL Server and the cu
 dotnet test EventFlowAPI/EventFlowAPI.Tests --filter Category!=DatabaseSpecific
 ```
 
-The tests write generated images to `EventFlowAPI.DB/Assets/Output`; restore them with `git checkout -- EventFlowAPI/EventFlowAPI.DB/Assets/Output`.
+Test classes run in parallel; each one has its own database and its own temporary folder for generated files (tickets, invoices, images), so nothing is written to the repository.

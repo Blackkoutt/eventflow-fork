@@ -106,7 +106,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Registering_a_taken_email_returns_400()
+        public async Task Registering_a_taken_email_returns_400_with_a_message()
         {
             var client = _factory.CreateAnonymousClient();
 
@@ -117,44 +117,29 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Registering_with_mismatched_passwords_returns_400()
+        public async Task Invalid_registrations_return_400()
         {
             var client = _factory.CreateAnonymousClient();
+            var tooYoung = DateTime.Today.AddYears(-10).ToString("yyyy-MM-dd");
+            var invalid = new Dictionary<string, object>
+            {
+                ["mismatched passwords"] = NewUser("a1@example.com", confirm: "Inne123!"),
+                ["too short password"] = NewUser("a2@example.com", "abc", "abc"),
+                ["younger than 13"] = NewUser("a3@example.com", dateOfBirth: tooYoung),
+                ["invalid email"] = NewUser("nie-email"),
+            };
+            var failures = new List<string>();
 
-            var response = await client.PostAsync("/api/Auth/register", NewUser("a1@example.com", confirm: "Inne123!"));
+            foreach (var (reason, payload) in invalid)
+            {
+                var response = await client.PostAsync("/api/Auth/register", payload);
+                if (response.StatusCode != HttpStatusCode.BadRequest)
+                {
+                    failures.Add($"{reason}: {(int)response.StatusCode}");
+                }
+            }
 
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Registering_with_too_short_password_returns_400()
-        {
-            var client = _factory.CreateAnonymousClient();
-
-            var response = await client.PostAsync("/api/Auth/register", NewUser("a2@example.com", "abc", "abc"));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Registering_a_user_younger_than_13_returns_400()
-        {
-            var client = _factory.CreateAnonymousClient();
-            var birthDate = DateTime.Today.AddYears(-10).ToString("yyyy-MM-dd");
-
-            var response = await client.PostAsync("/api/Auth/register", NewUser("a3@example.com", dateOfBirth: birthDate));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Registering_with_invalid_email_returns_400()
-        {
-            var client = _factory.CreateAnonymousClient();
-
-            var response = await client.PostAsync("/api/Auth/register", NewUser("nie-email"));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            failures.ShouldBeEmpty();
         }
     }
 }

@@ -125,25 +125,28 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Duplicated_seat_ids_are_rejected()
+        public async Task Invalid_reservations_return_400()
         {
             var user = await _world.RegisterUserAsync();
             var (ticketId, seats) = await PrepareEventAsync(user.Client);
+            var invalid = new (string Reason, HttpResponseMessage Response, string? Message)[]
+            {
+                ("duplicated seat ids", await _world.ReserveAsync(user.Client, ticketId, new[] { seats[2], seats[2] }), null),
+                ("event ticket with festival flag", await _world.ReserveAsync(user.Client, ticketId, new[] { seats[3] }, forFestival: true), null),
+                ("unknown ticket", await _world.ReserveAsync(user.Client, 999, new[] { 1 }), "Bilet o podanym ID nie istnieje w bazie danych."),
+                ("unknown payment type", await _world.ReserveAsync(user.Client, ticketId, new[] { seats[3] }, paymentTypeId: 999), "Typ płatności o podanym ID nie istnieje w bazie danych."),
+            };
+            var failures = new List<string>();
 
-            var response = await _world.ReserveAsync(user.Client, ticketId, new[] { seats[2], seats[2] });
+            foreach (var (reason, response, message) in invalid)
+            {
+                if (response.StatusCode != HttpStatusCode.BadRequest || (message != null && await user.Client.ReadErrorsAsync(response) != message))
+                {
+                    failures.Add($"{reason}: {(int)response.StatusCode}");
+                }
+            }
 
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Event_ticket_with_festival_flag_returns_400()
-        {
-            var user = await _world.RegisterUserAsync();
-            var (ticketId, seats) = await PrepareEventAsync(user.Client);
-
-            var response = await _world.ReserveAsync(user.Client, ticketId, new[] { seats[3] }, forFestival: true);
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            failures.ShouldBeEmpty();
         }
 
         [Fact]
@@ -156,29 +159,6 @@ namespace EventFlowAPI.Tests.Scenarios
             var response = await _world.ReserveAsync(user.Client, festivalTicketId, new[] { seats[3] });
 
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-        }
-
-        [Fact]
-        public async Task Unknown_ticket_returns_400()
-        {
-            var user = await _world.RegisterUserAsync();
-
-            var response = await _world.ReserveAsync(user.Client, 999, new[] { 1 });
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await user.Client.ReadErrorsAsync(response)).ShouldBe("Bilet o podanym ID nie istnieje w bazie danych.");
-        }
-
-        [Fact]
-        public async Task Unknown_payment_type_returns_400()
-        {
-            var user = await _world.RegisterUserAsync();
-            var (ticketId, seats) = await PrepareEventAsync(user.Client);
-
-            var response = await _world.ReserveAsync(user.Client, ticketId, new[] { seats[3] }, paymentTypeId: 999);
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await user.Client.ReadErrorsAsync(response)).ShouldBe("Typ płatności o podanym ID nie istnieje w bazie danych.");
         }
 
         [Fact]
@@ -232,23 +212,12 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Reading_another_users_reservation_returns_403()
+        public async Task Reading_another_users_reservation_returns_403_and_an_unknown_one_404()
         {
             var user = await _world.RegisterUserAsync();
 
-            var response = await user.Client.GetAsync("/api/Reservations/2");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
-        }
-
-        [Fact]
-        public async Task Reading_an_unknown_reservation_returns_404()
-        {
-            var user = await _world.RegisterUserAsync();
-
-            var response = await user.Client.GetAsync("/api/Reservations/999");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await user.Client.GetAsync("/api/Reservations/2")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            (await user.Client.GetAsync("/api/Reservations/999")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -274,33 +243,14 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Cancelling_another_users_reservation_returns_403()
+        public async Task Only_the_owner_or_an_admin_can_cancel_and_an_unknown_reservation_returns_400()
         {
             var user = await _world.RegisterUserAsync();
-
-            var response = await user.Client.DeleteAsync("/api/Reservations/5");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
-        }
-
-        [Fact]
-        public async Task Admin_can_cancel_any_reservation()
-        {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
 
-            var response = await admin.DeleteAsync("/api/Reservations/3");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
-        }
-
-        [Fact]
-        public async Task Cancelling_an_unknown_reservation_returns_400()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            var response = await admin.DeleteAsync("/api/Reservations/999");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            (await user.Client.DeleteAsync("/api/Reservations/5")).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            (await admin.DeleteAsync("/api/Reservations/3")).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+            (await admin.DeleteAsync("/api/Reservations/999")).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         }
     }
 }

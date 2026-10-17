@@ -24,6 +24,15 @@ namespace EventFlowAPI.Tests.Infrastructure
             builder.UseSetting("ConnectionStrings:MSSQLEventFlowDB", _database.ConnectionString);
             builder.UseSetting("JWTAuth:securityKey", JwtSigningKey);
             builder.UseSetting("LocalStorage:GeneratedPath", _generatedFilesDirectory);
+
+            // The app renders tickets to fixed output files; give every factory its own copies so test classes can run in parallel.
+            var outputDirectory = Path.Combine(_generatedFilesDirectory, "output");
+            Directory.CreateDirectory(outputDirectory);
+            builder.UseSetting("Assets:Tests:EventPath", Path.Combine(outputDirectory, "event_test.png"));
+            builder.UseSetting("Assets:Tests:FestivalPathFront", Path.Combine(outputDirectory, "festival_front_test.png"));
+            builder.UseSetting("Assets:Tests:FestivalPathReverse", outputDirectory + Path.DirectorySeparatorChar);
+            builder.UseSetting("Assets:Tests:EventPass", Path.Combine(outputDirectory, "event_pass_test.jpg"));
+            builder.UseSetting("Assets:Tests:HallRent", Path.Combine(outputDirectory, "hall_rent.jpg"));
         }
 
         public async Task InitializeAsync()
