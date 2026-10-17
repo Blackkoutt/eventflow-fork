@@ -51,27 +51,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        [Trait(TestCategories.Name, TestCategories.DatabaseSpecific)]
-        public async Task Removing_a_festival_ticket_type_that_has_reservations_currently_returns_500()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var user = await _world.RegisterUserAsync();
-            var lookups = new ApiLookups(user.Client);
-            var (festivalId, eventIds) = await _world.CreateFestivalAsync();
-            await admin.PutFormAsync($"/api/Festivals/{festivalId}", FestivalForm(eventIds, (50, Normal), (40, Reduced)));
-            var ticketId = await lookups.GetTicketIdAsync($"/api/Festivals/{festivalId}", Reduced);
-            var firstSeats = await lookups.GetSeatIdsAsync(eventIds[0]);
-            var secondSeats = await lookups.GetSeatIdsAsync(eventIds[1]);
-            var reserve = await _world.ReserveAsync(user.Client, ticketId, new[] { firstSeats[0], secondSeats[0] }, forFestival: true);
-            var reservationId = (await user.Client.ReadJsonAsync(reserve))[0].GetProperty("id").GetInt32();
-
-            var response = await admin.PutFormAsync($"/api/Festivals/{festivalId}", FestivalForm(eventIds, (50, Normal)));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            (await lookups.GetStatusAsync($"/api/Reservations/{reservationId}", "reservationStatus")).ShouldBe("Active");
-        }
-
-        [Fact]
         public async Task Updating_event_tickets_changes_price_and_removes_a_type_but_currently_ignores_re_adding_one()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);

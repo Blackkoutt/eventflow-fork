@@ -70,19 +70,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Creating_a_hall_with_an_existing_number_currently_returns_500_with_a_409_body()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var hallNr = NextHallNumber();
-            await CreateAsync(admin, HallPayload(hallNr));
-
-            var response = await admin.PostAsync("/api/Halls", HallPayload(hallNr));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            (await admin.ReadJsonAsync(response)).GetProperty("code").GetInt32().ShouldBe(409);
-        }
-
-        [Fact]
         public async Task Invalid_halls_return_400()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);

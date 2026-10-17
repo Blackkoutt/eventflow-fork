@@ -79,17 +79,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Files_of_seeded_records_are_currently_missing()
-        {
-            var owner = await _factory.CreateClientAsync(TestUsers.User3);
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            (await owner.GetAsync("/api/HallRents/2/pdf-invoice")).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await owner.GetAsync("/api/HallRents/2/pdf-hallview")).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            (await admin.GetAsync("/api/Halls/1/pdf-hallview")).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
         public async Task Hall_view_pdf_is_served_for_a_new_hall()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);

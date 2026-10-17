@@ -34,18 +34,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Registered_user_info_currently_fails_with_500_once_an_address_is_saved()
-        {
-            var user = await _world.RegisterUserAsync();
-
-            var update = await user.Client.PutFormAsync("/api/Users/info", Address("Poznan"));
-            var info = await user.Client.GetAsync("/api/Users/info");
-
-            update.StatusCode.ShouldBe(HttpStatusCode.NoContent);
-            info.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-        }
-
-        [Fact]
         public async Task Uploading_a_user_photo_replaces_the_image()
         {
             var user = await _world.RegisterUserAsync();

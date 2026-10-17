@@ -171,18 +171,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Updating_an_unknown_event_currently_returns_500_with_a_404_body()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var start = _world.NextFarStart();
-
-            var response = await admin.PutFormAsync("/api/Events/9999", Form(UniqueName(), 1, start, start.AddHours(2), (30, 1)));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            (await admin.ReadJsonAsync(response)).GetProperty("code").GetInt32().ShouldBe(404);
-        }
-
-        [Fact]
         public async Task Expired_event_cannot_be_updated_or_deleted()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);

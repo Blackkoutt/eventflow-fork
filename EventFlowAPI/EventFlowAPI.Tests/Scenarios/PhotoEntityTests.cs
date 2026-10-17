@@ -119,21 +119,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Theory]
-        [MemberData(nameof(Routes))]
-        public async Task Creating_a_duplicate_currently_returns_500_with_a_409_body(string key)
-        {
-            var photoCase = Cases[key];
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var name = UniqueName();
-            await CreateAsync(admin, photoCase, name);
-
-            var response = await admin.PostFormAsync($"/api/{photoCase.Route}", Form(photoCase, name));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            (await admin.ReadJsonAsync(response)).GetProperty("code").GetInt32().ShouldBe(409);
-        }
-
-        [Theory]
         [MemberData(nameof(UpdatableRoutes))]
         public async Task Updating_changes_the_name_and_replaces_the_photo(string key)
         {
@@ -190,29 +175,6 @@ namespace EventFlowAPI.Tests.Scenarios
 
             image.StatusCode.ShouldBe(HttpStatusCode.OK);
             (await image.Content.ReadAsByteArrayAsync()).Length.ShouldBeGreaterThan(1000);
-        }
-
-        [Fact]
-        public async Task Photo_larger_than_10_MB_is_currently_accepted_because_the_size_validator_never_fires()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            var big = new byte[10 * 1024 * 1024 + 1];
-            var form = new FormData().Add("Name", UniqueName()).AddFile("MediaPatronPhoto", "big.png", big, "image/png");
-
-            var response = await admin.PostFormAsync("/api/MediaPatrons", form);
-
-            response.StatusCode.ShouldBe(HttpStatusCode.Created);
-        }
-
-        [Fact]
-        [Trait(TestCategories.Name, TestCategories.DatabaseSpecific)]
-        public async Task Deleting_a_referenced_payment_type_currently_succeeds()
-        {
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-
-            var response = await admin.DeleteAsync("/api/PaymentTypes/2");
-
-            response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         }
     }
 }

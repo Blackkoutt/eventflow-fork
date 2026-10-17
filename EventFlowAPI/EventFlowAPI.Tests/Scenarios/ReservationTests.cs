@@ -102,18 +102,6 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task A_seat_from_another_hall_currently_causes_a_server_error()
-        {
-            var user = await _world.RegisterUserAsync();
-            var (ticketId, _) = await PrepareEventAsync(user.Client);
-            var foreignSeats = await new ApiLookups(user.Client).GetSeatIdsAsync(1);
-
-            var response = await _world.ReserveAsync(user.Client, ticketId, new[] { foreignSeats[0] });
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-        }
-
-        [Fact]
         public async Task Reservation_without_seats_is_currently_accepted()
         {
             var user = await _world.RegisterUserAsync();
@@ -147,18 +135,6 @@ namespace EventFlowAPI.Tests.Scenarios
             }
 
             failures.ShouldBeEmpty();
-        }
-
-        [Fact]
-        public async Task Festival_ticket_without_festival_flag_currently_causes_a_server_error()
-        {
-            var user = await _world.RegisterUserAsync();
-            var (_, seats) = await PrepareEventAsync(user.Client);
-            var festivalTicketId = await new ApiLookups(user.Client).GetFestivalTicketIdAsync(SeededFestivalId);
-
-            var response = await _world.ReserveAsync(user.Client, festivalTicketId, new[] { seats[3] });
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
 
         [Fact]

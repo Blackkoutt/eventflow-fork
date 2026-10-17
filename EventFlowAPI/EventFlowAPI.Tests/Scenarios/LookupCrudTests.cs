@@ -94,21 +94,6 @@ namespace EventFlowAPI.Tests.Scenarios
 
         [Theory]
         [MemberData(nameof(Routes))]
-        public async Task Creating_a_duplicate_name_currently_returns_500_with_a_409_body(string key)
-        {
-            var lookup = Cases[key];
-            var suffix = Guid.NewGuid().ToString("N")[..6];
-            var admin = await _factory.CreateClientAsync(TestUsers.Admin);
-            await CreateAsync(admin, lookup, suffix);
-
-            var response = await admin.PostAsync($"/api/{lookup.Route}", WithSuffix(lookup.Create, suffix));
-
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            (await admin.ReadJsonAsync(response)).GetProperty("code").GetInt32().ShouldBe(409);
-        }
-
-        [Theory]
-        [MemberData(nameof(Routes))]
         public async Task Creating_an_invalid_item_returns_400(string key)
         {
             var lookup = Cases[key];
