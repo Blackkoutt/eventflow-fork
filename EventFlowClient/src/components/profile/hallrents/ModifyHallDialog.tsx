@@ -181,7 +181,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
     const handleContextMenu = (
       event: React.MouseEvent,
       seatNumber: number,
-      rows: number,
+      _rows: number,
       cols: number
     ) => {
       event.preventDefault();

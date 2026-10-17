@@ -1,10 +1,8 @@
-import { createContext, useEffect, useState } from "react";
-import EventCalendar from "../components/events/EventCalendar";
+import { useEffect, useState } from "react";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
 import { EventCategory, EventEntity } from "../models/response_models";
 import EventCard from "../components/common/EventCard";
-import { SelectedEventDateContext } from "../context/SelectedEventDateContext";
 
 interface NameValue {
   name: string;

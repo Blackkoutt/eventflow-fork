@@ -5,7 +5,7 @@ import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faCouch, faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCouch, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
@@ -34,7 +34,7 @@ interface ContextMenuState {
 
 const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
   (
-    { maxWidth, minWidth, onDialogClose, paddingX, onDialogSuccess }: CreateHallDialogProps,
+    { onDialogClose, onDialogSuccess }: CreateHallDialogProps,
     ref
   ) => {
     const { statusCode: statusCode, post: postItem } = useApi<Hall, HallRequest>(ApiEndpoint.Hall);
@@ -44,9 +44,9 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
     const [hallSeats, setHallSeats] = useState<Seat[]>([]);
     const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
     const [actionPerformed, setActionPerformed] = useState(false);
-    const [promisePending, setPromisePending] = useState(false);
+    const [, setPromisePending] = useState(false);
     const [selectOptions, setSelectOptions] = useState<SelectOption[]>([]);
-    const [selectedOption, setSelectedOption] = useState<SelectOption>();
+    const [selectedOption] = useState<SelectOption>();
     const [currentMaxNumberRows, setCurrentMaxNumberRows] = useState(10);
     const [currentMaxNumberCols, setCurrentMaxNumberCols] = useState(10);
 
@@ -59,7 +59,7 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
         },
       },
     });
-    const { handleSubmit, formState, reset, watch, setValue } = methods;
+    const { handleSubmit, formState, reset, watch } = methods;
     const { errors, isSubmitting } = formState;
 
     const maxRows = watch().hallDetails.maxNumberOfSeatsRows;
@@ -215,7 +215,7 @@ const CreateHallDialog = forwardRef<HTMLDialogElement, CreateHallDialogProps>(
     const handleContextMenu = (
       event: React.MouseEvent,
       seatNumber: number,
-      rows: number,
+      _rows: number,
       cols: number
     ) => {
       event.preventDefault();

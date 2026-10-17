@@ -118,7 +118,7 @@ const CreateFestivalDialog = forwardRef<HTMLDialogElement, CreateFestivalDialogP
     const methods = useForm<FestivalRequest>({
       resolver: zodResolver(FestivalSchema),
     });
-    const { handleSubmit, formState, reset, watch } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     const onSubmit: SubmitHandler<FestivalRequest> = async (data) => {

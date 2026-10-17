@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { Reservation, Seat } from "../../models/response_models";
@@ -9,7 +9,6 @@ import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import { Status } from "../../helpers/enums/Status";
 import { faDownload, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import TableActionButton from "../../components/buttons/TableActionButton";
-import RemoveReservationDialog from "../../components/profile/reservations/CancelReservationDialog";
 import DetailsReservationDialog from "../../components/profile/reservations/DetailsReservationDialog";
 import DownloadReservationTicketDialog from "../../components/profile/reservations/DownloadReservationTicketDialog";
 import StatusBody from "../../components/tabledata/StatusBody";
@@ -61,7 +60,7 @@ const UserReservations = () => {
     getReservations({ id: undefined, queryParams: undefined });
   };
 
-  const actionsTemplate = (rowData: Reservation, options: ColumnBodyOptions) => {
+  const actionsTemplate = (rowData: Reservation, _options: ColumnBodyOptions) => {
     return (
       <div className="flex flex-row justify-start items-start gap-3">
         <TableActionButton

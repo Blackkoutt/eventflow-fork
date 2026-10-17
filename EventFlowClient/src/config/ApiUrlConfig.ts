@@ -5,13 +5,13 @@ export const ApiUrlConfig = {
     url: (id?: number | string) => `/additionalservices${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.AuthValidate]: {
-    url: (id?: number | string) => "/auth/validate",
+    url: (_id?: number | string) => "/auth/validate",
   },
   [ApiEndpoint.AuthRegister]: {
-    url: (id?: number | string) => "/auth/register",
+    url: (_id?: number | string) => "/auth/register",
   },
   [ApiEndpoint.AuthLogin]: {
-    url: (id?: number | string) => "/auth/login",
+    url: (_id?: number | string) => "/auth/login",
   },
   [ApiEndpoint.Equipment]: {
     url: (id?: number | string) => `/equipments${id ? `/${id}` : ""}`,
@@ -98,16 +98,16 @@ export const ApiUrlConfig = {
     url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Stats]: {
-    url: (id?: number | string) => "/statistics",
+    url: (_id?: number | string) => "/statistics",
   },
   [ApiEndpoint.StatsPDF]: {
-    url: (id?: number | string) => "/statistics/pdf-report",
+    url: (_id?: number | string) => "/statistics/pdf-report",
   },
   [ApiEndpoint.TicketType]: {
     url: (id?: number | string) => `/tickettypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.UserInfo]: {
-    url: (id?: number | string) => "/users/info",
+    url: (_id?: number | string) => "/users/info",
   },
   [ApiEndpoint.User]: {
     url: (id?: number | string) => `/users${id ? `/${id}` : ""}`,

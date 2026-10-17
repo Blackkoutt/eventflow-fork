@@ -1,16 +1,8 @@
-import { createContext, useEffect, useState } from "react";
-import EventCalendar from "../components/events/EventCalendar";
+import { useEffect } from "react";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
-import { EventCategory, EventEntity, News } from "../models/response_models";
-import EventCard from "../components/common/EventCard";
-import { SelectedEventDateContext } from "../context/SelectedEventDateContext";
+import { News } from "../models/response_models";
 import NewsCard from "../components/common/NewsCard";
-
-interface NameValue {
-  name: string;
-  value: number | null;
-}
 
 function NewsPage() {
   const { data: items, get: getItems } = useApi<News>(ApiEndpoint.News);

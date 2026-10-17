@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DataTable, DataTableFilterMeta, DataTableValueArray } from "primereact/datatable";
 import { ExportColumns } from "../helpers/FileExporters";
 import FileExporter from "../helpers/FileExporters";

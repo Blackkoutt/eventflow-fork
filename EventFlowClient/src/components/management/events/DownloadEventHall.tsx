@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useState } from "react";
-import { EventEntity, HallRent } from "../../../models/response_models";
+import { forwardRef, useEffect } from "react";
+import { EventEntity } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import { faDownload, faXmark } from "@fortawesome/free-solid-svg-icons";
 import useApi from "../../../hooks/useApi";
@@ -12,7 +12,7 @@ interface DownloadEventHallProps {
 }
 
 const DownloadEventHall = forwardRef<HTMLDialogElement, DownloadEventHallProps>(
-  ({ item, onDialogClose }: DownloadEventHallProps, ref) => {
+  ({ item, onDialogClose }: DownloadEventHallProps, _ref) => {
     const { data: hallViewData, get: getHallView } = useApi<Blob>(ApiEndpoint.EventHallView);
 
     const downloadFile = async () => {

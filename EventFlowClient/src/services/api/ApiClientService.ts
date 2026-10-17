@@ -1,8 +1,7 @@
 import { baseUrl } from "../../config/environment/Environment.ts";
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { ApiUrlConfig } from "../../config/ApiUrlConfig.ts";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum.ts";
-import { number } from "zod";
 
 export const api: AxiosInstance = axios.create({
   baseURL: baseUrl,

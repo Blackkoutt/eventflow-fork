@@ -24,13 +24,10 @@ const DeleteFestival = forwardRef<HTMLDialogElement, DeleteFestivalProps>(
   (
     {
       item,
-      maxWidth = 750,
-      minWidth,
       onDialogClose,
-      paddingX,
       onDialogSuccess,
     }: DeleteFestivalProps,
-    ref
+    _ref
   ) => {
     const { del: deleteItem, statusCode: statusCode } = useApi<Festival>(ApiEndpoint.Festival);
     const [actionPerformed, setActionPerformed] = useState(false);

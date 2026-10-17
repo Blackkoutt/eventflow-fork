@@ -1,7 +1,6 @@
 import { Chart } from "primereact/chart";
 import LabelText from "../../common/LabelText";
 import { useBarChart } from "../../../hooks/useBarChart";
-import { EventStatistics } from "../../../models/response_models/stats/EventStatistics";
 import { usePieChart } from "../../../hooks/usePieChart";
 import { EventPassStatistics } from "../../../models/response_models/stats/EventPassStatistics";
 

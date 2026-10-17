@@ -1,8 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { EventPass, Hall } from "../../../models/response_models";
-import DateFormatter from "../../../helpers/DateFormatter";
-import { DateFormat } from "../../../helpers/enums/DateFormatEnum";
+import { Hall } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";

@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { EventPass, Reservation, TicketType } from "../../models/response_models";
+import { EventPass, Reservation } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
@@ -10,11 +10,7 @@ import { useTable } from "../../hooks/useTable";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import StatusBody from "../../components/tabledata/StatusBody";
-import CancelReservationDialog from "../../components/profile/reservations/CancelReservationDialog";
-import DetailsReservationDialog from "../../components/profile/reservations/DetailsReservationDialog";
-import DownloadReservationTicketDialog from "../../components/profile/reservations/DownloadReservationTicketDialog";
 import DetailsEventPassDialog from "../../components/profile/eventpasses/DetailsEventPassDialog";
-import RenewEventPassDialog from "../../components/profile/eventpasses/RenewEventPassDialog";
 import DownloadEventPassDialog from "../../components/profile/eventpasses/DownloadEventPassDialog";
 import CancelEventPassDialog from "../../components/management/eventpasses/CancelEventPassDialog";
 

@@ -7,7 +7,6 @@ import { faLocationDot, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import SocialMediaIcon from "../components/common/SocialMediaIcon";
 import ContactItem from "../components/layout/ContactItem";
 import { useAuth } from "../context/AuthContext";
-import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserAccordion from "../components/UserAccordion";
 import ScrollToTop from "../components/common/ScrollToTop";

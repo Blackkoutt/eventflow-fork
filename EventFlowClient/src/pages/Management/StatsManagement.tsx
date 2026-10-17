@@ -15,7 +15,7 @@ import EventPassesStats from "../../components/management/stats/EventPassesStats
 import FestivalsStats from "../../components/management/stats/FestivalsStats";
 import ReservationsStats from "../../components/management/stats/ReservationsStats";
 import UserStats from "../../components/management/stats/UserStats";
-import { faChartLine, faChartPie, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faDownload } from "@fortawesome/free-solid-svg-icons";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import BlobService from "../../services/BlobService";
 import DateFormatter from "../../helpers/DateFormatter";

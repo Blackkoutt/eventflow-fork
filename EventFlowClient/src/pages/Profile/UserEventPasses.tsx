@@ -51,7 +51,7 @@ const UserEventPasses = () => {
     console.log(eventPasses);
   }, [eventPasses]);
 
-  const actionsTemplate = (rowData: EventPass, options: ColumnBodyOptions) => {
+  const actionsTemplate = (rowData: EventPass, _options: ColumnBodyOptions) => {
     return (
       <div className="flex flex-row justify-start items-start gap-3">
         {rowData.eventPassStatus === Status.Active && (

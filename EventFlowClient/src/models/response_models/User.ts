@@ -16,7 +16,11 @@ export type User = {
   userRoles: string[];
 };
 
-export const isUserInRole = (user: User | null | undefined, role: Roles) => {
+export type AuthUser = Pick<User, "id" | "name" | "surname" | "emailAddress" | "dateOfBirth"> & {
+  userRoles: string | string[];
+};
+
+export const isUserInRole = (user: Pick<AuthUser, "userRoles"> | null | undefined, role: Roles) => {
   if (user === null || user === undefined || user.userRoles === undefined) return false;
   if (!Array.isArray(user.userRoles)) return user.userRoles === role;
   return user.userRoles.includes(role);

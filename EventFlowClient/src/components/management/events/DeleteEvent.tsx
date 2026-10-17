@@ -1,6 +1,5 @@
 import { forwardRef, useEffect, useState } from "react";
-import Dialog from "../../common/Dialog";
-import { EventCategory, EventEntity } from "../../../models/response_models";
+import { EventEntity } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -23,8 +22,8 @@ interface DeleteEventProps {
 
 const DeleteEvent = forwardRef<HTMLDialogElement, DeleteEventProps>(
   (
-    { item, maxWidth = 750, minWidth, onDialogClose, paddingX, onDialogSuccess }: DeleteEventProps,
-    ref
+    { item, onDialogClose, onDialogSuccess }: DeleteEventProps,
+    _ref
   ) => {
     const { del: deleteItem, statusCode: statusCode } = useApi<EventEntity>(ApiEndpoint.Event);
     const [actionPerformed, setActionPerformed] = useState(false);

@@ -9,13 +9,8 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import {
-  AdditionalServiceUpdateRequest,
-  AdditionalServiceUpdateSchema,
-} from "../../../models/update_schemas/AdditionalServicesUpdateSchema";
 import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
-import TextArea from "../../common/forms/TextArea";
 import {
   TicketTypeUpdateRequest,
   TicketTypeUpdateSchema,

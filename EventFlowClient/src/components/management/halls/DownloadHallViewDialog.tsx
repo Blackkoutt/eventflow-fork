@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useState } from "react";
-import { Hall, HallRent } from "../../../models/response_models";
+import { forwardRef, useEffect } from "react";
+import { Hall } from "../../../models/response_models";
 import Dialog from "../../common/Dialog";
 import RadioButton from "../../common/forms/RadioButton";
 import Button, { ButtonStyle } from "../../buttons/Button";

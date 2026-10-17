@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import EventCalendar from "../components/events/EventCalendar";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";

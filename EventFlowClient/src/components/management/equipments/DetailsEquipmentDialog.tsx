@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { AdditionalServices, Equipment } from "../../../models/response_models";
+import { Equipment } from "../../../models/response_models";
 import Dialog from "../../common/Dialog";
 import LabelText from "../../common/LabelText";
 

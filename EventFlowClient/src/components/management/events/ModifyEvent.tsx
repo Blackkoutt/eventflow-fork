@@ -1,5 +1,4 @@
 import { forwardRef, useEffect, useState } from "react";
-import Dialog from "../../common/Dialog";
 import { EventCategory, EventEntity, Hall } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
@@ -12,13 +11,11 @@ import FormButton from "../../common/forms/FormButton";
 import Input from "../../common/forms/Input";
 import Select from "../../common/forms/Select";
 import { SelectOption } from "../../../helpers/SelectOptions";
-import { EventRequest, EventSchema } from "../../../models/create_schemas/EventSchema";
 import TextArea from "../../common/forms/TextArea";
 import DatePicker from "../../common/forms/DatePicker";
 import { EventFestivalTicketRequest } from "../../../models/create_schemas/EventFestivalTicketSchema";
 import AddEventTicket from "../tickets/AddEventTicket";
 import { EventTicketContext } from "../../../context/EventTicketContext";
-import { eventNames } from "process";
 import { toast } from "react-toastify";
 import DateFormatter from "../../../helpers/DateFormatter";
 import {
@@ -33,7 +30,7 @@ interface ModifyEventProps {
 }
 
 const ModifyEvent = forwardRef<HTMLDialogElement, ModifyEventProps>(
-  ({ item, onDialogSuccess, onDialogClose }: ModifyEventProps, ref) => {
+  ({ item, onDialogSuccess, onDialogClose }: ModifyEventProps, _ref) => {
     const { statusCode: statusCode, put: putItem } = useApi<EventEntity, undefined, FormData>(
       ApiEndpoint.Event
     );
@@ -129,7 +126,7 @@ const ModifyEvent = forwardRef<HTMLDialogElement, ModifyEventProps>(
       },
     });
 
-    const { handleSubmit, formState, reset, watch } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     console.log(errors);

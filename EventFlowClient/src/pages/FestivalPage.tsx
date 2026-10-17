@@ -8,7 +8,7 @@ import DateFormatter from "../helpers/DateFormatter";
 import { DateFormat } from "../helpers/enums/DateFormatEnum";
 import Button, { ButtonStyle } from "../components/buttons/Button";
 import FestivalIcon from "../assets/festival_icon.png";
-import { faShoppingBasket, faShoppingCart, faTicket } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import FestivalReservationDialog from "../components/festivals/FestivalReservationDialog";
 
 const FestivalPage = () => {
@@ -26,15 +26,6 @@ const FestivalPage = () => {
       setFestival(items[0]);
     }
   }, [items]);
-
-  const FormatFestivalDate = (): string[] => {
-    if (festival != undefined) {
-      const date = DateFormatter.FormatDate(festival.start, DateFormat.DayDateTime).split(" ");
-      return date;
-    }
-    return [];
-  };
-  const [dayOfWeek, date, timeLabel, time] = FormatFestivalDate();
 
   return (
     festival && (

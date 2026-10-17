@@ -1,6 +1,5 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import Dialog from "../../common/Dialog";
-import LabelText from "../../common/LabelText";
 import { EventEntity } from "../../../models/response_models";
 import EventDetails from "./EventDetails";
 import { EventTabButtonType } from "../../../helpers/enums/EventTabButtonType";

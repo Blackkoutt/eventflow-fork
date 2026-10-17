@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { Reservation, TicketType } from "../../models/response_models";
+import { Reservation } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
@@ -7,9 +7,6 @@ import { Column } from "primereact/column";
 import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
-import CreateTicketTypeDialog from "../../components/management/tickettypes/CreateTicketTypeDialog";
-import DeleteTicketTypeDialog from "../../components/management/tickettypes/DeleteTicketTypeDialog";
-import ModifyTicketTypeDialog from "../../components/management/tickettypes/ModifyTicketTypeDialog";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import StatusBody from "../../components/tabledata/StatusBody";

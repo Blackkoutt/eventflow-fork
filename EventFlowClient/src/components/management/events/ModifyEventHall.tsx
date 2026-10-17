@@ -28,7 +28,7 @@ interface ContextMenuState {
 }
 
 const ModifyEventHall = forwardRef<HTMLDialogElement, ModifyEventHallProps>(
-  ({ item, onDialogClose, onDialogSuccess }: ModifyEventHallProps, ref) => {
+  ({ item, onDialogClose, onDialogSuccess }: ModifyEventHallProps, _ref) => {
     const { data: hallWithDetails, get: getHallWithDetails } = useApi<Hall>(ApiEndpoint.Hall);
     const { statusCode: statusCode, put: updateHall } = useApi<
       Hall,
@@ -204,7 +204,7 @@ const ModifyEventHall = forwardRef<HTMLDialogElement, ModifyEventHallProps>(
     const handleContextMenu = (
       event: React.MouseEvent,
       seatNumber: number,
-      rows: number,
+      _rows: number,
       cols: number
     ) => {
       event.preventDefault();
