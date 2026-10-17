@@ -5,7 +5,6 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {

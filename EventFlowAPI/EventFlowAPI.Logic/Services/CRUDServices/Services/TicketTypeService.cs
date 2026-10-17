@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.Logic.Mapper;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -9,7 +11,6 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.DB.Entities.Abstract;
@@ -18,16 +19,13 @@ using EventFlowAPI.Logic.Identity.Services.Interfaces;
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class TicketTypeService(IUnitOfWork unitOfWork, IAuthService authService) :
-        GenericService<
-            TicketType,
-            TicketTypeRequestDto,
-            UpdateTicketTypeRequestDto,
-            TicketTypeResponseDto,
-            TicketTypeQuery
-        >(unitOfWork, authService),
         ITicketTypeService
     {
-        public sealed override async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<TicketType> _repository = unitOfWork.GetRepository<TicketType>();
+
+        public async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
                                                               .ByName(query)
@@ -37,7 +35,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<TicketTypeResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<TicketTypeResponseDto>> UpdateAsync(int id, UpdateTicketTypeRequestDto? requestDto)
+        public async Task<Result<TicketTypeResponseDto>> UpdateAsync(int id, UpdateTicketTypeRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
@@ -58,7 +56,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<TicketTypeResponseDto>.Success();
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -72,7 +70,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -105,7 +103,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -117,12 +115,84 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override TicketTypeResponseDto MapResponse(TicketType entity) => entity.ToResponse();
+        private TicketTypeResponseDto MapAsDto(TicketType entity) => entity.ToResponse();
 
-        protected override TicketType MapAsEntity(TicketTypeRequestDto requestDto) => requestDto.ToEntity();
+        private TicketType MapAsEntity(TicketTypeRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override TicketType MapUpdatedAsEntity(UpdateTicketTypeRequestDto requestDto) => requestDto.ToEntity();
+        private IEntity MapToEntity(UpdateTicketTypeRequestDto requestDto, TicketType oldEntity) => requestDto.ApplyTo(oldEntity);
 
-        protected override IEntity MapToEntity(UpdateTicketTypeRequestDto requestDto, TicketType oldEntity) => requestDto.ApplyTo(oldEntity);
+        public async Task<Result<TicketTypeResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<TicketTypeResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<TicketTypeResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<TicketTypeResponseDto>.Success(response);
+        }
+
+        public async Task<Result<TicketTypeResponseDto>> AddAsync(TicketTypeRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto);
+            if (error != Error.None)
+                return Result<TicketTypeResponseDto>.Failure(error);
+
+            var entity = MapAsEntity(requestDto!);
+
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(entity);
+
+            return Result<TicketTypeResponseDto>.Success(response);
+        }
+
+        private async Task DeleteEntity(TicketType entity, bool isSoftDelete)
+        {
+            if (isSoftDelete)
+            {
+                entity.IsDeleted = true;
+                entity.DeleteDate = DateTime.Now;
+                _repository.Update(entity);
+            }
+            else
+            {
+                _repository.Delete(entity);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(TicketType Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(TicketType Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(TicketType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(TicketType Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(TicketType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(TicketType Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(TicketType Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private IEnumerable<TicketTypeResponseDto> MapAsDto(IEnumerable<TicketType> records)
+        {
+            return records.Select(entity => MapAsDto(entity));
+        }
     }
 }

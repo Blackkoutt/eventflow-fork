@@ -1,4 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -11,7 +14,6 @@ using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.VisualBasic;
@@ -23,17 +25,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         IAuthService authService,
         IFileService fileService) :
-        GenericService<
-            HallType,
-            HallTypeRequestDto,
-            UpdateHallTypeRequestDto,
-            HallTypeResponseDto,
-            HallTypeQuery
-        >(unitOfWork, authService),
         IHallTypeService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<HallType> _repository = unitOfWork.GetRepository<HallType>();
+
         private readonly IFileService _fileService = fileService;
-        public sealed override async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync(HallTypeQuery query)
+        public async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync(HallTypeQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.Where(ht => !ht.IsDeleted)
                                                               .ByName(query)
@@ -44,7 +43,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
         
 
-        public sealed override async Task<Result<HallTypeResponseDto>> AddAsync(HallTypeRequestDto? requestDto)
+        public async Task<Result<HallTypeResponseDto>> AddAsync(HallTypeRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)
@@ -73,7 +72,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallTypeResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<HallTypeResponseDto>> UpdateAsync(int id, UpdateHallTypeRequestDto? requestDto)
+        public async Task<Result<HallTypeResponseDto>> UpdateAsync(int id, UpdateHallTypeRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
@@ -103,7 +102,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallTypeResponseDto>.Success(response);
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -144,7 +143,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
@@ -197,7 +196,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -209,18 +208,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        public new IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
-        {
-            return records.Select(entity =>
-            {
-                var responseDto = entity.ToResponse();
-                responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
-                responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
-                return responseDto;
-            });
-        }
-
-        public new HallTypeResponseDto MapAsDto(HallType entity)
+        private HallTypeResponseDto MapAsDto(HallType entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.Equipments = entity.Equipments.Select(eq => eq.ToResponse()).ToList();
@@ -228,12 +216,54 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected override HallTypeResponseDto MapResponse(HallType entity) => entity.ToResponse();
+        IEnumerable<HallTypeResponseDto> IHallTypeService.MapAsDto(IEnumerable<HallType> records) => MapAsDto(records);
 
-        protected override HallType MapAsEntity(HallTypeRequestDto requestDto) => requestDto.ToEntity();
+        HallTypeResponseDto IHallTypeService.MapAsDto(HallType entity) => MapAsDto(entity);
 
-        protected override HallType MapUpdatedAsEntity(UpdateHallTypeRequestDto requestDto) => requestDto.ToEntity();
+        private HallType MapAsEntity(HallTypeRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override IEntity MapToEntity(UpdateHallTypeRequestDto requestDto, HallType oldEntity) => requestDto.ApplyTo(oldEntity);
+        private IEntity MapToEntity(UpdateHallTypeRequestDto requestDto, HallType oldEntity) => requestDto.ApplyTo(oldEntity);
+
+        public async Task<Result<HallTypeResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<HallTypeResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<HallTypeResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<HallTypeResponseDto>.Success(response);
+        }
+
+        private async Task<Result<(HallType Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(HallType Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(HallType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(HallType Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(HallType Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(HallType Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(HallType Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
+        {
+            return records.Select(entity => MapAsDto(entity));
+        }
     }
 }

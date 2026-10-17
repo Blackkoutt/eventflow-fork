@@ -4,19 +4,16 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface IHallService :
-        IGenericService<
-            Hall,
-            HallRequestDto,
-            UpdateHallRequestDto,
-            HallResponseDto,
-            HallQuery
-        >
+    public interface IHallService
     {
+        Task<Result<HallResponseDto>> AddAsync(HallRequestDto? requestDto);
+        Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query);
+        Task<Result<HallResponseDto>> GetOneAsync(int id);
+        Task<Result<HallResponseDto>> UpdateAsync(int id, UpdateHallRequestDto? requestDto);
+        Task<Result<object>> DeleteAsync(int id);
         Task<Result<HallResponseDto>> UpdateHallForEvent(int eventId, EventHallRequestDto? requestDto);
         Task<Result<HallResponseDto>> UpdateHallForRent(int rentId, HallRent_HallRequestDto? requestDto);
     }

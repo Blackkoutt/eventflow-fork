@@ -1,4 +1,5 @@
-﻿
+﻿using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
@@ -17,7 +18,6 @@ using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
@@ -36,21 +36,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFileService fileService,
         IHttpContextAccessor httpContextAccessor
         ) :
-        GenericService<
-            Reservation,
-            ReservationRequestDto,
-            UpdateReservationRequestDto,
-            ReservationResponseDto,
-            ReservationQuery
-        >(unitOfWork, authService),
         IReservationService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<Reservation> _repository = unitOfWork.GetRepository<Reservation>();
+
         private readonly ISeatService _seatService = seatService;
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITicketRepository _ticketRepository = (ITicketRepository)unitOfWork.GetRepository<Ticket>();
 
-        public sealed override async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
+        public async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
         {
             UserResponseDto? user = default!;
             if (query.GetAll != true)
@@ -86,9 +83,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public sealed override async Task<Result<ReservationResponseDto>> GetOneAsync(int id)
+        public async Task<Result<ReservationResponseDto>> GetOneAsync(int id)
         {
-            var reservationResult = await base.GetOneAsync(id);
+            var reservationResult = await GetOneResponse(id);
             if(!reservationResult.IsSuccessful)
                 return Result<ReservationResponseDto>.Failure(reservationResult.Error);
 
@@ -179,7 +176,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
         // Soft delete reservation, hard delete ticket jpg and pdf from tables and blobStorage
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -631,7 +628,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected override async Task<Result<(Reservation Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        private async Task<Result<(Reservation Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
         {
             if (id < 0)
                 return Result<(Reservation, UserResponseDto)>.Failure(Error.RouteParamOutOfRange);
@@ -660,7 +657,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -727,7 +724,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override IEnumerable<ReservationResponseDto> MapAsDto(IEnumerable<Reservation> records)
+        private IEnumerable<ReservationResponseDto> MapAsDto(IEnumerable<Reservation> records)
         {
             return records.Select(entity =>
             {
@@ -759,7 +756,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override ReservationResponseDto MapAsDto(Reservation entity)
+        private ReservationResponseDto MapAsDto(Reservation entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.User = entity.User.ToResponse();
@@ -790,19 +787,95 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
         // Not used
-        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             // is same reservation exist in db - reservation with reserved seat
 
             throw new NotImplementedException();
         }
 
-        protected override ReservationResponseDto MapResponse(Reservation entity) => entity.ToResponse();
+        private Reservation MapAsEntity(ReservationRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override Reservation MapAsEntity(ReservationRequestDto requestDto) => requestDto.ToEntity();
+        private IEntity MapToEntity(UpdateReservationRequestDto requestDto, Reservation oldEntity) => requestDto.ApplyTo(oldEntity);
 
-        protected override Reservation MapUpdatedAsEntity(UpdateReservationRequestDto requestDto) => requestDto.ToEntity();
+        public async Task<Result<ReservationResponseDto>> AddAsync(ReservationRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto);
+            if (error != Error.None)
+                return Result<ReservationResponseDto>.Failure(error);
 
-        protected override IEntity MapToEntity(UpdateReservationRequestDto requestDto, Reservation oldEntity) => requestDto.ApplyTo(oldEntity);
+            var entity = MapAsEntity(requestDto!);
+
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(entity);
+
+            return Result<ReservationResponseDto>.Success(response);
+        }
+
+        public async Task<Result<ReservationResponseDto>> UpdateAsync(int id, UpdateReservationRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<ReservationResponseDto>.Failure(error);
+
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<ReservationResponseDto>.Failure(Error.NotFound);
+
+            await UpdateEntity(oldEntity, requestDto!);
+
+            return Result<ReservationResponseDto>.Success();
+        }
+
+        private async Task UpdateEntity(Reservation oldEntity, UpdateReservationRequestDto requestDto)
+        {
+            var newEntity = (Reservation)MapToEntity(requestDto, oldEntity);
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private Error CheckUserPremission(UserResponseDto user, string? userId = null)
+        {
+            if (user.IsInRole(Roles.Admin))
+                return Error.None;
+            else if (user.IsInRole(Roles.User))
+            {
+                if (userId == user.Id)
+                    return Error.None;
+                else
+                    return AuthError.UserDoesNotHavePremissionToResource;
+            }
+            else
+                return AuthError.UserDoesNotHaveSpecificRole;
+        }
+
+        private Status GetEntityStatus(Reservation entity)
+        {
+            if (!entity.IsDeleted && entity.EndDate > DateTime.Now) return Status.Active;
+            else if (!entity.IsDeleted && entity.EndDate < DateTime.Now) return Status.Expired;
+            else if (entity.IsDeleted) return Status.Canceled;
+
+            return Status.Unknown;
+        }
+
+        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
+        {
+            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
+        }
+
+        private async Task<Result<ReservationResponseDto>> GetOneResponse(int id)
+        {
+            if (id < 0)
+                return Result<ReservationResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<ReservationResponseDto>.Failure(Error.NotFound);
+
+            return Result<ReservationResponseDto>.Success(MapAsDto(record));
+        }
     }
 }

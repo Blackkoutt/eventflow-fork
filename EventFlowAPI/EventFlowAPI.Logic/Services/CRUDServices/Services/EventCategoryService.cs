@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.Logic.Mapper;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -11,7 +13,6 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
@@ -19,16 +20,13 @@ using EventFlowAPI.Logic.Identity.Services.Interfaces;
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EventCategoryService(IUnitOfWork unitOfWork, IAuthService authService) :
-        GenericService<
-            EventCategory,
-            EventCategoryRequestDto,
-            UpdateEventCategoryRequestDto,
-            EventCategoryResponseDto,
-            EventCategoryQuery
-        >(unitOfWork, authService),
         IEventCategoryService
     {
-        public sealed override async Task<Result<IEnumerable<EventCategoryResponseDto>>> GetAllAsync(EventCategoryQuery query)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IAuthService _authService = authService;
+        private readonly IGenericRepository<EventCategory> _repository = unitOfWork.GetRepository<EventCategory>();
+
+        public async Task<Result<IEnumerable<EventCategoryResponseDto>>> GetAllAsync(EventCategoryQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
                                                               .ByName(query)
@@ -38,7 +36,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<IEnumerable<EventCategoryResponseDto>>.Success(response);
         }
 
-        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        public async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
             if (!validationResult.IsSuccessful)
@@ -53,7 +51,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public sealed override async Task<Result<EventCategoryResponseDto>> UpdateAsync(int id, UpdateEventCategoryRequestDto? requestDto)
+        public async Task<Result<EventCategoryResponseDto>> UpdateAsync(int id, UpdateEventCategoryRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
@@ -68,7 +66,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<EventCategoryResponseDto>.Success();
         }
 
-        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        private async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -102,7 +100,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             var result = (await _repository.GetAllAsync(q =>
                           q.Where(entity =>
@@ -113,12 +111,92 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected override EventCategoryResponseDto MapResponse(EventCategory entity) => entity.ToResponse();
+        private EventCategoryResponseDto MapAsDto(EventCategory entity) => entity.ToResponse();
 
-        protected override EventCategory MapAsEntity(EventCategoryRequestDto requestDto) => requestDto.ToEntity();
+        private EventCategory MapAsEntity(EventCategoryRequestDto requestDto) => requestDto.ToEntity();
 
-        protected override EventCategory MapUpdatedAsEntity(UpdateEventCategoryRequestDto requestDto) => requestDto.ToEntity();
+        private IEntity MapToEntity(UpdateEventCategoryRequestDto requestDto, EventCategory oldEntity) => requestDto.ApplyTo(oldEntity);
 
-        protected override IEntity MapToEntity(UpdateEventCategoryRequestDto requestDto, EventCategory oldEntity) => requestDto.ApplyTo(oldEntity);
+        public async Task<Result<EventCategoryResponseDto>> GetOneAsync(int id)
+        {
+            if (id < 0)
+                return Result<EventCategoryResponseDto>.Failure(Error.RouteParamOutOfRange);
+
+            var record = await _repository.GetOneAsync(id);
+            if (record == null)
+                return Result<EventCategoryResponseDto>.Failure(Error.NotFound);
+
+            var response = MapAsDto(record);
+
+            return Result<EventCategoryResponseDto>.Success(response);
+        }
+
+        public async Task<Result<EventCategoryResponseDto>> AddAsync(EventCategoryRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto);
+            if (error != Error.None)
+                return Result<EventCategoryResponseDto>.Failure(error);
+
+            var entity = MapAsEntity(requestDto!);
+
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(entity);
+
+            return Result<EventCategoryResponseDto>.Success(response);
+        }
+
+        private async Task UpdateEntity(EventCategory oldEntity, UpdateEventCategoryRequestDto requestDto)
+        {
+            var newEntity = (EventCategory)MapToEntity(requestDto, oldEntity);
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task DeleteEntity(EventCategory entity, bool isSoftDelete)
+        {
+            if (isSoftDelete)
+            {
+                entity.IsDeleted = true;
+                entity.DeleteDate = DateTime.Now;
+                _repository.Update(entity);
+            }
+            else
+            {
+                _repository.Delete(entity);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(EventCategory Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<(EventCategory Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+            if (entity == null)
+                return Result<(EventCategory Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(EventCategory Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity.IsDeleted)
+                return Result<(EventCategory Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<(EventCategory Entity, UserResponseDto User)>.Failure(user.IsInRole(Roles.User) ? AuthError.UserDoesNotHavePremissionToResource : AuthError.UserDoesNotHaveSpecificRole);
+
+            return Result<(EventCategory Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+        private IEnumerable<EventCategoryResponseDto> MapAsDto(IEnumerable<EventCategory> records)
+        {
+            return records.Select(entity => MapAsDto(entity));
+        }
     }
 }
