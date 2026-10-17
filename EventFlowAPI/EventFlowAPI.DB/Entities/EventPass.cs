@@ -1,19 +1,17 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
+    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
     {
         public Guid EventPassGuid { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime? RenewalDate { get; set; } = null;
         public DateTime EndDate { get; set; }
-        public DateTime? PreviousEndDate { get; set; } = null;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
@@ -35,10 +33,9 @@ namespace EventFlowAPI.DB.Entities
         public string? EventPassPDFName { get; set; } = string.Empty;
         public int PassTypeId { get; set; }
         public string UserId {  get; set; } = string.Empty;
-        public int PaymentTypeId { get; set; }
+        public PaymentType PaymentType { get; set; }
         public EventPassType PassType { get; set; } = default!;
         public User User { get; set; } = default!;
-        public PaymentType PaymentType { get; set; } = default!;
         public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

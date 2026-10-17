@@ -34,7 +34,7 @@ The seeded responses, filters, sorting and paging are asserted in code: `Queries
 
 - `Authorization` – access level of every endpoint and the 401/403 behaviour.
 - `Queries` – seeded responses per role, filters, sorting and paging of every list endpoint.
-- `Scenarios` – write flows: reservations, passes, hall rents, halls, events, festivals, lookups, photos (incl. payment types), files, statistics.
+- `Scenarios` – write flows: reservations, passes, hall rents, halls, events, festivals, lookups, photos, files, statistics.
   - `CascadeTests` – side effects between halls, events, festivals, passes, rents and reservations.
   - `AtomicityTests` – rows left in the database after a rejected write (`DatabaseProbe` counts rows of every table).
   - `SoftUpdateTests` – updates of lookup types that are already referenced.

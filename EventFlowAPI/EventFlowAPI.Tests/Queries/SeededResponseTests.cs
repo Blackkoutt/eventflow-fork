@@ -16,7 +16,7 @@ namespace EventFlowAPI.Tests.Queries
         private static readonly string[] PublicPaths =
         {
             "/api/AdditionalServices", "/api/Equipments", "/api/EventCategories", "/api/EventPassTypes", "/api/FAQ", "/api/SeatTypes",
-            "/api/TicketTypes", "/api/PaymentTypes", "/api/MediaPatrons", "/api/Organizers", "/api/Partners", "/api/Sponsors",
+            "/api/TicketTypes", "/api/PaymentTypes", "/api/Partners",
             "/api/News", "/api/HallTypes", "/api/Halls", "/api/Events", "/api/Festivals",
         };
 

@@ -27,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         public sealed override async Task<Result<IEnumerable<AdditionalServicesResponseDto>>> GetAllAsync(AdditionalServicesQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted && !s.IsSoftUpdated)
+            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
                                                               .ByName(query)
                                                               .ByPrice(query)
                                                               .SortBy(query.SortBy, query.SortDirection)
@@ -46,7 +46,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (oldEntity == null)
                 return Result<AdditionalServicesResponseDto>.Failure(Error.NotFound);
 
-            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: oldEntity.Rents.Any());
+            await UpdateEntity(oldEntity, requestDto!);
 
             return Result<AdditionalServicesResponseDto>.Success();
         }
@@ -96,7 +96,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var entity = await _repository.GetOneAsync((int)id);
-                if (entity == null || entity.IsDeleted || entity.IsSoftUpdated)
+                if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
 
@@ -112,8 +112,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       q.Where(entity =>
                         entity.Id != id &&
                         entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted &&
-                        !entity.IsSoftUpdated
+                        !entity.IsDeleted
                       ))).Any();
 
             return Result<bool>.Success(result);

@@ -118,7 +118,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 TotalDiscountPercentage = 0,
                 PassTypeId = eventPassType.Id,
                 UserId = user.Id,
-                PaymentTypeId = 1,
+                PaymentType = PaymentType.PayU,
             };
 
             // Add EventPass to db
@@ -161,7 +161,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<EventPassResponseDto>.Failure(AuthError.UserDoesNotHavePremissionToResource);
 
             var newPassType = await _unitOfWork.GetRepository<EventPassType>().GetOneAsync(requestDto!.PassTypeId);
-            var newPaymentType = await _unitOfWork.GetRepository<PaymentType>().GetOneAsync(1);
 
             var oldEventPassType = new EventPassType
             {
@@ -172,7 +171,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
 
             Log.Information("Hello from renew3");
-            UpdateEventPass(eventPass, newPassType!, newPaymentType!);
+            UpdateEventPass(eventPass, newPassType!, PaymentType.PayU);
             Log.Information("Hello from renew4");
             var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, oldEventPassType, isUpdate: true);
             if (!pdfResult.IsSuccessful)
@@ -188,7 +187,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var totalDiscount = (newPassType!.Price * (eventPass.PassType.RenewalDiscountPercentage / 100));
             var paymentAmount = Math.Round(newPassType!.Price - (newPassType.Price * (eventPass.PassType.RenewalDiscountPercentage / 100)), 2);
 
-            eventPass.PreviousEndDate = eventPass.EndDate;
             eventPass.EndDate = eventPass.EndDate.AddMonths(newPassType!.ValidityPeriodInMonths);
             eventPass.RenewalDate = DateTime.Now;
             eventPass.PaymentDate = DateTime.Now;
@@ -255,17 +253,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     reservationRepo.Update(reservation);
                 }
 
-                var ticketJPGRepository = (ITicketJPGRepository)_unitOfWork.GetRepository<TicketJPG>();
-                var ticketJPGList = await ticketJPGRepository.GetAllJPGsForReservation(firstRes.Id);
-                var deleteTicketJPGsError = await _fileService.DeleteFileEntities(ticketJPGList);
-                if (deleteTicketJPGsError != Error.None)
-                    return deleteTicketJPGsError;
+                var deleteTicketFilesError = await _fileService.DeleteTicketFiles(firstRes);
+                if (deleteTicketFilesError != Error.None)
+                    return deleteTicketFilesError;
 
-                var ticketPDFRepository = (ITicketPDFRepository)_unitOfWork.GetRepository<TicketPDF>();
-                var ticketPDFList = await ticketPDFRepository.GetAllPDFsForReservation(firstRes.Id);
-                var deleteTicketPDFError = await _fileService.DeleteFileEntities(ticketPDFList);
-                if (deleteTicketPDFError != Error.None)
-                    return deleteTicketPDFError;
+                firstRes.TicketPDFFileName = null;
+                firstRes.TicketImagesFolder = null;
             }
             return Error.None;
         }
@@ -310,7 +303,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.EventPassGuid = entity.EventPassGuid;
                 responseDto.EventPassStatus = GetEntityStatus(entity);
                 responseDto.User.UserData = null;
-                responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+                responseDto.PaymentType = entity.PaymentType.AsDto();
                 responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
                 return responseDto;
             });
@@ -324,7 +317,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.EventPassStatus = GetEntityStatus(entity);
             responseDto.EventPassGuid = entity.EventPassGuid;
             responseDto.User.UserData = null;
-            responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+            responseDto.PaymentType = entity.PaymentType.AsDto();
             responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
             return responseDto;
         }
@@ -380,7 +373,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id == null && isUserAlreadyHaveActiveEventPass)
                 return EventPassError.UserAlreadyHaveActiveEventPass;
 
-            if (!await IsEntityExistInDB<PaymentType>(paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
             if (!await IsEntityExistInDB<EventPassType>(passTypeId))

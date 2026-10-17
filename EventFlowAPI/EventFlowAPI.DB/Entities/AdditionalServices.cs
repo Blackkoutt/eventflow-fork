@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class AdditionalServices : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable, IUpdateableEntity, ISoftUpdateable
+    public class AdditionalServices : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable
     {
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;
@@ -17,9 +17,6 @@ namespace EventFlowAPI.DB.Entities
         public decimal Price {  get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsSoftUpdated { get; set; } = false;
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public ICollection<HallRent> Rents { get; set; } = [];
     }
 }

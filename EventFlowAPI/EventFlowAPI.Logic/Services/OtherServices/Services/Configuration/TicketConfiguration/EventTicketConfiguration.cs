@@ -110,7 +110,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
         public PrintingOptions GetDurationPrintingOpitons(Event eventEntity)
         {
             int spaceForDuration = durationRightMax - durationLeftMax;
-            int durationStringLength = eventEntity.DurationTimeSpan.TotalMinutes.ToString().Length + 4;
+            int durationStringLength = eventEntity.Duration.TotalMinutes.ToString().Length + 4;
             detailsPrintX = durationLeftMax + (spaceForDuration - durationStringLength * durationEstimatedCharWidth) / 2;
 
             return new PrintingOptions

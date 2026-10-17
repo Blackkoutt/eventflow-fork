@@ -43,8 +43,9 @@ const CreateMediaPatronDialog = forwardRef<HTMLDialogElement, CreateMediaPatronD
     const onSubmit: SubmitHandler<MediaPatronRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
+      formData.append("Kind", "MediaPatron");
       formData.append("Name", data.name);
-      formData.append("MediaPatronPhoto", data.mediaPatronPhoto);
+      formData.append("PartnerPhoto", data.mediaPatronPhoto);
       await toast.promise(postItem({ body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Patron medialny został pomyślnie utworzony",

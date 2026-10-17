@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPassType : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable, IUpdateableEntity, ISoftUpdateable
+    public class EventPassType : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable
     {
 
         [MaxLength(40)]
@@ -23,9 +23,6 @@ namespace EventFlowAPI.DB.Entities
         public decimal RenewalDiscountPercentage { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
-        public bool IsSoftUpdated { get; set; } = false;
         public ICollection<EventPass> EventPasses { get; set; } = [];
     }
 }

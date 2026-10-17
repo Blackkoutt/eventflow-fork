@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.DB.Entities.Enums;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
@@ -62,7 +65,8 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<HallRent, HallRent>();
             CreateMap<HallRentRequestDto, HallRent>();
             CreateMap<UpdateHallRentRequestDto, HallRent>();
-            CreateMap<HallRent, HallRentResponseDto>();
+            CreateMap<HallRent, HallRentResponseDto>()
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.RentDate));
 
             CreateMap<Hall, Hall>();
             CreateMap<HallRequestDto, Hall>();
@@ -82,25 +86,16 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateHallTypeRequestDto, HallType>();
             CreateMap<HallType, HallTypeResponseDto>();
 
-            CreateMap<MediaPatron, MediaPatron>();
-            CreateMap<MediaPatronRequestDto, MediaPatron>();
-            CreateMap<UpdateMediaPatronRequestDto, MediaPatron>();
-            CreateMap<MediaPatron, MediaPatronResponseDto>();
 
-            CreateMap<Organizer, Organizer>();
-            CreateMap<OrganizerRequestDto, Organizer>();
-            CreateMap<UpdateOrganizerRequestDto, Organizer>();
-            CreateMap<Organizer, OrganizerResponseDto>();
 
-            CreateMap<PaymentType, PaymentType>();
-            CreateMap<PaymentTypeRequestDto, PaymentType>();
-            CreateMap<UpdatePaymentTypeRequestDto, PaymentType>();
-            CreateMap<PaymentType, PaymentTypeResponseDto>();
+            CreateMap<PaymentTypeInfo, PaymentTypeResponseDto>();
+            CreateMap<PaymentType, PaymentTypeResponseDto>().ConvertUsing(src => src.AsDto());
 
             CreateMap<Reservation, Reservation>();
             CreateMap<ReservationRequestDto, Reservation>();
             CreateMap<UpdateReservationRequestDto, Reservation>();
-            CreateMap<Reservation, ReservationResponseDto>();
+            CreateMap<Reservation, ReservationResponseDto>()
+                .ForMember(dest => dest.PaymentDate, opt => opt.MapFrom(src => src.ReservationDate));
 
             CreateMap<Seat, Seat>();
             CreateMap<SeatRequestDto, Seat>();
@@ -111,10 +106,6 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateSeatTypeRequestDto, SeatType>();
             CreateMap<SeatType, SeatTypeResponseDto>();
 
-            CreateMap<Sponsor, Sponsor>();
-            CreateMap<SponsorRequestDto, Sponsor>();
-            CreateMap<UpdateSponsorRequestDto, Sponsor>();
-            CreateMap<Sponsor, SponsorResponseDto>();
 
             CreateMap<News, News>();
             CreateMap<NewsRequestDto, News>();

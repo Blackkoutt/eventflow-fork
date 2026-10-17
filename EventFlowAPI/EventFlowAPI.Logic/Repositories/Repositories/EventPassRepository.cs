@@ -14,7 +14,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.EventPass
                     .Include(ep => ep.User)
                     .Include(ep => ep.PassType)
-                    .Include(ep => ep.PaymentType)
                     .AsSplitQuery();
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
@@ -25,7 +24,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .AsSplitQuery()
                         .Include(ep => ep.User)
                         .Include(ep => ep.PassType)
-                        .Include(ep => ep.PaymentType)
                         .FirstOrDefaultAsync(ep => ep.Id == id);
         }
     }

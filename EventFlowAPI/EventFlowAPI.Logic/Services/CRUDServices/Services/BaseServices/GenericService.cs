@@ -85,24 +85,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             if (oldEntity == null)
                 return Result<TResponseDto>.Failure(Error.NotFound);
 
-            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: false);
+            await UpdateEntity(oldEntity, requestDto!);
 
             return Result<TResponseDto>.Success();
         }
 
-        protected async Task UpdateEntity(TEntity oldEntity, TUpdateRequestDto requestDto, bool isSoftUpdate)
+        protected async Task UpdateEntity(TEntity oldEntity, TUpdateRequestDto requestDto)
         {
-            var newEntity = oldEntity;
-            if (oldEntity is ISoftUpdateable updateableEntity && isSoftUpdate)
-            {
-                var entity = MapAsEntity(requestDto!);
-                await _repository.AddAsync(entity);
-                updateableEntity.IsSoftUpdated = true;
-            }
-            else
-            {
-                newEntity = (TEntity)MapToEntity(requestDto!, oldEntity);
-            }
+            var newEntity = (TEntity)MapToEntity(requestDto!, oldEntity);
             _repository.Update(newEntity);
 
             await _unitOfWork.SaveChangesAsync();

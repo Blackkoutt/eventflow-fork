@@ -11,9 +11,9 @@ namespace EventFlowAPI.Tests.Infrastructure
         {
             ["Event"] = ["StartDate", "EndDate"],
             ["Festival"] = ["StartDate", "EndDate"],
-            ["EventPass"] = ["StartDate", "EndDate", "PaymentDate"],
-            ["HallRent"] = ["StartDate", "EndDate", "RentDate", "PaymentDate"],
-            ["Reservation"] = ["ReservationDate", "StartDate", "EndDate", "PaymentDate"],
+            ["EventPass"] = ["StartDate", "EndDate"],
+            ["HallRent"] = ["StartDate", "EndDate", "RentDate"],
+            ["Reservation"] = ["ReservationDate", "StartDate", "EndDate"],
             ["News"] = ["PublicationDate"],
             ["Users"] = ["RegisteredDate", "DateOfBirth"],
         };

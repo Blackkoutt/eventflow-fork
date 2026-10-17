@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.DTO.Statistics.ResponseDto;
 using EventFlowAPI.Logic.Enums;
@@ -314,13 +315,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var totalTransationsCount = allNewHallRents.Count() + allNewOrRenewedEventPasses.Count() + allNewReservations.Count();
             var totalIncome = (double)(hallRentsIncome + eventPassIncome + reservationIncome);
 
-            var allPaymentTypes = await _unitOfWork.GetRepository<PaymentType>().GetAllAsync(q => q.Where(pt => !pt.IsDeleted));
-            var paymentTypesDict = allPaymentTypes
+            var paymentTypesDict = PaymentTypeCatalogue.All
                                     .ToDictionary(
                                         x => x.Name,
-                                        x => (double)(x.EventPasses.Where(ep => allNewOrRenewedEventPasses.Contains(ep)).Count() +
-                                             x.Reservations.Where(r => allNewReservations.Contains(r)).Count() +
-                                             x.HallRents.Where(hr => allNewHallRents.Contains(hr)).Count()))
+                                        x => (double)(allNewOrRenewedEventPasses.Count(ep => (int)ep.PaymentType == x.Id) +
+                                             allNewReservations.Count(r => (int)r.PaymentType == x.Id) +
+                                             allNewHallRents.Count(hr => (int)hr.PaymentType == x.Id)))
                                              .OrderByDescending(x => x.Value)
                                              .Take(MAX_ELEMENTS_IN_PLOT)
                                              .ToDictionary();
@@ -338,12 +338,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var allNewReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.ReservationDate >= startDate && r.ReservationDate <= endDate && !r.IsDeleted));
             var allNewReservationsCount = allNewReservations.Count();
 
-            var allNewFestivalReservations = allNewReservations.Where(r => r.IsFestivalReservation);
+            var allNewFestivalReservations = allNewReservations.Where(r => r.Ticket.FestivalId != null);
             var allNewFestivalReservationsCount = allNewFestivalReservations.Count();
 
             var allCanceledReservationsCount = (await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.IsDeleted))).Count();
 
-            var allNewEventsReservations = allNewReservations.Where(r => !r.IsFestivalReservation);
+            var allNewEventsReservations = allNewReservations.Where(r => r.Ticket.FestivalId == null);
             var allNewEventsReservationsCount = allNewEventsReservations.Count();
 
             var reservationFestivalEventsDict = new Dictionary<string, double>
@@ -414,36 +414,36 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             // Total eventsIncome
             var totalIncome = (double)Math.Round(allFestivalsThatTookPlaceInTimePeriod
                                 .SelectMany(e => e.Tickets.Where(t => !t.IsDeleted && t.FestivalId != null)
-                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && r.IsFestivalReservation)
+                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                         .Select(r => r.PaymentAmount))).Sum(), 2);
 
             // Most popualar (most of reservations)
             var mostPopularFestivalsDict = allFestivalsThatTookPlaceInTimePeriod
                                 .OrderByDescending(e => e.Tickets.Where(t => !t.IsDeleted && t.FestivalId != null)
-                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && r.IsFestivalReservation)).Count())
+                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)).Count())
                                         .Take(MAX_ELEMENTS_IN_PLOT)
                                             .ToDictionary(e => e.Name, e => (double)(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId != null)
-                                                .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && r.IsFestivalReservation)).Count()));
+                                                .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)).Count()));
 
             // Most profitable festivals (max income from reservations)
             var mostProfitableFestivalsDict = allFestivalsThatTookPlaceInTimePeriod
                               .OrderByDescending(e => Math.Round(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId != null)
-                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && r.IsFestivalReservation)
+                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                         .Select(r => r.PaymentAmount)).Sum(), 2))
                                             .Take(MAX_ELEMENTS_IN_PLOT)
                                                 .ToDictionary(e => e.Name, e => (double)(Math.Round(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId != null)
-                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && r.IsFestivalReservation)
+                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                                         .Select(r => r.PaymentAmount)).Sum(), 2)));
 
-            var allOrganizers = await _unitOfWork.GetRepository<Organizer>().GetAllAsync(q => q.Where(o => o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
+            var allOrganizers = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.Organizer && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
             var organizatorFestivalsDict = allOrganizers.ToDictionary(o => o.Name, o => (double)o.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
-            var allMediaPatrons = await _unitOfWork.GetRepository<MediaPatron>().GetAllAsync(q => q.Where(o => o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
+            var allMediaPatrons = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.MediaPatron && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
             var mediaPatronsFestivalsDict = allMediaPatrons.ToDictionary(mp => mp.Name, mp => (double)mp.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
-            var allSponsors = await _unitOfWork.GetRepository<Sponsor>().GetAllAsync(q => q.Where(o => o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
+            var allSponsors = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.Sponsor && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
             var sponsorsFestivalsDict = allSponsors.ToDictionary(s => s.Name, s => (double)s.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
@@ -529,25 +529,25 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             // Total eventsIncome
             var totalIncome = (double)Math.Round(allEventsThatTookPlaceInTimePeriod.
                                 SelectMany(e => e.Tickets.Where(t => !t.IsDeleted && t.FestivalId == null)
-                                        .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && !r.IsFestivalReservation)
+                                        .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                             .Select(r => r.PaymentAmount))).Sum(), 2);;
 
             // Most popualar (most of reservations)
             var mostPopularEventsDict = allEventsThatTookPlaceInTimePeriod
                                 .OrderByDescending(e => e.Tickets.Where(t => !t.IsDeleted && t.FestivalId == null)
-                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && !r.IsFestivalReservation)).Count())
+                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)).Count())
                                         .Take(MAX_ELEMENTS_IN_PLOT)
                                             .ToDictionary(e => e.Name, e => (double)(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId == null)
-                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && !r.IsFestivalReservation)).Count()));
+                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)).Count()));
 
             // Most profitable events (max income from reservations)
             var mostProfitableEventsDict = allEventsThatTookPlaceInTimePeriod
                               .OrderByDescending(e => Math.Round(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId == null)
-                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && !r.IsFestivalReservation)
+                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                         .Select(r => r.PaymentAmount)).Sum(), 2))
                                             .Take(MAX_ELEMENTS_IN_PLOT)
                                                 .ToDictionary(e => e.Name, e => (double)(Math.Round(e.Tickets.Where(t => !t.IsDeleted && t.FestivalId == null)
-                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null && !r.IsFestivalReservation)
+                                                    .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                                         .Select(r => r.PaymentAmount)).Sum(), 2)));
 
             // Events hall

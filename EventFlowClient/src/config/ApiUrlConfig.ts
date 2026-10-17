@@ -68,13 +68,13 @@ export const ApiUrlConfig = {
     url: (id?: number | string) => `/halltypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.MediaPatron]: {
-    url: (id?: number | string) => `/mediapatrons${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.News]: {
     url: (id?: number | string) => `/news${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Organizer]: {
-    url: (id?: number | string) => `/organizers${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Partner]: {
     url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
@@ -95,7 +95,7 @@ export const ApiUrlConfig = {
     url: (id?: number | string) => `/seattypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Sponsor]: {
-    url: (id?: number | string) => `/sponsors${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Stats]: {
     url: (id?: number | string) => "/statistics",

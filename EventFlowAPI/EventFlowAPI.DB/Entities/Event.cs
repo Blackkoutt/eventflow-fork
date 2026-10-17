@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Event : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IUpdateableEntity, IPhotoEntity
+    public class Event : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity, IPhotoEntity
     {
 
         [MaxLength(60)]
@@ -16,7 +16,6 @@ namespace EventFlowAPI.DB.Entities
         public DateTime AddDate { get; set; }
         public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; set; }
-        public long Duration { get; set; } 
         public int CategoryId { get; set; } 
         public int HallId { get; set; }
         public EventCategory Category { get; set; } = default!;
@@ -29,16 +28,10 @@ namespace EventFlowAPI.DB.Entities
         public bool IsExpired => EndDate < DateTime.Now;
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public Guid EventGuid { get; set; }
         public string PhotoName { get; set; } = string.Empty;
 
         [NotMapped]
-        public TimeSpan DurationTimeSpan
-        {
-            get => TimeSpan.FromSeconds(Duration);
-            set => Duration = (long)value.TotalSeconds;
-        }
+        public TimeSpan Duration => EndDate - StartDate;
     }
 }

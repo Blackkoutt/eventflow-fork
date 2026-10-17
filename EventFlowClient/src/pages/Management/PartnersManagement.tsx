@@ -16,7 +16,7 @@ const PartnersManagement = () => {
   const { data: items, get: getItems } = useApi<Partner>(ApiEndpoint.Partner);
 
   useEffect(() => {
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Partner" } });
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const PartnersManagement = () => {
 
   const reloadItemsAfterSuccessDialog = () => {
     closeDialogsAndSetValuesToDefault();
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Partner" } });
   };
 
   return (

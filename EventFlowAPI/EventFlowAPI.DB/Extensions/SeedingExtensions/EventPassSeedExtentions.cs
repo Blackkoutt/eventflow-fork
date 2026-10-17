@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventFlowAPI.DB.Extensions.SeedingExtensions
@@ -28,7 +29,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EventPassJPGName = $"eventflow_karnet_{epGuid1}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid1}.pdf",
                     UserId = "2",
-                    PaymentTypeId = 1
+                    PaymentType = PaymentType.PayU
                 },
 
                 new EventPass
@@ -46,7 +47,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EventPassJPGName = $"eventflow_karnet_{epGuid2}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid2}.pdf",
                     UserId = "3",
-                    PaymentTypeId = 1
+                    PaymentType = PaymentType.PayU
                 },
                 new EventPass
                 {
@@ -63,7 +64,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EventPassJPGName = $"eventflow_karnet_{epGuid3}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid3}.pdf",
                     UserId = "4",
-                    PaymentTypeId = 1
+                    PaymentType = PaymentType.PayU
                 }
             );
         }

@@ -7,6 +7,15 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void AddOneToOneRelations(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<UserData>().ToTable("Users");
+            modelBuilder.Entity<Event>().ToTable("Event");
+            modelBuilder.Entity<EventDetails>().ToTable("Event");
+            modelBuilder.Entity<Festival>().ToTable("Festival");
+            modelBuilder.Entity<FestivalDetails>().ToTable("Festival");
+            modelBuilder.Entity<Hall>().ToTable("Hall");
+            modelBuilder.Entity<HallDetails>().ToTable("Hall");
+
             modelBuilder.Entity<UserData>()
                .HasOne(x => x.User)
                .WithOne(x => x.UserData)
@@ -17,32 +26,26 @@ namespace EventFlowAPI.DB.Extensions
                .WithOne(x => x.HallDetails)
                .HasForeignKey<HallDetails>(x => x.Id);
 
-            modelBuilder.Entity<Event>()
-                .HasOne(x => x.Details)
-                .WithOne(x => x.Event)
-                .HasForeignKey<Event>(x => x.Id);
+            modelBuilder.Entity<Hall>().Navigation(x => x.HallDetails).IsRequired();
 
-            modelBuilder.Entity<Festival>()
-                .HasOne(x => x.Details)
-                .WithOne(x => x.Festival)
-                .HasForeignKey<Festival>(x => x.Id);
+            modelBuilder.Entity<EventDetails>()
+                .HasOne(x => x.Event)
+                .WithOne(x => x.Details)
+                .HasForeignKey<EventDetails>(x => x.Id);
+
+            modelBuilder.Entity<FestivalDetails>()
+                .HasOne(x => x.Festival)
+                .WithOne(x => x.Details)
+                .HasForeignKey<FestivalDetails>(x => x.Id);
         }
         public static void AddManyToManyRelations(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Festival>()
-               .HasMany(e => e.Organizers)
+               .HasMany(e => e.Partners)
                .WithMany(e => e.Festivals)
-               .UsingEntity<Festival_Organizer>();
-
-            modelBuilder.Entity<Festival>()
-               .HasMany(e => e.Sponsors)
-               .WithMany(e => e.Festivals)
-               .UsingEntity<Festival_Sponsor>();
-
-            modelBuilder.Entity<Festival>()
-                .HasMany(e => e.MediaPatrons)
-                .WithMany(e => e.Festivals)
-                .UsingEntity<Festival_MediaPatron>();
+               .UsingEntity<Festival_Partner>(
+                    right => right.HasOne<Partner>().WithMany().HasForeignKey(x => x.PartnerId),
+                    left => left.HasOne<Festival>().WithMany().HasForeignKey(x => x.FestivalId));
 
             modelBuilder.Entity<Festival>()
                 .HasMany(e => e.Events)
@@ -53,11 +56,6 @@ namespace EventFlowAPI.DB.Extensions
                 .HasMany(e => e.Seats)
                 .WithMany(e => e.Reservations)
                 .UsingEntity<Reservation_Seat>();
-
-            modelBuilder.Entity<Reservation>()
-                .HasMany(e => e.TicketsJPG)
-                .WithMany(e => e.Reservations)
-                .UsingEntity<Reservation_TicketJPG>();
 
             modelBuilder.Entity<HallType>()
                 .HasMany(e => e.Equipments)

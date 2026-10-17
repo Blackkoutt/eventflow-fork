@@ -60,9 +60,9 @@ const ModifyFestival = forwardRef<HTMLDialogElement, ModifyFestivalProps>(
 
     useEffect(() => {
       getEvents({ id: undefined, queryParams: undefined });
-      getMediaPatron({ id: undefined, queryParams: undefined });
-      getOrganizers({ id: undefined, queryParams: undefined });
-      getSponsors({ id: undefined, queryParams: undefined });
+      getMediaPatron({ id: undefined, queryParams: { kind: "MediaPatron" } });
+      getOrganizers({ id: undefined, queryParams: { kind: "Organizer" } });
+      getSponsors({ id: undefined, queryParams: { kind: "Sponsor" } });
     }, []);
 
     useEffect(() => {
