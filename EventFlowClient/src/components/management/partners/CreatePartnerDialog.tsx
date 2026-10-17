@@ -40,6 +40,7 @@ const CreatePartnerDialog = forwardRef<HTMLDialogElement, CreatePartnerDialogPro
     const onSubmit: SubmitHandler<PartnerRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
+      formData.append("Kind", "Partner");
       formData.append("Name", data.name);
       formData.append("PartnerPhoto", data.partnerPhoto);
       await toast.promise(postItem({ body: formData }), {

@@ -28,13 +28,10 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _hallRents = new HallRentRespository(_context);
             _halls = new HallRepository(_context);
             _hallTypes = new HallTypeRepository(_context);
-            _mediaPatrons = new MediaPatronRepository(_context);
             _hallDetails = new HallDetailsRepository(_context);
-            _organizers = new OrganizerRespository(_context);
             _reservations = new ReservationRepository(_context);
             _seats = new SeatRepository(_context);
             _seatTypes = new SeatTypeRepository(_context);
-            _sponsors = new SponsorRepository(_context);
             _ticketTypes = new TicketTypeRepository(_context);
             _usersData = new UserDataRepository(_context);
             _users = new UserRepository(_context);
@@ -89,12 +86,9 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(Hall), _halls },
                 { typeof(HallType),  _hallTypes },
                 { typeof(HallDetails),  _hallDetails },
-                { typeof(MediaPatron), _mediaPatrons },
-                { typeof(Organizer), _organizers },
                 { typeof(Reservation), _reservations },
                 { typeof(Seat), _seats },
                 { typeof(SeatType), _seatTypes },
-                { typeof(Sponsor), _sponsors },
                 { typeof(TicketType), _ticketTypes },
                 { typeof(UserData), _usersData },
                 { typeof(Reservation_Seat), _reservation_Seats},
@@ -119,12 +113,9 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly IHallRepository _halls;
         private readonly IHallDetailsRepository _hallDetails;
         private readonly IHallTypeRepository _hallTypes;
-        private readonly IMediaPatronRepository _mediaPatrons;
-        private readonly IOrganizerRepository _organizers;
         private readonly IReservationRepository _reservations;
         private readonly ISeatRepository _seats;
         private readonly ISeatTypeRepository _seatTypes;
-        private readonly ISponsorRepository _sponsors;
         private readonly ITicketTypeRepository _ticketTypes;
         private readonly IUserDataRepository _usersData;
         private readonly IUserRepository _users;

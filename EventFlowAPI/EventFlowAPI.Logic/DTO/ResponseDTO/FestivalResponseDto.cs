@@ -19,9 +19,9 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public string PhotoEndpoint { get; set; } = string.Empty;
         public FestivalDetailsResponseDto? Details { get; set; }
         public ICollection<EventResponseDto> Events { get; set; } = [];
-        public ICollection<MediaPatronResponseDto> MediaPatrons { get; set; } = [];
-        public ICollection<OrganizerResponseDto> Organizers { get; set; } = [];
-        public ICollection<SponsorResponseDto> Sponsors { get; set; } = [];
+        public ICollection<PartnerResponseDto> MediaPatrons { get; set; } = [];
+        public ICollection<PartnerResponseDto> Organizers { get; set; } = [];
+        public ICollection<PartnerResponseDto> Sponsors { get; set; } = [];
         public ICollection<TicketResponseDto> Tickets { get; set; } = [];
     }
 }

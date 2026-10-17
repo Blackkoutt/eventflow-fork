@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Query;
@@ -115,9 +116,9 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.MaxDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) <= query.MaxDuration.Value.TotalSeconds);
             if (query.MinEventsCount != null) queryable = queryable.Where(x => x.Events.Count >= query.MinEventsCount);
             if (query.MaxEventsCount != null) queryable = queryable.Where(x => x.Events.Count <= query.MaxEventsCount);    
-            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is MediaPatron && p.Id == query.MediaPatronId));
-            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is Organizer && p.Id == query.OrganizerId));
-            if (query.SponsorId != null) queryable = queryable.Where(x => x.Partners.Any(p => p is Sponsor && p.Id == query.SponsorId));
+            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.MediaPatron && p.Id == query.MediaPatronId));
+            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.Organizer && p.Id == query.OrganizerId));
+            if (query.SponsorId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.Sponsor && p.Id == query.SponsorId));
             if (query.TicketTypeId != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Id == query.TicketTypeId));
             if (query.MinTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price >= query.MinTicketPrice));
             if (query.MaxTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price <= query.MaxTicketPrice));

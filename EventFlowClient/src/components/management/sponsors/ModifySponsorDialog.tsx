@@ -70,7 +70,7 @@ const ModifySponsorDialog = forwardRef<HTMLDialogElement, ModifySponsorDialogPro
       console.log(data);
       const formData = new FormData();
       formData.append("Name", data.name);
-      formData.append("SponsorPhoto", data.sponsorPhoto);
+      formData.append("PartnerPhoto", data.sponsorPhoto);
       await toast.promise(putItem({ id: item?.id, body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Sponsor został pomyślnie zmodyfikowany",

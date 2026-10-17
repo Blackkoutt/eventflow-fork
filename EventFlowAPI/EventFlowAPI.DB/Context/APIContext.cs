@@ -16,9 +16,7 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Ticket> Ticket { get; set; }
         public DbSet<TicketType> TicketType { get; set; }
         public DbSet<Festival> Festival { get; set; }
-        public DbSet<MediaPatron> MediaPatron { get; set; }
-        public DbSet<Organizer> Organizer { get; set; }
-        public DbSet<Sponsor> Sponsor { get; set; }
+        public DbSet<Partner> Partner { get; set; }
         public DbSet<Festival_Event> Festival_Event { get; set; }
         public DbSet<Festival_Partner> Festival_Partner { get; set; }
         public DbSet<FestivalDetails> FestivalDetails { get; set; }

@@ -86,15 +86,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateHallTypeRequestDto, HallType>();
             CreateMap<HallType, HallTypeResponseDto>();
 
-            CreateMap<MediaPatron, MediaPatron>();
-            CreateMap<MediaPatronRequestDto, MediaPatron>();
-            CreateMap<UpdateMediaPatronRequestDto, MediaPatron>();
-            CreateMap<MediaPatron, MediaPatronResponseDto>();
 
-            CreateMap<Organizer, Organizer>();
-            CreateMap<OrganizerRequestDto, Organizer>();
-            CreateMap<UpdateOrganizerRequestDto, Organizer>();
-            CreateMap<Organizer, OrganizerResponseDto>();
 
             CreateMap<PaymentTypeInfo, PaymentTypeResponseDto>();
             CreateMap<PaymentType, PaymentTypeResponseDto>().ConvertUsing(src => src.AsDto());
@@ -114,10 +106,6 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UpdateSeatTypeRequestDto, SeatType>();
             CreateMap<SeatType, SeatTypeResponseDto>();
 
-            CreateMap<Sponsor, Sponsor>();
-            CreateMap<SponsorRequestDto, Sponsor>();
-            CreateMap<UpdateSponsorRequestDto, Sponsor>();
-            CreateMap<Sponsor, SponsorResponseDto>();
 
             CreateMap<News, News>();
             CreateMap<NewsRequestDto, News>();

@@ -143,12 +143,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Event => Result<BlobContainer>.Success(BlobContainer.EventPhotos),
                 Festival => Result<BlobContainer>.Success(BlobContainer.FestivalPhotos),
                 HallType => Result<BlobContainer>.Success(BlobContainer.HallTypePhotos),
-                MediaPatron => Result<BlobContainer>.Success(BlobContainer.MediaPatronPhotos),
-                Organizer => Result<BlobContainer>.Success(BlobContainer.OrganizerPhotos),
                 PaymentTypeInfo => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
-                Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
                 News => Result<BlobContainer>.Success(BlobContainer.NewsPhotos),
-                Partner => Result<BlobContainer>.Success(BlobContainer.PartnerPhotos),
+                Partner partner => Result<BlobContainer>.Success(partner.Kind switch
+                {
+                    PartnerKind.MediaPatron => BlobContainer.MediaPatronPhotos,
+                    PartnerKind.Organizer => BlobContainer.OrganizerPhotos,
+                    PartnerKind.Sponsor => BlobContainer.SponsorPhotos,
+                    _ => BlobContainer.PartnerPhotos
+                }),
                 User => Result<BlobContainer>.Success(BlobContainer.UserPhotos),
                 _ => Result<BlobContainer>.Failure(BlobError.NoPhotoContainerForGivenEntityType)
             };

@@ -18,7 +18,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<TicketType>().HasKey(x => x.Id);
             modelBuilder.Entity<Festival>().HasKey(x => x.Id);
             modelBuilder.Entity<Festival_Event>().HasKey(x => new { x.FestivalId, x.EventId });
-            modelBuilder.Entity<PartnerBase>().HasKey(x => x.Id);
+            modelBuilder.Entity<Partner>().HasKey(x => x.Id);
             modelBuilder.Entity<Festival_Partner>().HasKey(x => new { x.FestivalId, x.PartnerId });
             modelBuilder.Entity<FestivalDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<Hall>().HasKey(x => x.Id);
@@ -39,14 +39,8 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
             modelBuilder.Entity<User>().Property(x => x.Role).HasConversion<string>().HasMaxLength(20);
 
-            modelBuilder.Entity<PartnerBase>().ToTable("Partner");
-            modelBuilder.Entity<PartnerBase>()
-                .HasDiscriminator<string>("Kind")
-                .HasValue<MediaPatron>("MediaPatron")
-                .HasValue<Organizer>("Organizer")
-                .HasValue<Sponsor>("Sponsor")
-                .HasValue<Partner>("Partner");
-            modelBuilder.Entity<PartnerBase>().Property("Kind").HasMaxLength(20);
+            modelBuilder.Entity<Partner>().ToTable("Partner");
+            modelBuilder.Entity<Partner>().Property(x => x.Kind).HasConversion<string>().HasMaxLength(20);
 
             modelBuilder.HasSequence<int>("EventIdSequence").StartsAt(13);
             modelBuilder.Entity<Event>().Property(x => x.Id).UseSequence("EventIdSequence");

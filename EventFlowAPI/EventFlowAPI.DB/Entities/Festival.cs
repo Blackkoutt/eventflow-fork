@@ -27,16 +27,7 @@ namespace EventFlowAPI.DB.Entities
         public TimeSpan Duration => EndDate - StartDate;
         public FestivalDetails? Details { get; set; }
         public ICollection<Event> Events { get; set; } = [];
-        public ICollection<PartnerBase> Partners { get; set; } = [];
-
-        [NotMapped]
-        public IEnumerable<MediaPatron> MediaPatrons => Partners.OfType<MediaPatron>();
-
-        [NotMapped]
-        public IEnumerable<Organizer> Organizers => Partners.OfType<Organizer>();
-
-        [NotMapped]
-        public IEnumerable<Sponsor> Sponsors => Partners.OfType<Sponsor>();
+        public ICollection<Partner> Partners { get; set; } = [];
         public ICollection<Ticket> Tickets { get; set; } = [];
     }
 }

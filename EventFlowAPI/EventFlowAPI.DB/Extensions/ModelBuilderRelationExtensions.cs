@@ -44,7 +44,7 @@ namespace EventFlowAPI.DB.Extensions
                .HasMany(e => e.Partners)
                .WithMany(e => e.Festivals)
                .UsingEntity<Festival_Partner>(
-                    right => right.HasOne<PartnerBase>().WithMany().HasForeignKey(x => x.PartnerId),
+                    right => right.HasOne<Partner>().WithMany().HasForeignKey(x => x.PartnerId),
                     left => left.HasOne<Festival>().WithMany().HasForeignKey(x => x.FestivalId));
 
             modelBuilder.Entity<Festival>()

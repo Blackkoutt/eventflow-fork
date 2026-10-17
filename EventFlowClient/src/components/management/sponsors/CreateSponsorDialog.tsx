@@ -40,8 +40,9 @@ const CreateSponsorDialog = forwardRef<HTMLDialogElement, CreateSponsorDialogPro
     const onSubmit: SubmitHandler<SponsorRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
+      formData.append("Kind", "Sponsor");
       formData.append("Name", data.name);
-      formData.append("SponsorPhoto", data.sponsorPhoto);
+      formData.append("PartnerPhoto", data.sponsorPhoto);
       await toast.promise(postItem({ body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Sponsor został pomyślnie utworzony",

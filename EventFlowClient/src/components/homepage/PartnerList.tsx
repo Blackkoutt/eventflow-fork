@@ -10,7 +10,7 @@ const PartnerList = () => {
   const { data: partners, get: getPartners } = useApi<Partner>(ApiEndpoint.Partner);
 
   useEffect(() => {
-    getPartners({ id: undefined, queryParams: undefined });
+    getPartners({ id: undefined, queryParams: { kind: "Partner" } });
   }, []);
 
   return (

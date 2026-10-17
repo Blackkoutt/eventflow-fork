@@ -16,7 +16,7 @@ const MediaPatronsManagement = () => {
   const { data: items, get: getItems } = useApi<MediaPatron>(ApiEndpoint.MediaPatron);
 
   useEffect(() => {
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "MediaPatron" } });
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const MediaPatronsManagement = () => {
 
   const reloadItemsAfterSuccessDialog = () => {
     closeDialogsAndSetValuesToDefault();
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "MediaPatron" } });
   };
 
   return (

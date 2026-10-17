@@ -26,10 +26,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<EventPassType>().Seed();
             modelBuilder.Entity<FestivalDetails>().Seed();
             modelBuilder.Entity<HallType>().Seed();
-            modelBuilder.Entity<MediaPatron>().Seed();
-            modelBuilder.Entity<Organizer>().Seed();
             modelBuilder.Entity<SeatType>().Seed();
-            modelBuilder.Entity<Sponsor>().Seed();
             modelBuilder.Entity<TicketType>().Seed();
             modelBuilder.Entity<Festival>().Seed(today: today);
             modelBuilder.Entity<HallDetails>().Seed();
