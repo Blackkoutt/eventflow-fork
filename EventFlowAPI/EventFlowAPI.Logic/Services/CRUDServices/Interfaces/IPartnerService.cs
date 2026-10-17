@@ -15,5 +15,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             PartnerQuery
         >
     {
+        IEnumerable<PartnerResponseDto> MapAsDto(IEnumerable<Partner> records);
+        PartnerResponseDto MapAsDto(Partner entity);
     }
 }

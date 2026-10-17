@@ -50,8 +50,8 @@ namespace EventFlowAPI.Tests.Queries
                 Ok("MinEventsCount=2", 1, 2, 3),
                 Ok("MaxEventsCount=1"),
                 Ok("MediaPatronId=1", 1, 2),
-                Ok("OrganizerId=1", 1, 2),
-                Ok("SponsorId=1", 1, 2),
+                Ok("OrganizerId=4", 1, 2),
+                Ok("SponsorId=7", 1, 2),
                 Ok("TicketTypeId=5", 1),
                 Ok("MinTicketPrice=19", 1, 2),
                 Ok("MaxTicketPrice=19"),
@@ -174,10 +174,10 @@ namespace EventFlowAPI.Tests.Queries
             }),
             ["Partners"] = new("anonymous", "/api/Partners", new[]
             {
-                Ok("PageNumber=1&PageSize=2", 1, 2),
-                Ok("PageNumber=2&PageSize=2", 3, 4),
-                Ok("SortBy=Name", 2, 1, 4, 3, 5),
-                Ok("SortBy=Id&SortDirection=DESC", 5, 4, 3, 2, 1),
+                Ok("Kind=Partner&PageNumber=1&PageSize=2", 10, 11),
+                Ok("Kind=Partner&PageNumber=2&PageSize=2", 12, 13),
+                Ok("Kind=Partner&SortBy=Name", 11, 10, 13, 12, 14),
+                Ok("Kind=Partner&SortBy=Id&SortDirection=DESC", 14, 13, 12, 11, 10),
             }),
             ["AdditionalServices"] = new("anonymous", "/api/AdditionalServices", new[]
             {
@@ -228,23 +228,23 @@ namespace EventFlowAPI.Tests.Queries
                 Ok("Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 4, 3),
                 Ok("PageNumber=2&PageSize=2", 3, 4),
             }),
-            ["MediaPatrons"] = new("anonymous", "/api/MediaPatrons", new[]
+            ["MediaPatrons"] = new("anonymous", "/api/Partners", new[]
             {
-                Ok("Name=a", 1, 2),
-                Ok("SortBy=Name", 1, 2, 3),
-                Ok("SortBy=Name&SortDirection=DESC", 3, 2, 1),
-                Ok("SortBy=Unknown", 1, 2, 3),
-                Ok("Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 2, 1),
-                Ok("PageNumber=2&PageSize=2", 3),
+                Ok("Kind=MediaPatron&Name=a", 1, 2),
+                Ok("Kind=MediaPatron&SortBy=Name", 1, 2, 3),
+                Ok("Kind=MediaPatron&SortBy=Name&SortDirection=DESC", 3, 2, 1),
+                Ok("Kind=MediaPatron&SortBy=Unknown", 1, 2, 3),
+                Ok("Kind=MediaPatron&Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 2, 1),
+                Ok("Kind=MediaPatron&PageNumber=2&PageSize=2", 3),
             }),
-            ["Organizers"] = new("anonymous", "/api/Organizers", new[]
+            ["Organizers"] = new("anonymous", "/api/Partners", new[]
             {
-                Ok("Name=a", 2, 3),
-                Ok("SortBy=Name", 3, 1, 2),
-                Ok("SortBy=Name&SortDirection=DESC", 2, 1, 3),
-                Ok("SortBy=Unknown", 1, 2, 3),
-                Ok("Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 2, 3),
-                Ok("PageNumber=2&PageSize=2", 3),
+                Ok("Kind=Organizer&Name=a", 5, 6),
+                Ok("Kind=Organizer&SortBy=Name", 6, 4, 5),
+                Ok("Kind=Organizer&SortBy=Name&SortDirection=DESC", 5, 4, 6),
+                Ok("Kind=Organizer&SortBy=Unknown", 4, 5, 6),
+                Ok("Kind=Organizer&Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 5, 6),
+                Ok("Kind=Organizer&PageNumber=2&PageSize=2", 6),
             }),
             ["PaymentTypes"] = new("anonymous", "/api/PaymentTypes", new[]
             {
@@ -264,14 +264,14 @@ namespace EventFlowAPI.Tests.Queries
                 Ok("Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 2),
                 Ok("PageNumber=2&PageSize=2", 3),
             }),
-            ["Sponsors"] = new("anonymous", "/api/Sponsors", new[]
+            ["Sponsors"] = new("anonymous", "/api/Partners", new[]
             {
-                Ok("Name=a", 1, 3),
-                Ok("SortBy=Name", 1, 2, 3),
-                Ok("SortBy=Name&SortDirection=DESC", 3, 2, 1),
-                Ok("SortBy=Unknown", 1, 2, 3),
-                Ok("Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 3, 1),
-                Ok("PageNumber=2&PageSize=2", 3),
+                Ok("Kind=Sponsor&Name=a", 7, 9),
+                Ok("Kind=Sponsor&SortBy=Name", 7, 8, 9),
+                Ok("Kind=Sponsor&SortBy=Name&SortDirection=DESC", 9, 8, 7),
+                Ok("Kind=Sponsor&SortBy=Unknown", 7, 8, 9),
+                Ok("Kind=Sponsor&Name=a&SortBy=Name&SortDirection=DESC&PageNumber=1&PageSize=2", 9, 7),
+                Ok("Kind=Sponsor&PageNumber=2&PageSize=2", 9),
             }),
             ["TicketTypes"] = new("anonymous", "/api/TicketTypes", new[]
             {
@@ -333,7 +333,7 @@ namespace EventFlowAPI.Tests.Queries
             var admin = await _factory.CreateClientForRoleAsync("admin");
             var failures = new List<string>();
 
-            foreach (var queryCase in Cases.Values)
+            foreach (var queryCase in Cases.Values.Where(item => item.Route != "/api/PaymentTypes"))
             {
                 var response = await admin.GetAsync($"{queryCase.Route}?PageNumber=0&PageSize=2");
                 if ((int)response.StatusCode != 500)

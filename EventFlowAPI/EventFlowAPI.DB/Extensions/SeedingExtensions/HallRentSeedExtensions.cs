@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventFlowAPI.DB.Extensions.SeedingExtensions
@@ -19,12 +20,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     HallRentGuid = hrGuid1,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(8),
-                    DurationTimeSpan = today.AddMonths(1).AddDays(1).AddHours(8) - today.AddMonths(1).AddDays(1),
                     RentDate = today,
-                    PaymentDate = today,
                     HallRentPDFName = "wynajem_sali_1.pdf",
                     PaymentAmount = 899.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 12,
                     UserId = "4"
                 },
@@ -34,12 +33,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     HallRentGuid = hrGuid2,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(4),
-                    DurationTimeSpan = today.AddMonths(1).AddDays(2).AddHours(4) - today.AddMonths(1).AddDays(2),
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_2.pdf",
-                    PaymentDate = today,
                     PaymentAmount = 699.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 13,
                     UserId = "3"
                 },
@@ -49,12 +46,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     HallRentGuid = hrGuid3,
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
-                    DurationTimeSpan = today.AddMonths(1).AddDays(3).AddHours(2) - today.AddMonths(1).AddDays(3),
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_3.pdf",
-                    PaymentDate = today,
                     PaymentAmount = 399.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 14,
                     UserId = "3"
                 },
@@ -64,12 +59,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     HallRentGuid = hrGuid4,
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(1),
-                    DurationTimeSpan = today.AddMonths(1).AddDays(4).AddHours(1) - today.AddMonths(1).AddDays(4),
                     RentDate = today,
                     HallRentPDFName = "wynajem_sali_4.pdf",
-                    PaymentDate = today,
                     PaymentAmount = 150.99m,
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     HallId = 15,
                     UserId = "2"
                 }

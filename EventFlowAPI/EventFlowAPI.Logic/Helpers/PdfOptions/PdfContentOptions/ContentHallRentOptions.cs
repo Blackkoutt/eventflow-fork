@@ -62,7 +62,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
         {
             Label = "Czas trwania wynajmu: ",
             LabelStyle = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
-            Value = $"{Math.Ceiling(_hallRent.DurationTimeSpan.TotalHours)} h",
+            Value = $"{Math.Ceiling(_hallRent.Duration.TotalHours)} h",
             ValueStyle = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
             Space = 5f,
             PaddingBottom = 2.5f            

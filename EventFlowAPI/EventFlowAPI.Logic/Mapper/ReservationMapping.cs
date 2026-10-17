@@ -1,3 +1,4 @@
+using EventFlowAPI.Logic.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -12,7 +13,6 @@ public static class ReservationMapping
 
     public static Reservation ApplyTo(this ReservationRequestDto source, Reservation target)
     {
-        target.PaymentTypeId = source.PaymentTypeId;
         target.TicketId = source.TicketId;
         return target;
     }
@@ -21,7 +21,6 @@ public static class ReservationMapping
 
     public static Reservation ApplyTo(this UpdateReservationRequestDto source, Reservation target)
     {
-        target.PaymentTypeId = source.PaymentTypeId;
         target.TicketId = source.TicketId;
         return target;
     }
@@ -38,11 +37,11 @@ public static class ReservationMapping
         context.Add(source, target);
         target.ReservationGuid = source.ReservationGuid;
         target.ReservationDate = source.ReservationDate;
-        target.PaymentDate = source.PaymentDate;
+        target.PaymentDate = source.ReservationDate;
         target.DeleteDate = source.DeleteDate;
         target.PaymentAmount = source.PaymentAmount;
         target.User = source.User.ToResponse(context);
-        target.PaymentType = source.PaymentType.ToResponse(context);
+        target.PaymentType = source.PaymentType.ToResponse();
         target.Ticket = source.Ticket.ToResponse(context);
         target.Seats = source.Seats?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Id = source.Id;

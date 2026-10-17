@@ -16,7 +16,7 @@ const SponsorsManagement = () => {
   const { data: items, get: getItems } = useApi<Sponsor>(ApiEndpoint.Sponsor);
 
   useEffect(() => {
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Sponsor" } });
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const SponsorsManagement = () => {
 
   const reloadItemsAfterSuccessDialog = () => {
     closeDialogsAndSetValuesToDefault();
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Sponsor" } });
   };
 
   return (

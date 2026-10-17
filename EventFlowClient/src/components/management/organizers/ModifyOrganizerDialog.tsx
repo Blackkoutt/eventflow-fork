@@ -66,7 +66,7 @@ const ModifyOrganizerDialog = forwardRef<HTMLDialogElement, ModifyOrganizerDialo
       console.log(data);
       const formData = new FormData();
       formData.append("Name", data.name);
-      formData.append("OrganizerPhoto", data.organizerPhoto);
+      formData.append("PartnerPhoto", data.organizerPhoto);
       await toast.promise(putItem({ id: item?.id, body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Organizator został pomyślnie zmodyfikowany",

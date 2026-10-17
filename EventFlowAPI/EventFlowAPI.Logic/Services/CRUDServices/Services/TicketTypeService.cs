@@ -29,7 +29,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         public sealed override async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted && !s.IsSoftUpdated)
+            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
                                                               .ByName(query)
                                                               .SortBy(query.SortBy, query.SortDirection)
                                                               .GetPage(query.PageNumber, query.PageSize));
@@ -48,14 +48,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<TicketTypeResponseDto>.Failure(Error.NotFound);
 
             var newEntity = oldEntity;
-            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Tickets.Any(t => t.Reservations.Any()))
-            {
-                var entity = MapUpdatedAsEntity(requestDto!);
-                var ticketsWithoutReservations = oldEntity.Tickets.Where(t => !t.Reservations.Any());
-                entity.Tickets = ticketsWithoutReservations.ToList();
-                await _repository.AddAsync(entity);
-                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
-            }
             newEntity = (TicketType)MapToEntity(requestDto!, oldEntity);
             var ticketsWithReservations = oldEntity.Tickets.Where(t => t.Reservations.Any()).ToList();
             newEntity.Tickets = ticketsWithReservations;
@@ -106,7 +98,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var entity = await _repository.GetOneAsync((int)id);
-                if (entity == null || entity.IsDeleted || entity.IsSoftUpdated)
+                if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
 
@@ -119,8 +111,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       q.Where(entity =>
                         entity.Id != id &&
                         entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted &&
-                        !entity.IsSoftUpdated
+                        !entity.IsDeleted
                       ))).Any();
 
             return Result<bool>.Success(result);

@@ -1,3 +1,4 @@
+using EventFlowAPI.Logic.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -41,10 +42,10 @@ public static class HallRentMapping
         target.HallRentGuid = source.HallRentGuid;
         target.StartDate = source.StartDate;
         target.EndDate = source.EndDate;
-        target.PaymentDate = source.PaymentDate;
+        target.PaymentDate = source.RentDate;
         target.DeleteDate = source.DeleteDate;
         target.PaymentAmount = source.PaymentAmount;
-        target.PaymentType = source.PaymentType.ToResponse(context);
+        target.PaymentType = source.PaymentType.ToResponse();
         target.Hall = source.Hall.ToResponse(context);
         target.User = source.User.ToResponse(context);
         target.AdditionalServices = source.AdditionalServices?.Select(item => item.ToResponse(context)).ToList() ?? [];

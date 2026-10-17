@@ -7,7 +7,7 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
 {
     public class UpdatePartnerRequestDto : IRequestDto, INameableRequestDto
     {
-        [Required(ErrorMessage = "Nazwa partnera jest wymagana.")]
+        [Required(ErrorMessage = "Nazwa jest wymagana.")]
         [Length(2, 50, ErrorMessage = "Nazwa powinna zawierać od 2 do 50 znaków.")]
         public string Name { get; set; } = string.Empty;
 

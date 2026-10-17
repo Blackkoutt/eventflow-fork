@@ -25,11 +25,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
         public virtual async Task<T?> GetOneAsync(int id) => await _table.FindAsync(id);
         public void Update(T entity)
         {
-            if(entity is IUpdateableEntity updateableEntity)
-            {
-                updateableEntity.IsUpdated = true;
-                updateableEntity.UpdateDate = DateTime.Now;
-            }
             _table.Update(entity);
         }
 

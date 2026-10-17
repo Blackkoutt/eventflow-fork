@@ -64,6 +64,9 @@ namespace EventFlowAPI.Tests.Infrastructure
             return form;
         }
 
+        public const int SeededOrganizerIdOffset = 3;
+        public const int SeededSponsorIdOffset = 6;
+
         public FormData FestivalForm(string name, IEnumerable<int> eventIds, int partnerId, params (int Price, int TicketTypeId)[] tickets)
         {
             var form = new FormData()
@@ -71,8 +74,8 @@ namespace EventFlowAPI.Tests.Infrastructure
                 .Add("ShortDescription", "krotki opis")
                 .Add("LongDescription", "dlugi opis")
                 .Add("MediaPatronIds", partnerId)
-                .Add("OrganizerIds", partnerId)
-                .Add("SponsorIds", partnerId);
+                .Add("OrganizerIds", partnerId + SeededOrganizerIdOffset)
+                .Add("SponsorIds", partnerId + SeededSponsorIdOffset);
             var index = 0;
             foreach (var ticket in tickets)
             {

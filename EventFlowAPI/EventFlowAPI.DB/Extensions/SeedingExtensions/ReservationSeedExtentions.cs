@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace EventFlowAPI.DB.Extensions.SeedingExtensions
@@ -19,137 +20,129 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 {
                     Id = 1,
                     ReservationGuid = res1,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2.5m,
                     PaymentAmount = 24.99m,
                     UserId = "4",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 1,
-                    TicketPDFId = 1
+                    TicketPDFFileName = $"eventflow_bilet_test_{res1}.pdf",
+                    TicketImagesFolder = $"{res1}"
                 },
                 new Reservation
                 {
                     Id = 2,
                     ReservationGuid = res2,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 34.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 2,
-                    TicketPDFId = 2
+                    TicketPDFFileName = $"eventflow_bilet_test_{res2}.pdf",
+                    TicketImagesFolder = $"{res2}"
                 },
                 new Reservation
                 {
                     Id = 3,
                     ReservationGuid = res3,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 25m,
                     TotalAdditionalPaymentAmount = 7.5m,
                     PaymentAmount = 29.99m,
                     UserId = "3",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 3,
-                    TicketPDFId = 3
+                    TicketPDFFileName = $"eventflow_bilet_test_{res3}.pdf",
+                    TicketImagesFolder = $"{res3}"
                 },
                 new Reservation
                 {
                     Id = 4,
                     ReservationGuid = res4,
-                    IsFestivalReservation = false,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 19.99m,
                     UserId = "3",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 4,
-                    TicketPDFId = 4
+                    TicketPDFFileName = $"eventflow_bilet_test_{res4}.pdf",
+                    TicketImagesFolder = $"{res4}"
                 },
                 new Reservation
                 {
                     Id = 5,
                     ReservationGuid = firstFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 5,
-                    TicketPDFId = 5
+                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
+                    TicketImagesFolder = $"{firstFestivalGuid}"
                 },
                 new Reservation
                 {
                     Id = 6,
                     ReservationGuid = firstFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(1),
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 6,
-                    TicketPDFId = 5
+                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
+                    TicketImagesFolder = $"{firstFestivalGuid}"
                 },
                 new Reservation
                 {
                     Id = 7,
                     ReservationGuid = secondFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 7,
-                    TicketPDFId = 6
+                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
+                    TicketImagesFolder = $"{secondFestivalGuid}"
                 },
                 new Reservation
                 {
                     Id = 8,
                     ReservationGuid = secondFestivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = today,
                     StartDate = today.AddMonths(2).AddDays(3),
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
-                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 1,
+                    PaymentType = PaymentType.PayU,
                     TicketId = 8,
-                    TicketPDFId = 6
+                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
+                    TicketImagesFolder = $"{secondFestivalGuid}"
                 }
             );
         }

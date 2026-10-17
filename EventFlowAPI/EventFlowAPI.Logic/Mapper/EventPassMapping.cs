@@ -1,3 +1,4 @@
+using EventFlowAPI.Logic.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -43,7 +44,7 @@ public static class EventPassMapping
         target.PaymentAmount = source.PaymentAmount;
         target.PassType = source.PassType.ToResponse(context);
         target.User = source.User.ToResponse(context);
-        target.PaymentType = source.PaymentType.ToResponse(context);
+        target.PaymentType = source.PaymentType.ToResponse();
         target.Id = source.Id;
         return target;
     }

@@ -1,12 +1,12 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
-using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
@@ -35,8 +35,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<PartnerResponseDto>>> GetAllAsync(PartnerQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetAllAsync(q =>
+            {
+                var partners = q.Where(p => !p.IsDeleted);
+                if (query.Kind != null)
+                {
+                    partners = partners.Where(p => p.Kind == query.Kind);
+                }
+                return partners.ByName(query)
+                               .SortBy(query.SortBy, query.SortDirection)
+                               .GetPage(query.PageNumber, query.PageSize);
+            });
             var response = MapAsDto(records);
             return Result<IEnumerable<PartnerResponseDto>>.Success(response);
         }
@@ -48,9 +57,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<PartnerResponseDto>.Failure(validationError);
 
             var entity = MapAsEntity(requestDto!);
+            entity.Kind = requestDto!.Kind!.Value;
 
             entity.PartnerGuid = Guid.NewGuid();
-            var photoPostError = await _fileService.PostPhoto(entity, requestDto!.PartnerPhoto, $"{entity.Name}_{entity.PartnerGuid}", isUpdate: false);
+            var photoPostError = await _fileService.PostPhoto(entity, requestDto.PartnerPhoto, $"{entity.Name}_{entity.PartnerGuid}", isUpdate: false);
             if (photoPostError != Error.None)
                 return Result<PartnerResponseDto>.Failure(photoPostError);
 
@@ -93,10 +103,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(validationResult.Error);
 
             var entity = validationResult.Value.Entity;
-            var user = validationResult.Value.User;
 
             await _fileService.DeletePhoto(entity);
-            await DeleteEntity(entity, isSoftDelete: false);
+            await DeleteEntity(entity, isSoftDelete: entity.Festivals.Any());
 
             return Result<object>.Success();
         }
@@ -127,7 +136,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var entity = await _repository.GetOneAsync((int)id);
-                if (entity == null)
+                if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
 
@@ -136,33 +145,37 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
+            PartnerKind? kind = requestDto is PartnerRequestDto addRequestDto ? addRequestDto.Kind : null;
+            if (kind == null && id != null)
+            {
+                var existingEntity = await _repository.GetOneAsync((int)id);
+                kind = existingEntity?.Kind;
+            }
+
             var result = (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
                         entity.Id != id &&
-                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower()
+                        entity.Kind == kind &&
+                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
+                        !entity.IsDeleted
                       ))).Any();
 
             return Result<bool>.Success(result);
         }
 
-        protected sealed override IEnumerable<PartnerResponseDto> MapAsDto(IEnumerable<Partner> records)
+        public new IEnumerable<PartnerResponseDto> MapAsDto(IEnumerable<Partner> records)
         {
-            return records.Select(entity =>
-            {
-                var responseDto = entity.ToResponse();
-                responseDto.PhotoEndpoint = $"/Partners/{responseDto.Id}/image";
-                return responseDto;
-            });
+            return records.Select(entity => MapAsDto(entity));
         }
 
-        protected sealed override PartnerResponseDto MapAsDto(Partner entity)
+        public new PartnerResponseDto MapAsDto(Partner entity)
         {
             var responseDto = entity.ToResponse();
             responseDto.PhotoEndpoint = $"/Partners/{responseDto.Id}/image";
             return responseDto;
         }
 
-        protected override PartnerResponseDto MapResponse(Partner entity) => entity.ToResponse();
+        protected override PartnerResponseDto MapResponse(Partner entity) => MapAsDto(entity);
 
         protected override Partner MapAsEntity(PartnerRequestDto requestDto) => requestDto.ToEntity();
 

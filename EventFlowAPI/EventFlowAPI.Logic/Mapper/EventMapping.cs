@@ -48,8 +48,7 @@ public static class EventMapping
         target.ShortDescription = source.ShortDescription;
         target.StartDate = source.StartDate;
         target.EndDate = source.EndDate;
-        // Preserve the existing API conversion: stored duration is interpreted as ticks.
-        target.Duration = new TimeSpan(source.Duration);
+        target.Duration = source.Duration;
         target.PhotoName = source.PhotoName;
         target.Category = source.Category.ToResponse(context);
         target.Details = source.Details.ToResponse(context);

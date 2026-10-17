@@ -61,39 +61,32 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<string>.Success(newBlob.FileName);
         }
 
-        public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(TicketBlobsRequestDto request)
+        public async Task<Result<List<string>>> CreateTicketBlobs(TicketBlobsRequestDto request)
         {
-            List<IFileEntity> files = [];
+            List<string> fileNames = [];
             List<BlobRequestDto> addedBlobs = [];
 
             var ticketNumber = 1;
             foreach (var data in request.DataList)
             {
-                IFileEntity? file = request.ContentType switch
+                string? fileName = request.ContentType switch
                 {
-                    ContentType.PDF => new TicketPDF
-                    {
-                        FileName = string.Format(_ticketPDFFileNameTemplate, request.ReservationGuid),
-                        ReservationGuid = request.ReservationGuid
-                    },
-                    ContentType.JPEG => new TicketJPG
-                    {
-                        FileName = string.Format(_ticketJPGFileNameTemplate, request.ReservationGuid, ticketNumber),
-                        ReservationGuid = request.ReservationGuid
-                    },
+                    ContentType.PDF => string.Format(_ticketPDFFileNameTemplate, request.ReservationGuid),
+                    ContentType.JPEG => string.Format(_ticketJPGFileNameTemplate, request.ReservationGuid, ticketNumber),
                     _ => null
                 };
-                if (file is null)
+                if (fileName is null)
                 {
-                    return Result<List<IFileEntity>>.Failure(BlobError.UnsupportedContentType);
+                    return Result<List<string>>.Failure(BlobError.UnsupportedContentType);
                 }
 
-                files.Add(file);
+                fileNames.Add(fileName);
 
                 var newBlob = new BlobRequestDto
                 {
                     Container = request.Container,
-                    FileName = file.FileName,
+                    Folder = request.Folder,
+                    FileName = fileName,
                     ContentType = request.ContentType,
                     Data = data
                 };
@@ -106,12 +99,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     {
                         await DeleteAsync(addedBlob);
                     }
-                    return Result<List<IFileEntity>>.Failure(uploadResult.Error);
+                    return Result<List<string>>.Failure(uploadResult.Error);
                 }
 
                 ticketNumber++;
             }
-            return Result<List<IFileEntity>>.Success(files);
+            return Result<List<string>>.Success(fileNames);
         }
 
         public async Task<Result<object>> UploadAsync(BlobRequestDto blob)
@@ -122,7 +115,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<object>.Failure(blobError);
             }
 
-            var filePath = GetFilePath(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName, blob.Folder);
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             await File.WriteAllBytesAsync(filePath, blob.Data, blob.CancellationToken);
@@ -137,7 +130,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<BlobResponseDto>.Failure(blobError);
             }
 
-            var filePath = GetFilePath(blob.Container, blob.FileName, useStaticFallback: true);
+            var filePath = GetFilePath(blob.Container, blob.FileName, blob.Folder, useStaticFallback: true);
             if (!File.Exists(filePath))
             {
                 var downloadError = new Error(new BadRequestResponse($"Plik '{blob.FileName}' nie istnieje w kontenerze '{blob.Container.ToLowerString()}'."));
@@ -162,10 +155,36 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public Task DeleteAsync(BlobRequestDto blob)
         {
-            var filePath = GetFilePath(blob.Container, blob.FileName);
+            var filePath = GetFilePath(blob.Container, blob.FileName, blob.Folder);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<List<string>> ListFilesAsync(BlobContainer container, string folder)
+        {
+            var folderPath = GetFolderPath(container, folder);
+            if (!Directory.Exists(folderPath))
+            {
+                return Task.FromResult(new List<string>());
+            }
+
+            var fileNames = Directory.GetFiles(folderPath)
+                .Select(Path.GetFileName)
+                .OfType<string>()
+                .OrderBy(name => name, StringComparer.Ordinal)
+                .ToList();
+            return Task.FromResult(fileNames);
+        }
+
+        public Task DeleteFolderAsync(BlobContainer container, string folder)
+        {
+            var folderPath = GetFolderPath(container, folder);
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, recursive: true);
             }
             return Task.CompletedTask;
         }
@@ -197,9 +216,20 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Error.None;
         }
 
-        private string GetFilePath(BlobContainer container, string fileName, bool useStaticFallback = false)
+        private string GetFolderPath(BlobContainer container, string folder)
         {
-            var relativePath = Path.Combine(container.ToLowerString(), Path.GetFileName(fileName));
+            if (string.IsNullOrEmpty(folder))
+            {
+                throw new ArgumentException("Folder name cannot be empty.", nameof(folder));
+            }
+            return Path.Combine(_generatedPath, container.ToLowerString(), Path.GetFileName(folder));
+        }
+
+        private string GetFilePath(BlobContainer container, string fileName, string folder = "", bool useStaticFallback = false)
+        {
+            var relativePath = string.IsNullOrEmpty(folder)
+                ? Path.Combine(container.ToLowerString(), Path.GetFileName(fileName))
+                : Path.Combine(container.ToLowerString(), Path.GetFileName(folder), Path.GetFileName(fileName));
             var generatedFilePath = Path.Combine(_generatedPath, relativePath);
             if (useStaticFallback && !File.Exists(generatedFilePath))
             {

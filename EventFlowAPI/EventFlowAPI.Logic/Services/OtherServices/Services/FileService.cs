@@ -67,8 +67,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 },
                 Reservation reservation => fileType switch
                 {
-                    FileType.PDF => (await _unitOfWork.GetRepository<TicketPDF>().GetAllAsync(q => q.Where(t =>
-                                     t.Reservations.Any(r => r.Id == reservation.Id)))).FirstOrDefault()?.FileName,
+                    FileType.PDF => reservation.TicketPDFFileName,
                     _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
                 },
                 EventPass eventPass => fileType switch
@@ -144,12 +143,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Event => Result<BlobContainer>.Success(BlobContainer.EventPhotos),
                 Festival => Result<BlobContainer>.Success(BlobContainer.FestivalPhotos),
                 HallType => Result<BlobContainer>.Success(BlobContainer.HallTypePhotos),
-                MediaPatron => Result<BlobContainer>.Success(BlobContainer.MediaPatronPhotos),
-                Organizer => Result<BlobContainer>.Success(BlobContainer.OrganizerPhotos),
-                PaymentType => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
-                Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
+                PaymentTypeInfo => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
                 News => Result<BlobContainer>.Success(BlobContainer.NewsPhotos),
-                Partner => Result<BlobContainer>.Success(BlobContainer.PartnerPhotos),
+                Partner partner => Result<BlobContainer>.Success(partner.Kind switch
+                {
+                    PartnerKind.MediaPatron => BlobContainer.MediaPatronPhotos,
+                    PartnerKind.Organizer => BlobContainer.OrganizerPhotos,
+                    PartnerKind.Sponsor => BlobContainer.SponsorPhotos,
+                    _ => BlobContainer.PartnerPhotos
+                }),
                 User => Result<BlobContainer>.Success(BlobContainer.UserPhotos),
                 _ => Result<BlobContainer>.Failure(BlobError.NoPhotoContainerForGivenEntityType)
             };
@@ -345,10 +347,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             if (!validationResult.IsSuccessful)
                 return Result<BlobResponseDto>.Failure(validationResult.Error);
 
-            var ticketJPGs = await _unitOfWork.GetRepository<TicketJPG>()
-                                 .GetAllAsync(q => q.Where(t => t.Reservations.Any(r => r.Id == reservationId)));
+            var reservation = validationResult.Value;
+            var ticketJPGNames = string.IsNullOrEmpty(reservation.TicketImagesFolder)
+                ? []
+                : await _blobService.ListFilesAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
 
-            if (ticketJPGs == null || !ticketJPGs.Any())
+            if (ticketJPGNames.Count == 0)
             {
                 return Result<BlobResponseDto>.Failure(TicketJPGError.TicketJPGNotFound);
             }
@@ -356,12 +360,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
-                foreach (var ticketJPG in ticketJPGs)
+                foreach (var ticketJPGName in ticketJPGNames)
                 {
                     var blobRequest = new BlobRequestDto
                     {
                         Container = BlobContainer.TicketsJPG,
-                        FileName = ticketJPG.FileName
+                        Folder = reservation.TicketImagesFolder!,
+                        FileName = ticketJPGName
                     };
 
                     var ticketJPGResult = await _blobService.DownloadAsync(blobRequest);
@@ -371,7 +376,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     }
 
                     var ticketJPGBitmap = ticketJPGResult.Value.Data;
-                    var entry = archive.CreateEntry(ticketJPG.FileName, CompressionLevel.Optimal);
+                    var entry = archive.CreateEntry(ticketJPGName, CompressionLevel.Optimal);
 
                     using (var entryStream = entry.Open())
                     {
@@ -382,7 +387,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             memoryStream.Position = 0;
             var responseObject = new BlobResponseDto
             {
-                FileName = string.Format(zipArchiveName, ticketJPGs.First().ReservationGuid),
+                FileName = string.Format(zipArchiveName, reservation.ReservationGuid),
                 Data = memoryStream,
                 ContentType = ContentType.ZIP
 
@@ -391,37 +396,16 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Error> DeleteFileEntities(IEnumerable<IFileEntity> fileEntities)
+        public async Task<Error> DeleteTicketFiles(Reservation reservation)
         {
-            BlobContainer containerName;
-            ITicketJPGRepository? _ticketJPGRepository = null;
-            ITicketPDFRepository? _ticketPDFRepository = null;
-
-            switch (fileEntities)
+            if (!string.IsNullOrEmpty(reservation.TicketImagesFolder))
             {
-                case IEnumerable<TicketJPG>:
-                    containerName = BlobContainer.TicketsJPG;
-                    _ticketJPGRepository = (ITicketJPGRepository)_unitOfWork.GetRepository<TicketJPG>();
-                    break;
-
-                case IEnumerable<TicketPDF>:
-                    containerName = BlobContainer.TicketsPDF;
-                    _ticketPDFRepository = (ITicketPDFRepository)_unitOfWork.GetRepository<TicketPDF>();
-                    break;
-
-                default:
-                    return BlobError.UnsupportedContainerName;
+                await _blobService.DeleteFolderAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
             }
-            foreach (var ticket in fileEntities)
+
+            if (!string.IsNullOrEmpty(reservation.TicketPDFFileName))
             {
-                var blob = new BlobRequestDto
-                {
-                    Container = containerName,
-                    FileName = ticket.FileName,
-                };
-                await _blobService.DeleteAsync(blob);
-                _ticketJPGRepository?.Delete((TicketJPG)ticket);
-                _ticketPDFRepository?.Delete((TicketPDF)ticket);
+                await _blobService.DeleteAsync(new BlobRequestDto { Container = BlobContainer.TicketsPDF, FileName = reservation.TicketPDFFileName });
             }
 
             return Error.None;
@@ -469,7 +453,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Result<(byte[] Bitmap, IFileEntity FileEntity)>> CreateTicketPDFBitmapAndEntity(Reservation reservationEntity, List<byte[]> ticketBitmaps, bool isUpdate = false)
+        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateTicketPDFBitmap(Reservation reservationEntity, List<byte[]> ticketBitmaps, bool isUpdate = false)
         {
             var ticketPDFBitmap = await _pdfBuilder.CreateTicketPdf(reservationEntity, ticketBitmaps);
 
@@ -483,15 +467,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var pdfBlobResult = await _blobService.CreateTicketBlobs(ticketPdfBlobs);
             if (!pdfBlobResult.IsSuccessful)
             {
-                return Result<(byte[] Bitmap, IFileEntity FileEntity)>.Failure(pdfBlobResult.Error);
+                return Result<(byte[] Bitmap, string FileName)>.Failure(pdfBlobResult.Error);
             }
-            var fileEntity = pdfBlobResult.Value.First();
+            var fileName = pdfBlobResult.Value.First();
 
-            return Result<(byte[] Bitmap, IFileEntity FileEntity)>.Success((ticketPDFBitmap, fileEntity));
+            return Result<(byte[] Bitmap, string FileName)>.Success((ticketPDFBitmap, fileName));
         }
 
 
-        public async Task<Result<(List<byte[]> Bitmaps, List<IFileEntity> FileEntities)>> CreateTicketJPGBitmapsAndEntities(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
+        public async Task<Result<(List<byte[]> Bitmaps, string Folder)>> CreateTicketJPGBitmaps(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
         {
             List<byte[]> ticketBitmaps = [];
             Reservation reservationEntity = reservationsList.First();
@@ -509,6 +493,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var ticketJpgBlobs = new TicketBlobsRequestDto
             {
                 ReservationGuid = reservationEntity.ReservationGuid,
+                Folder = reservationEntity.ReservationGuid.ToString(),
                 Container = BlobContainer.TicketsJPG,
                 ContentType = ContentType.JPEG,
                 DataList = ticketBitmaps
@@ -517,11 +502,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             if (!jpgBlobResult.IsSuccessful)
             {
-                return Result<(List<byte[]> Bitmaps, List<IFileEntity> FileEntities)>.Failure(jpgBlobResult.Error);
+                return Result<(List<byte[]> Bitmaps, string Folder)>.Failure(jpgBlobResult.Error);
             }
-            var fileEntities = jpgBlobResult.Value;
 
-            return Result<(List<byte[]> Bitmaps, List<IFileEntity> FileEntities)>.Success((ticketBitmaps, fileEntities));
+            return Result<(List<byte[]> Bitmaps, string Folder)>.Success((ticketBitmaps, ticketJpgBlobs.Folder));
         }
 
 

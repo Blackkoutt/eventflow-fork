@@ -12,6 +12,7 @@ public static class PartnerMapping
 
     public static Partner ApplyTo(this PartnerRequestDto source, Partner target)
     {
+        target.Kind = source.Kind ?? default;
         target.Name = source.Name;
         return target;
     }
@@ -34,6 +35,7 @@ public static class PartnerMapping
         if (context.TryGet<PartnerResponseDto>(source, out var existing)) return existing;
         var target = new PartnerResponseDto();
         context.Add(source, target);
+        target.Kind = source.Kind;
         target.Name = source.Name;
         target.PhotoName = source.PhotoName;
         target.Id = source.Id;

@@ -35,7 +35,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IFileService _fileService = fileService;
         public sealed override async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync(HallTypeQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(ht => !ht.IsDeleted && !ht.IsSoftUpdated)
+            var records = await _repository.GetAllAsync(q => q.Where(ht => !ht.IsDeleted)
                                                               .ByName(query)
                                                               .SortBy(query.SortBy, query.SortDirection)
                                                               .GetPage(query.PageNumber, query.PageSize));
@@ -85,33 +85,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newEntity = oldEntity;
 
-            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Halls.Any(h => h.Rents.Any()))
-            {
-                var entity = MapUpdatedAsEntity(requestDto!);
-                var hallWithoutRents = oldEntity.Halls.Where(h => !h.Rents.Any());
-                entity.Halls = hallWithoutRents.ToList();
+            newEntity.Name = requestDto!.Name;
+            newEntity.Description = requestDto!.Description;
+            var equipments = await _unitOfWork.GetRepository<Equipment>().GetAllAsync(q =>
+                                q.Where(e => requestDto!.EquipmentIds.Contains(e.Id)));
+            newEntity.Equipments = equipments.ToList();
 
-                entity.HallTypeGuid = Guid.NewGuid();
-                var photoPostError = await _fileService.PostPhoto(entity, requestDto!.HallTypePhoto, $"{entity.Name}_{entity.HallTypeGuid}", isUpdate: true);
-                if (photoPostError != Error.None)
-                    return Result<HallTypeResponseDto>.Failure(photoPostError);
-                
-                await _repository.AddAsync(entity);
-                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
-                newEntity.Halls = oldEntity.Halls.Where(s => s.Rents.Any()).ToList();
-            }
-            else
-            {
-                newEntity.Name = requestDto!.Name;
-                newEntity.Description = requestDto!.Description;
-                var equipments = await _unitOfWork.GetRepository<Equipment>().GetAllAsync(q =>
-                                    q.Where(e => requestDto!.EquipmentIds.Contains(e.Id)));
-                newEntity.Equipments = equipments.ToList();
-
-                var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.HallTypePhoto, $"{newEntity.Name}_{newEntity.HallTypeGuid}", isUpdate: true);
-                if (photoPostError != Error.None)
-                    return Result<HallTypeResponseDto>.Failure(photoPostError);
-            }
+            var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.HallTypePhoto, $"{newEntity.Name}_{newEntity.HallTypeGuid}", isUpdate: true);
+            if (photoPostError != Error.None)
+                return Result<HallTypeResponseDto>.Failure(photoPostError);
             _repository.Update(newEntity);
 
             await _unitOfWork.SaveChangesAsync();
@@ -221,8 +203,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       q.Where(entity =>
                         entity.Id != id &&
                         entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted &&
-                        !entity.IsSoftUpdated
+                        !entity.IsDeleted
                       ))).Any();
 
             return Result<bool>.Success(result);

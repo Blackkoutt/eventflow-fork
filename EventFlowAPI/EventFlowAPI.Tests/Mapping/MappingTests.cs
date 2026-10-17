@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Mapper;
@@ -9,6 +10,39 @@ namespace EventFlowAPI.Tests.Mapping;
 
 public class MappingTests
 {
+    [Fact]
+    public void Unified_partners_keep_kind_and_festival_response_groups()
+    {
+        var partners = Enum.GetValues<PartnerKind>()
+            .Select(kind => new PartnerRequestDto { Kind = kind, Name = kind.ToString() }.ToEntity())
+            .ToList();
+        var response = new Festival { Partners = partners }.ToResponse();
+
+        Assert.Equal(PartnerKind.MediaPatron, Assert.Single(response.MediaPatrons).Kind);
+        Assert.Equal(PartnerKind.Organizer, Assert.Single(response.Organizers).Kind);
+        Assert.Equal(PartnerKind.Sponsor, Assert.Single(response.Sponsors).Kind);
+        var sponsor = partners.Single(p => p.Kind == PartnerKind.Sponsor);
+        new UpdatePartnerRequestDto { Name = "Updated" }.ApplyTo(sponsor);
+        Assert.Equal(PartnerKind.Sponsor, sponsor.Kind);
+    }
+
+    [Fact]
+    public void Payment_enum_and_creation_dates_populate_response_contract()
+    {
+        var created = new DateTime(2030, 1, 2);
+        var reservation = new Reservation { ReservationDate = created, PaymentType = PaymentType.PayU }.ToResponse();
+        var rent = new HallRent { RentDate = created, PaymentType = PaymentType.Pass }.ToResponse();
+
+        Assert.Equal(created, reservation.PaymentDate);
+        Assert.NotNull(reservation.PaymentType);
+        Assert.Equal((int)PaymentType.PayU, reservation.PaymentType.Id);
+        Assert.Equal("PayU", reservation.PaymentType.Name);
+        Assert.Equal(created, rent.PaymentDate);
+        Assert.NotNull(rent.PaymentType);
+        Assert.Equal((int)PaymentType.Pass, rent.PaymentType.Id);
+        Assert.Equal("Karnet", rent.PaymentType.Name);
+    }
+
     [Fact]
     public void Cyclic_event_and_festival_graph_preserves_references_and_serializes()
     {
@@ -82,9 +116,9 @@ public class MappingTests
     }
 
     [Fact]
-    public void Nested_hall_details_update_retains_identity_and_service_calculated_values()
+    public void Nested_hall_details_update_retains_identity_and_recalculates_area()
     {
-        var details = new HallDetails { Id = 20, TotalArea = 30, NumberOfSeats = 4 };
+        var details = new HallDetails { Id = 20, TotalLength = 5, TotalWidth = 6, NumberOfSeats = 4 };
         var hall = new Hall { Id = 10, HallDetails = details };
         var request = new HallRequestDto
         {
@@ -95,23 +129,22 @@ public class MappingTests
 
         Assert.Same(details, hall.HallDetails);
         Assert.Equal(20, details.Id);
-        Assert.Equal(30, details.TotalArea);
+        Assert.Equal(42, details.TotalArea);
         Assert.Equal(4, details.NumberOfSeats);
         Assert.Equal(6, details.TotalLength);
         Assert.Equal(7, details.TotalWidth);
     }
 
     [Fact]
-    public void Soft_update_creates_fresh_entity_without_mutating_previous_version()
+    public void Create_from_update_has_fresh_identity_and_relationships()
     {
-        var previous = new SeatType { Id = 8, Name = "Previous", IsDeleted = true, IsSoftUpdated = true };
+        var previous = new SeatType { Id = 8, Name = "Previous", IsDeleted = true };
         var request = new UpdateSeatTypeRequestDto { Name = "Replacement", SeatColor = "#123456" };
 
         var replacement = request.ToEntity();
 
         Assert.Equal(0, replacement.Id);
         Assert.False(replacement.IsDeleted);
-        Assert.False(replacement.IsSoftUpdated);
         Assert.Empty(replacement.Seats);
         Assert.Equal("Replacement", replacement.Name);
         Assert.Equal("Previous", previous.Name);
@@ -119,24 +152,23 @@ public class MappingTests
     }
 
     [Fact]
-    public void Partial_update_clears_nullable_description_without_overwriting_name_or_flags()
+    public void Partial_update_clears_nullable_description_without_overwriting_name_or_identity()
     {
-        var entity = new Equipment { Id = 9, Name = "Original", Description = "Old", IsUpdated = true };
+        var entity = new Equipment { Id = 9, Name = "Original", Description = "Old" };
 
         new UpdateEquipmentRequestDto { Description = null }.ApplyTo(entity);
 
         Assert.Null(entity.Description);
         Assert.Equal("Original", entity.Name);
         Assert.Equal(9, entity.Id);
-        Assert.True(entity.IsUpdated);
     }
 
     [Fact]
-    public void Existing_duration_and_user_data_conversions_remain_compatible()
+    public void Duration_uses_dates_and_existing_user_data_conversions_remain_compatible()
     {
-        // Characterize existing API quirks; changing these belongs to a separate behavior change.
-        Assert.Equal(TimeSpan.FromTicks(3600), new Event { Duration = 3600 }.ToResponse().Duration);
-        Assert.Equal(TimeSpan.FromTicks(3600), new Festival { Duration = 3600 }.ToResponse().Duration);
+        var start = new DateTime(2030, 1, 1);
+        Assert.Equal(TimeSpan.FromHours(1), new Event { StartDate = start, EndDate = start.AddHours(1) }.ToResponse().Duration);
+        Assert.Equal(TimeSpan.FromHours(2), new Festival { StartDate = start, EndDate = start.AddHours(2) }.ToResponse().Duration);
 
         var response = new UserData { Id = "42", HouseNumber = null }.ToResponse();
         Assert.Equal(42, response.Id);

@@ -85,8 +85,8 @@ namespace EventFlowAPI.Tests.Scenarios
             var festival = await admin.GetJsonAsync($"/api/Festivals/{festivalId}");
             festival.GetProperty("title").GetString().ShouldBe("Festiwal zmieniony");
             festival.GetProperty("mediaPatrons")[0].GetProperty("id").GetInt32().ShouldBe(2);
-            festival.GetProperty("organizers")[0].GetProperty("id").GetInt32().ShouldBe(2);
-            festival.GetProperty("sponsors")[0].GetProperty("id").GetInt32().ShouldBe(2);
+            festival.GetProperty("organizers")[0].GetProperty("id").GetInt32().ShouldBe(2 + ScenarioWorld.SeededOrganizerIdOffset);
+            festival.GetProperty("sponsors")[0].GetProperty("id").GetInt32().ShouldBe(2 + ScenarioWorld.SeededSponsorIdOffset);
         }
 
         [Fact]

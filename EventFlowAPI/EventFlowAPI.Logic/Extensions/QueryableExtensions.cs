@@ -1,8 +1,10 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Enums;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Query.Abstract;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -93,8 +95,8 @@ namespace EventFlowAPI.Logic.Extensions
             queryable = queryable.ByStatus(query.Status);
             queryable = queryable.ByName(query);
             queryable = queryable.ByDate(query);
-            if (query.MinDuration != null) queryable = queryable.Where(e => e.Duration >= query.MinDuration.Value.TotalSeconds);
-            if (query.MaxDuration != null) queryable = queryable.Where(e => e.Duration <= query.MaxDuration.Value.TotalSeconds);
+            if (query.MinDuration != null) queryable = queryable.Where(e => EF.Functions.DateDiffSecond(e.StartDate, e.EndDate) >= query.MinDuration.Value.TotalSeconds);
+            if (query.MaxDuration != null) queryable = queryable.Where(e => EF.Functions.DateDiffSecond(e.StartDate, e.EndDate) <= query.MaxDuration.Value.TotalSeconds);
             if (query.CategoryId != null) queryable = queryable.Where(e => e.CategoryId == query.CategoryId);
             if (query.HallNr != null) queryable = queryable.Where(e => e.Hall.HallNr == query.HallNr);
             if (query.TicketTypeId != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.TicketTypeId == query.TicketTypeId));
@@ -110,13 +112,13 @@ namespace EventFlowAPI.Logic.Extensions
             queryable = queryable.ByStatus(query.Status);
             queryable = queryable.ByName(query);
             queryable = queryable.ByDate(query);
-            if (query.MinDuration != null) queryable = queryable.Where(x => x.Duration >= query.MinDuration.Value.TotalSeconds);
-            if (query.MaxDuration != null) queryable = queryable.Where(x => x.Duration <= query.MaxDuration.Value.TotalSeconds);
+            if (query.MinDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) >= query.MinDuration.Value.TotalSeconds);
+            if (query.MaxDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) <= query.MaxDuration.Value.TotalSeconds);
             if (query.MinEventsCount != null) queryable = queryable.Where(x => x.Events.Count >= query.MinEventsCount);
             if (query.MaxEventsCount != null) queryable = queryable.Where(x => x.Events.Count <= query.MaxEventsCount);    
-            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.MediaPatrons.Any(mp => mp.Id == query.MediaPatronId));
-            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Organizers.Any(o => o.Id == query.OrganizerId));
-            if (query.SponsorId != null) queryable = queryable.Where(x => x.Sponsors.Any(s => s.Id == query.SponsorId));
+            if (query.MediaPatronId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.MediaPatron && p.Id == query.MediaPatronId));
+            if (query.OrganizerId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.Organizer && p.Id == query.OrganizerId));
+            if (query.SponsorId != null) queryable = queryable.Where(x => x.Partners.Any(p => p.Kind == PartnerKind.Sponsor && p.Id == query.SponsorId));
             if (query.TicketTypeId != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Id == query.TicketTypeId));
             if (query.MinTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price >= query.MinTicketPrice));
             if (query.MaxTicketPrice != null) queryable = queryable.Where(e => e.Tickets.Any(t => t.Price <= query.MaxTicketPrice));
@@ -132,7 +134,7 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.IsRenewed == false) queryable = queryable.Where(x => x.RenewalDate == null);
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.PassTypeId != null) queryable = queryable.Where(x => x.PassTypeId == query.PassTypeId);
             if (!string.IsNullOrEmpty(query.UserName)) queryable = queryable.Where(x => $"{x.User.Name} {x.User.Surname}".Contains(query.UserName));
             queryable = queryable.SortBy(query.SortBy, query.SortDirection);
@@ -145,11 +147,11 @@ namespace EventFlowAPI.Logic.Extensions
             queryable = queryable.ByDate(query);
             if (query.FromRentDate != null) queryable = queryable.Where(x => x.RentDate >= query.FromRentDate);
             if (query.ToRentDate != null) queryable = queryable.Where(x => x.RentDate <= query.ToRentDate);
-            if (query.MinDuration != null) queryable = queryable.Where(x => x.Duration >= query.MinDuration.Value.TotalSeconds);
-            if (query.MaxDuration != null) queryable = queryable.Where(x => x.Duration <= query.MaxDuration.Value.TotalSeconds);
+            if (query.MinDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) >= query.MinDuration.Value.TotalSeconds);
+            if (query.MaxDuration != null) queryable = queryable.Where(x => EF.Functions.DateDiffSecond(x.StartDate, x.EndDate) <= query.MaxDuration.Value.TotalSeconds);
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.HallNr != null) queryable = queryable.Where(x => x.Hall.HallNr == query.HallNr);
             if (!string.IsNullOrEmpty(query.UserName))
             {
@@ -167,12 +169,12 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.EventId != null) queryable = queryable.Where(x => x.Ticket.EventId == query.EventId);
             if (query.FromReservationDate != null) queryable = queryable.Where(x => x.ReservationDate >= query.FromReservationDate);
             if (query.ToReservationDate != null) queryable = queryable.Where(x => x.ReservationDate <= query.ToReservationDate);
-            if (query.IsFestivalReservation == true) queryable = queryable.Where(x => x.IsFestivalReservation);
-            if (query.IsFestivalReservation == false) queryable = queryable.Where(x => !x.IsFestivalReservation);
+            if (query.IsFestivalReservation == true) queryable = queryable.Where(x => x.Ticket.FestivalId != null);
+            if (query.IsFestivalReservation == false) queryable = queryable.Where(x => x.Ticket.FestivalId == null);
             if (query.MinPrice != null) queryable = queryable.Where(x => x.PaymentAmount >= query.MinPrice);
             if (query.MaxPrice != null) queryable = queryable.Where(x => x.PaymentAmount <= query.MaxPrice);
             if (!string.IsNullOrEmpty(query.UserName)) queryable = queryable.Where(x => $"{x.User.Name} {x.User.Surname}".Contains(query.UserName));
-            if (query.PaymentTypeId != null) queryable = queryable.Where(x => x.PaymentTypeId == query.PaymentTypeId);
+            if (query.PaymentTypeId != null) queryable = queryable.Where(x => (int)x.PaymentType == query.PaymentTypeId);
             if (query.ReservationByEventPass == true) queryable = queryable.Where(x => x.EventPassId != null);
             if (query.ReservationByEventPass == false) queryable = queryable.Where(x => x.EventPassId == null);
             if (query.TicketTypeId != null) queryable = queryable.Where(x => x.Ticket.TicketTypeId == query.TicketTypeId);
@@ -194,8 +196,8 @@ namespace EventFlowAPI.Logic.Extensions
             if (query.HallTypeId != null) queryable = queryable.Where(x => x.HallTypeId == query.HallTypeId);
             if (query.MinSeatsCount != null) queryable = queryable.Where(x => x.HallDetails!.MaxNumberOfSeats >= query.MinSeatsCount);
             if (query.MaxSeatsCount != null) queryable = queryable.Where(x => x.HallDetails!.MaxNumberOfSeats <= query.MaxSeatsCount);
-            if (query.MinHallArea != null) queryable = queryable.Where(x => x.HallDetails!.TotalArea >= query.MinHallArea);
-            if (query.MaxHallArea != null) queryable = queryable.Where(x => x.HallDetails!.TotalArea <= query.MaxHallArea);
+            if (query.MinHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.HallDetails!.TotalLength * x.HallDetails!.TotalWidth) >= query.MinHallArea);
+            if (query.MaxHallArea != null) queryable = queryable.Where(x => Convert.ToDecimal(x.HallDetails!.TotalLength * x.HallDetails!.TotalWidth) <= query.MaxHallArea);
             if (query.IsHallHaveStage == false) queryable = queryable.Where(x => x.HallDetails!.StageLength == null && x.HallDetails!.StageWidth == null);
             if (query.IsHallHaveStage == true) queryable = queryable.Where(x => x.HallDetails!.StageLength != null && x.HallDetails!.StageWidth != null);
             queryable = queryable.SortBy(query.SortBy, query.SortDirection);

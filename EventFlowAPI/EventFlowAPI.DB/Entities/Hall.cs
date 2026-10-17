@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Hall : BaseEntity, IVisibleEntity, ICopyableEntity, IUpdateableEntity
+    public class Hall : BaseEntity, IVisibleEntity, ICopyableEntity
     {
         public int? DefaultId { get; set; }
         public int HallNr { get; set; }
@@ -16,8 +16,6 @@ namespace EventFlowAPI.DB.Entities
         public bool IsCopy { get; set; } = false;
 
         public bool IsVisible { get; set; } = true;
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
 
         [Range(0,4),
          Column(TypeName = "NUMERIC(1)")]

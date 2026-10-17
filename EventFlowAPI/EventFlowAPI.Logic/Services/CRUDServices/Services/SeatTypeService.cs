@@ -29,7 +29,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         public sealed override async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(st => !st.IsDeleted && !st.IsSoftUpdated)
+            var records = await _repository.GetAllAsync(q => q.Where(st => !st.IsDeleted)
                                                               .ByName(query)
                                                               .SortBy(query.SortBy, query.SortDirection)
                                                               .GetPage(query.PageNumber, query.PageSize));
@@ -49,19 +49,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newEntity = oldEntity;
 
-            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Seats.Any(s => s.Reservations.Any()))
-            {
-                var entity = MapUpdatedAsEntity(requestDto!);
-                var seatsWithoutReservations = oldEntity.Seats.Where(s => !s.Reservations.Any());
-                entity.Seats = seatsWithoutReservations.ToList();
-                await _repository.AddAsync(entity);
-                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
-                newEntity.Seats = oldEntity.Seats.Where(s => s.Reservations.Any()).ToList();
-            }
-            else
-            {
-                newEntity = (SeatType)MapToEntity(requestDto!, newEntity);
-            }     
+            newEntity = (SeatType)MapToEntity(requestDto!, newEntity);
             _repository.Update(newEntity);
 
             await _unitOfWork.SaveChangesAsync();
@@ -152,8 +140,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         entity.Id != id &&
                         (entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() ||
                          entity.SeatColor == ((IColorableRequestDto)requestDto).SeatColor) &&
-                        !entity.IsDeleted &&
-                        !entity.IsSoftUpdated
+                        !entity.IsDeleted
                       ))).Any();
 
             return Result<bool>.Success(result);

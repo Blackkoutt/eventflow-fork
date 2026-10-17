@@ -64,7 +64,7 @@ const ModifyMediaPatronDialog = forwardRef<HTMLDialogElement, ModifyMediaPatronD
       console.log(data);
       const formData = new FormData();
       formData.append("Name", data.name);
-      formData.append("MediaPatronPhoto", data.mediaPatronPhoto);
+      formData.append("PartnerPhoto", data.mediaPatronPhoto);
       await toast.promise(putItem({ id: item?.id, body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Patron medialny został pomyślnie zmodyfikowany",

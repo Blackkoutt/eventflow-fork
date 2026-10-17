@@ -220,7 +220,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private async Task<Result<HallRent>> CreateHallRentEntity(HallRentRequestDto requestDto, string userId)
         {
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                      .GetAllAsync(q => q.Where(s => !s.IsSoftUpdated && !s.IsDeleted && requestDto.AdditionalServicesIds.Contains(s.Id)));
+                                      .GetAllAsync(q => q.Where(s => !s.IsDeleted && requestDto.AdditionalServicesIds.Contains(s.Id)));
 
             var hallResult = await _copyMaker.MakeCopyOfHall(requestDto.HallId);
             if (!hallResult.IsSuccessful)
@@ -233,11 +233,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 HallRentGuid = Guid.NewGuid(),
                 StartDate = requestDto.StartDate,
                 EndDate = requestDto.EndDate,
-                DurationTimeSpan = requestDto.EndDate - requestDto.StartDate,
                 RentDate = DateTime.Now,
-                PaymentDate = DateTime.Now,
                 PaymentAmount = CalculatePaymentAmount(requestDto, hall, additionalServices),
-                PaymentTypeId = 1,
+                PaymentType = PaymentType.PayU,
                 HallId = hall.Id,
                 UserId = userId,
                 AdditionalServices = additionalServices.ToList()
@@ -344,7 +342,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return HallRentError.HallRentIsDeleted;
             }
 
-            if (!await IsEntityExistInDB<PaymentType>(paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
 
@@ -358,7 +356,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return AdditionalServicesError.ServiceDuplicate;
 
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                        .GetAllAsync(q => q.Where(s => !s.IsSoftUpdated && !s.IsDeleted && additionalServicesIds.Contains(s.Id)));
+                                        .GetAllAsync(q => q.Where(s => !s.IsDeleted && additionalServicesIds.Contains(s.Id)));
 
             if (additionalServices.Count() < additionalServicesIds.Count)
                 return AdditionalServicesError.ServiceNotFound;

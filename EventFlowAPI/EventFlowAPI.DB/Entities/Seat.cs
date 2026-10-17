@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Seat : BaseEntity, IUpdateableEntity
+    public class Seat : BaseEntity
     {
 
         [Range(0, 999),
@@ -29,8 +29,6 @@ namespace EventFlowAPI.DB.Entities
 
         public int SeatTypeId { get; set; }
         public int HallId { get; set; }
-        public bool IsUpdated { get; set; } = false;
-        public DateTime? UpdateDate { get; set; }
         public SeatType SeatType { get; set; } = default!;
         public Hall Hall { get; set; } = default!;
         public ICollection<Reservation> Reservations { get; set; } = [];

@@ -16,7 +16,7 @@ const OrganizersManagement = () => {
   const { data: items, get: getItems } = useApi<Organizer>(ApiEndpoint.Organizer);
 
   useEffect(() => {
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Organizer" } });
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const OrganizersManagement = () => {
 
   const reloadItemsAfterSuccessDialog = () => {
     closeDialogsAndSetValuesToDefault();
-    getItems({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: { kind: "Organizer" } });
   };
 
   return (

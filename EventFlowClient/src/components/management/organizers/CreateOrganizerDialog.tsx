@@ -40,8 +40,9 @@ const CreateOrganizerDialog = forwardRef<HTMLDialogElement, CreateOrganizerDialo
     const onSubmit: SubmitHandler<OrganizerRequest> = async (data) => {
       console.log(data);
       const formData = new FormData();
+      formData.append("Kind", "Organizer");
       formData.append("Name", data.name);
-      formData.append("OrganizerPhoto", data.organizerPhoto);
+      formData.append("PartnerPhoto", data.organizerPhoto);
       await toast.promise(postItem({ body: formData }), {
         pending: "Wykonywanie żądania",
         success: "Ogranizator został pomyślnie utworzony",

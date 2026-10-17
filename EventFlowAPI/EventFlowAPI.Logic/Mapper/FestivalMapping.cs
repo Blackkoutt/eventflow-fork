@@ -1,3 +1,4 @@
+using EventFlowAPI.DB.Entities.Enums;
 using System.Diagnostics.CodeAnalysis;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -40,14 +41,13 @@ public static class FestivalMapping
         target.ShortDescription = source.ShortDescription;
         target.StartDate = source.StartDate;
         target.EndDate = source.EndDate;
-        // Preserve the existing API conversion: stored duration is interpreted as ticks.
-        target.Duration = new TimeSpan(source.Duration);
+        target.Duration = source.Duration;
         target.PhotoName = source.PhotoName;
         target.Details = source.Details.ToResponse(context);
         target.Events = source.Events?.Select(item => item.ToResponse(context)).ToList() ?? [];
-        target.MediaPatrons = source.MediaPatrons?.Select(item => item.ToResponse(context)).ToList() ?? [];
-        target.Organizers = source.Organizers?.Select(item => item.ToResponse(context)).ToList() ?? [];
-        target.Sponsors = source.Sponsors?.Select(item => item.ToResponse(context)).ToList() ?? [];
+        target.MediaPatrons = source.Partners?.Where(p => p.Kind == PartnerKind.MediaPatron).Select(item => item.ToResponse(context)).ToList() ?? [];
+        target.Organizers = source.Partners?.Where(p => p.Kind == PartnerKind.Organizer).Select(item => item.ToResponse(context)).ToList() ?? [];
+        target.Sponsors = source.Partners?.Where(p => p.Kind == PartnerKind.Sponsor).Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Tickets = source.Tickets?.Select(item => item.ToResponse(context)).ToList() ?? [];
         target.Id = source.Id;
         return target;

@@ -135,7 +135,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             List<Reservation> reservationsList = [];
             var eventSeatsDict = await GetListOfSeatsForEachEventTicket(festival, seatsList);
 
-            var paymentType = await _unitOfWork.GetRepository<PaymentType>().GetOneAsync(requestDto!.PaymentTypeId);
+            var paymentType = (PaymentType)requestDto!.PaymentTypeId;
 
             if (festival != null && requestDto.IsReservationForFestival)
             {
@@ -144,7 +144,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                      eventSeatsDict: eventSeatsDict!,
                      userId: user.Id,
                      paymentTypeId: requestDto.PaymentTypeId,
-                     eventPass: (paymentType!.Name.ToLower() == "karnet" ? userActiveEventPass : null));
+                     eventPass: (paymentType == PaymentType.Pass ? userActiveEventPass : null));
 
 
                 reservationsList.AddRange(reservations);
@@ -157,7 +157,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     seatsList: seatsList,
                     userId: user.Id,
                     paymentTypeId: requestDto.PaymentTypeId,
-                    eventPass: (paymentType!.Name.ToLower() == "karnet" ? userActiveEventPass : null));
+                    eventPass: (paymentType == PaymentType.Pass ? userActiveEventPass : null));
 
                 reservationsList.Add(reservationEntity);
             }
@@ -218,7 +218,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 reservationsList.AddRange(festivalReservations);
 
                 // Create Ticket JPGs
-                var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmapsAndEntities(festival, reservationsList, isUpdate: true);
+                var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmaps(festival, reservationsList, isUpdate: true);
                 if (!ticketJPGFilesResult.IsSuccessful)
                     return ticketJPGFilesResult.Error;
 
@@ -227,7 +227,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 Reservation reservationEntity = userReservations.First();
 
                 // Create Ticket PDF
-                var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmapAndEntity(reservationEntity, ticketJPGBitmaps, isUpdate: true);
+                var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmap(reservationEntity, ticketJPGBitmaps, isUpdate: true);
                 if (!ticketPDFFileResult.IsSuccessful)
                     return ticketPDFFileResult.Error;
             }
@@ -267,7 +267,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     bool deleteFestival = false;
                     var eventsInFestival = await _repository
                                                     .GetAllAsync(q => q.Where(r =>
-                                                    r.IsFestivalReservation &&
+                                                    r.Ticket.FestivalId != null &&
                                                     r.ReservationGuid == reservation.ReservationGuid &&
                                                     !r.IsDeleted));
 
@@ -327,17 +327,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> HardDeleteTicketFiles(int reservationId)
         {
-            var ticketJPGRepository = (ITicketJPGRepository)_unitOfWork.GetRepository<TicketJPG>();
-            var ticketJPGList = await ticketJPGRepository.GetAllJPGsForReservation(reservationId);
-            var deleteTicketJPGsError = await _fileService.DeleteFileEntities(ticketJPGList);
-            if (deleteTicketJPGsError != Error.None)
-                return deleteTicketJPGsError;
+            var reservation = await _repository.GetOneAsync(reservationId);
+            if (reservation == null)
+                return Error.None;
 
-            var ticketPDFRepository = (ITicketPDFRepository)_unitOfWork.GetRepository<TicketPDF>();
-            var ticketPDFList = await ticketPDFRepository.GetAllPDFsForReservation(reservationId);
-            var deleteTicketPDFError = await _fileService.DeleteFileEntities(ticketPDFList);
-            if (deleteTicketPDFError != Error.None)
-                return deleteTicketPDFError;
+            var deleteError = await _fileService.DeleteTicketFiles(reservation);
+            if (deleteError != Error.None)
+                return deleteError;
+
+            var reservationsWithSameGuid = await _repository.GetAllAsync(q => q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
+            foreach (var reservationWithSameGuid in reservationsWithSameGuid)
+            {
+                reservationWithSameGuid.TicketPDFFileName = null;
+                reservationWithSameGuid.TicketImagesFolder = null;
+                _repository.Update(reservationWithSameGuid);
+            }
 
             return Error.None;
         }
@@ -371,39 +375,32 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Reservation reservation = reservationsList.First();
 
             // Create Ticket JPGs
-            var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmapsAndEntities(festival, reservationsList, isUpdate);
+            var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmaps(festival, reservationsList, isUpdate);
             if (!ticketJPGFilesResult.IsSuccessful)
                 return ticketJPGFilesResult.Error;
 
             var ticketJPGBitmaps = ticketJPGFilesResult.Value.Bitmaps;
-            var ticketJPGEntityList = ticketJPGFilesResult.Value.FileEntities;
+            var ticketImagesFolder = ticketJPGFilesResult.Value.Folder;
 
             // Create Ticket PDF 
-            var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmapAndEntity(reservation, ticketJPGBitmaps, isUpdate);
+            var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmap(reservation, ticketJPGBitmaps, isUpdate);
             if (!ticketPDFFileResult.IsSuccessful)
                 return ticketPDFFileResult.Error;
 
-            var ticketPDFEntityList = new List<IFileEntity>() { ticketPDFFileResult.Value.FileEntity };
+            var ticketPDFFileName = ticketPDFFileResult.Value.FileName;
 
             // Update local database
-            await UpdateReservationsAfterCreatingFile(ticketJPGEntityList, reservationsList, ContentType.JPEG);
-            await UpdateReservationsAfterCreatingFile(ticketPDFEntityList, reservationsList, ContentType.PDF);
+            await UpdateReservationsAfterCreatingFile(ticketImagesFolder, ticketPDFFileName, reservationsList);
 
             return Error.None;
         }
 
-        private async Task UpdateReservationsAfterCreatingFile(List<IFileEntity> fileEntityList, List<Reservation> reservationsList, string contentType)
+        private async Task UpdateReservationsAfterCreatingFile(string ticketImagesFolder, string ticketPDFFileName, List<Reservation> reservationsList)
         {
             foreach (var reservation in reservationsList)
             {
-                if (contentType == ContentType.PDF)
-                {
-                    reservation.TicketPDF = (TicketPDF)fileEntityList.First();
-                }
-                else if (contentType == ContentType.JPEG)
-                {
-                    reservation.TicketsJPG = fileEntityList.Select(file => (TicketJPG)file).ToList();
-                }
+                reservation.TicketPDFFileName = ticketPDFFileName;
+                reservation.TicketImagesFolder = ticketImagesFolder;
 
                 _repository.Update(reservation);
             }
@@ -431,17 +428,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return new Reservation
             {
                 ReservationGuid = Guid.NewGuid(),
-                IsFestivalReservation = false,
                 ReservationDate = DateTime.Now,
                 StartDate = ticket.Event.StartDate,
                 EndDate = ticket.Event.EndDate,
-                PaymentDate = DateTime.Now,
                 TotalAddtionalPaymentPercentage = AddPaymentPercent,
                 TotalAdditionalPaymentAmount = Math.Round(TotalAddPayment, 2),
                 PaymentAmount = Math.Round(TotalPayment, 2),
                 TotalDiscount = TotalDiscount,
                 UserId = userId,
-                PaymentTypeId = paymentTypeId,
+                PaymentType = (PaymentType)paymentTypeId,
                 TicketId = ticket.Id,
                 Ticket = ticket,
                 Seats = seatsList,
@@ -472,17 +467,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var reservationEntity = new Reservation
                 {
                     ReservationGuid = festivalGuid,
-                    IsFestivalReservation = true,
                     ReservationDate = DateTime.Now,
                     StartDate = eventTicket.Event.StartDate,
                     EndDate = eventTicket.Event.EndDate,
-                    PaymentDate = DateTime.Now,
                     PaymentAmount = Math.Round(TotalPayment, 2),
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     TotalDiscount = TotalDiscount,
                     UserId = userId,
-                    PaymentTypeId = paymentTypeId,
+                    PaymentType = (PaymentType)paymentTypeId,
                     TicketId = eventTicket.Id,
                     Ticket = eventTicket,
                     Seats = seats,
@@ -561,7 +554,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         .GetAllAsync(q => q.Where(r =>
                         !r.IsDeleted &&
                         r.EndDate > DateTime.Now &&
-                        r.IsFestivalReservation && 
                         r.Ticket.FestivalId == festivalId));
         }
 
@@ -599,14 +591,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private async Task<Error> ValidateEventPass(int paymentTypeId, List<int> seatIds, bool isReservationForFestival , UserResponseDto user,
             Festival? festivalEntity, Event eventEntity, List<Seat> seats, Ticket ticket)
         {
-            var paymentType = await _unitOfWork.GetRepository<PaymentType>().GetOneAsync(paymentTypeId);
+            var paymentType = (PaymentType)paymentTypeId;
             var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
                                            q.Where(ep =>
                                            ep.UserId == user.Id &&
                                            !ep.IsDeleted &&
                                            ep.EndDate > DateTime.Now))).FirstOrDefault();
 
-            if (paymentType!.Name.ToLower() == "karnet")
+            if (paymentType == PaymentType.Pass)
             {
                 if (userActiveEventPass == null)
                     return EventPassError.UserDoesNotHaveActiveEventPass;
@@ -699,7 +691,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
 
-            if (!await IsEntityExistInDB<PaymentType>(paymentTypeId))
+            if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
             var ticket = await _ticketRepository.GetOneAsync(ticketId);
