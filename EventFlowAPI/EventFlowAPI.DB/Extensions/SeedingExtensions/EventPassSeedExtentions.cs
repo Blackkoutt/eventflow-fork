@@ -26,8 +26,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     PassTypeId = 3,
                     TotalDiscount = 0m,
                     TotalDiscountPercentage = 0m,
-                    EventPassJPGName = $"eventflow_karnet_{epGuid1}.jpg",
-                    EventPassPDFName = $"eventflow_karnet_{epGuid1}.pdf",
                     UserId = "2",
                     PaymentType = PaymentType.PayU
                 },
@@ -44,8 +42,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     PassTypeId = 4,
                     TotalDiscount = 0m,
                     TotalDiscountPercentage = 0m,
-                    EventPassJPGName = $"eventflow_karnet_{epGuid2}.jpg",
-                    EventPassPDFName = $"eventflow_karnet_{epGuid2}.pdf",
                     UserId = "3",
                     PaymentType = PaymentType.PayU
                 },
@@ -61,8 +57,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     PassTypeId = 2,
                     TotalDiscount = 0m,
                     TotalDiscountPercentage = 0m,
-                    EventPassJPGName = $"eventflow_karnet_{epGuid3}.jpg",
-                    EventPassPDFName = $"eventflow_karnet_{epGuid3}.pdf",
                     UserId = "4",
                     PaymentType = PaymentType.PayU
                 }

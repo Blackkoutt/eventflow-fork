@@ -12,6 +12,7 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.IO.Compression;
 
@@ -22,10 +23,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         IBlobService blobService,
         IAuthService authService,
         IPdfBuilderService pdfBuilderService,
-        IJPGCreatorService jpgCreatorService
+        IJPGCreatorService jpgCreatorService,
+        IConfiguration configuration
        ) : IFileService
     {
         private readonly IBlobService _blobService = blobService;
+        private readonly IConfiguration _configuration = configuration;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;   
         private readonly IPdfBuilderService _pdfBuilder = pdfBuilderService;
@@ -33,94 +36,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private string zipArchiveName = @$"twoje_bilety_rezerwacja_nr_{{0}}.zip";
         private string hallRentPDFFileNameTemplate = @$"wynajem_sali_{{0}}.pdf";
+        private string hallViewFileNameTemplate = @$"sala_{{0}}.pdf";
+        private string _ticketJPGFileNameTemplate => GetFileNameTemplate("TicketJPG");
+        private string _ticketPDFFileNameTemplate => GetFileNameTemplate("TicketPDF");
+        private string _eventPassJPGFileNameTemplate => GetFileNameTemplate("EventPassJPG");
+        private string _eventPassPDFFileNameTemplate => GetFileNameTemplate("EventPassPDF");
         private readonly string defaultPhoto = @"default.jpg";
         
-
-        // To Do
-        private async Task<string?> GetPDFFileName<TEntity>(TEntity entity, FileType fileType)
-        {
-            return entity switch
-            {
-                HallRent hallRent => fileType switch 
-                {
-                    FileType.PDF => hallRent.HallRentPDFName,
-                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
-                },
-                Hall hall => fileType switch
-                {
-                    FileType.PDF => hall.HallViewFileName,
-                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
-                },
-                Reservation reservation => fileType switch
-                {
-                    FileType.PDF => reservation.TicketPDFFileName,
-                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
-                },
-                EventPass eventPass => fileType switch
-                {
-                    FileType.PDF => eventPass.EventPassPDFName,
-                    FileType.JPEG => eventPass.EventPassJPGName,
-                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
-                },
-                _ => throw new ArgumentOutOfRangeException(nameof(entity), $"Unsupported type of entity: {entity!.GetType().Name}")
-            };
-        }
-
-
-        public async Task<Result<BlobResponseDto>> GetFile<TEntity>(int id, FileType fileType, BlobContainer container) where TEntity : class
-        {
-            var validationResult = await ValidateBeforeDownload<TEntity>(id);
-            if (!validationResult.IsSuccessful)
-                return Result<BlobResponseDto>.Failure(validationResult.Error);
-
-            var entity = validationResult.Value;
-
-            string? fileName = string.Empty;
-            if(container == BlobContainer.HallViewsPDF && entity is HallRent hallRent) 
-                fileName = await GetPDFFileName(hallRent.Hall, fileType);
-            else if(container == BlobContainer.HallViewsPDF && entity is Event eventEntity)
-                fileName = await GetPDFFileName(eventEntity.Hall, fileType);
-            else 
-                fileName = await GetPDFFileName(entity, fileType);
-                
-            if (string.IsNullOrEmpty(fileName))
-                return Result<BlobResponseDto>.Failure(BlobError.FileNameIsEmpty);
-
-            var blobRequest = new BlobRequestDto
-            {
-                Container = container,
-                FileName = fileName
-            };
-            var ticketPDFResult = await _blobService.DownloadAsync(blobRequest);
-            if (!ticketPDFResult.IsSuccessful)
-                return Result<BlobResponseDto>.Failure(ticketPDFResult.Error);
-
-            return Result<BlobResponseDto>.Success(ticketPDFResult.Value);
-        }
-
-
-        public async Task<Error> DeleteFile<TEntity>(TEntity entity, FileType fileType, BlobContainer container)
-        {
-            string? fileName = string.Empty;
-            if (container == BlobContainer.HallViewsPDF && entity is HallRent hallRent)
-                fileName = await GetPDFFileName(hallRent.Hall, fileType);
-            else if (container == BlobContainer.HallViewsPDF && entity is Event eventEntity)
-                fileName = await GetPDFFileName(eventEntity.Hall, fileType);
-            else
-                fileName = await GetPDFFileName(entity, fileType);
-
-            if (string.IsNullOrEmpty(fileName))
-                return BlobError.FileNameIsEmpty;
-
-            var blob = new BlobRequestDto
-            {
-                Container = container,
-                FileName = fileName,
-            };
-            await _blobService.DeleteAsync(blob);
-
-            return Error.None;
-        }
 
         private Result<BlobContainer> GetPhotoBlobContainer<TEntity>(TEntity entity) where TEntity : class
         {
@@ -272,60 +194,27 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Result<(byte[] PDFFile, string FileName)>> CreateHallRentPDF(HallRent hallRent, bool isUpdate = false)
+        public async Task<Result<BlobResponseDto>> GetFile<TEntity>(int id, FileType fileType, BlobContainer container) where TEntity : class
         {
-            var hallRentPDFBitmap = await _pdfBuilder.CreateHallRentPdf(hallRent);
+            var validationResult = await ValidateBeforeDownload<TEntity>(id);
+            if (!validationResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(validationResult.Error);
 
-            string fileName = string.Format(hallRentPDFFileNameTemplate, hallRent.HallRentGuid);
-
-            var hallRentPdfBlob = new BlobRequestDto
+            BlobResponseDto? file = validationResult.Value switch
             {
-                Container = BlobContainer.HallRentsPDF,
-                FileName = fileName,
-                ContentType = ContentType.PDF,
-                Data = hallRentPDFBitmap
+                Hall hall => await CreateHallViewFile(hall, null, null),
+                Event eventEntity => await CreateHallViewFile(await GetHall(eventEntity.HallId), null, eventEntity),
+                HallRent hallRent when container == BlobContainer.HallRentsPDF => await CreateHallRentFile(hallRent),
+                HallRent hallRent => await CreateHallViewFile(await GetHall(hallRent.HallId), hallRent, null),
+                Reservation reservation => await CreateTicketPdfFile(reservation),
+                EventPass eventPass => await CreateEventPassFile(eventPass, fileType),
+                _ => null
             };
-            var pdfBlobResult = await _blobService.UploadAsync(hallRentPdfBlob);
+            if (file == null)
+                return Result<BlobResponseDto>.Failure(BlobError.FileNameIsEmpty);
 
-            if (!pdfBlobResult.IsSuccessful)
-                return Result<(byte[], string)>.Failure(pdfBlobResult.Error);
-
-            return Result<(byte[], string)>.Success((hallRentPDFBitmap, fileName));
+            return Result<BlobResponseDto>.Success(file);
         }
-
-        public async Task<Result<string>> CreateHallViewPDF(Hall hall, HallRent? hallRent = null, Event? eventEntity = null, bool isUpdate = false)
-        {
-            var hallViewJPGBitmap = await _jpgCreator.CreateHallJPG(hall);
-
-            var hallViewPDFBitmap = await _pdfBuilder.CreateHallViewPdf(hallViewJPGBitmap, hall, hallRent, eventEntity);
-
-            string fileName = string.Empty;
-            string fileNameTemplate = @$"sala_{{0}}.pdf";
-
-            if (hallRent != null)
-                fileName = string.Format(fileNameTemplate, $"{hallRent.Id}_{hall.Id}");
-            else if (eventEntity != null)
-                fileName = string.Format(fileNameTemplate, $"{eventEntity.Id}_{hall.Id}");
-            else
-                fileName = string.Format(fileNameTemplate, hall.Id);
-
-            hall.HallViewFileName = fileName;
-
-            var hallViewPdfBlob = new BlobRequestDto
-            {
-                Container = BlobContainer.HallViewsPDF,
-                FileName = fileName,
-                ContentType = ContentType.PDF,
-                Data = hallViewPDFBitmap
-            };
-            var pdfBlobResult = await _blobService.UploadAsync(hallViewPdfBlob);
-
-            if (!pdfBlobResult.IsSuccessful)
-                return Result<string>.Failure(pdfBlobResult.Error);
-
-            return Result<string>.Success(fileName);
-        }
-
 
         public async Task<Result<BlobResponseDto>> GetTicketsJPGsInZIPArchive(int reservationId)
         {
@@ -334,40 +223,20 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<BlobResponseDto>.Failure(validationResult.Error);
 
             var reservation = validationResult.Value;
-            var ticketJPGNames = string.IsNullOrEmpty(reservation.TicketImagesFolder)
-                ? []
-                : await _blobService.ListFilesAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
-
-            if (ticketJPGNames.Count == 0)
-            {
-                return Result<BlobResponseDto>.Failure(TicketJPGError.TicketJPGNotFound);
-            }
+            var tickets = await CreateTicketImages(reservation);
 
             var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
-                foreach (var ticketJPGName in ticketJPGNames)
+                var ticketNumber = 1;
+                foreach (var ticketBitmap in tickets.Images)
                 {
-                    var blobRequest = new BlobRequestDto
-                    {
-                        Container = BlobContainer.TicketsJPG,
-                        Folder = reservation.TicketImagesFolder!,
-                        FileName = ticketJPGName
-                    };
-
-                    var ticketJPGResult = await _blobService.DownloadAsync(blobRequest);
-                    if (!ticketJPGResult.IsSuccessful)
-                    {
-                        return Result<BlobResponseDto>.Failure(ticketJPGResult.Error);
-                    }
-
-                    var ticketJPGBitmap = ticketJPGResult.Value.Data;
-                    var entry = archive.CreateEntry(ticketJPGName, CompressionLevel.Optimal);
-
+                    var entry = archive.CreateEntry(string.Format(_ticketJPGFileNameTemplate, reservation.ReservationGuid, ticketNumber), CompressionLevel.Optimal);
                     using (var entryStream = entry.Open())
                     {
-                        await ticketJPGBitmap.CopyToAsync(entryStream);
+                        await entryStream.WriteAsync(ticketBitmap);
                     }
+                    ticketNumber++;
                 }
             }
             memoryStream.Position = 0;
@@ -376,124 +245,82 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 FileName = string.Format(zipArchiveName, reservation.ReservationGuid),
                 Data = memoryStream,
                 ContentType = ContentType.ZIP
-
             };
             return Result<BlobResponseDto>.Success(responseObject);
         }
 
-
-        public async Task<Error> DeleteTicketFiles(Reservation reservation)
+        private async Task<Hall> GetHall(int id)
         {
-            if (!string.IsNullOrEmpty(reservation.TicketImagesFolder))
-            {
-                await _blobService.DeleteFolderAsync(BlobContainer.TicketsJPG, reservation.TicketImagesFolder);
-            }
-
-            if (!string.IsNullOrEmpty(reservation.TicketPDFFileName))
-            {
-                await _blobService.DeleteAsync(new BlobRequestDto { Container = BlobContainer.TicketsPDF, FileName = reservation.TicketPDFFileName });
-            }
-
-            return Error.None;
+            return (await _unitOfWork.GetRepository<Hall>().GetOneAsync(id))!;
         }
 
-
-        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassJPGBitmap(EventPass eventPass, bool isUpdate=false)
+        private BlobResponseDto ToFile(byte[] data, string fileName, string contentType)
         {
-            var eventPassBitmap = await _jpgCreator.CreateEventPass(eventPass);
-
-            var eventPassJpgBlob = new EventPassBlobRequestDto
+            return new BlobResponseDto
             {
-                EventPassGuid = eventPass.EventPassGuid,
-                ContentType = ContentType.JPEG,
-                Data = eventPassBitmap
+                FileName = fileName,
+                ContentType = contentType,
+                Data = new MemoryStream(data)
             };
-            var eventPassBlobResult = await _blobService.CreateEventPassBlob(eventPassJpgBlob);
-            if (!eventPassBlobResult.IsSuccessful)
-            {
-                return Result<(byte[] Bitmap, string FileName)>.Failure(eventPassBlobResult.Error);
-            }
-            var fileName = eventPassBlobResult.Value;
-
-            return Result<(byte[] Bitmap, string FileName)>.Success((eventPassBitmap, fileName));
         }
 
-        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassPDFBitmap(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType, bool isUpdate = false)
+        private async Task<BlobResponseDto> CreateHallViewFile(Hall hall, HallRent? hallRent, Event? eventEntity)
         {
-            var eventPassPDFBitmap = await _pdfBuilder.CreateEventPassPdf(eventPass, eventPassJPGBitmap, oldEventPassType);
+            var hallViewJPGBitmap = await _jpgCreator.CreateHallJPG(hall);
+            var hallViewPDFBitmap = await _pdfBuilder.CreateHallViewPdf(hallViewJPGBitmap, hall, hallRent, eventEntity);
 
-            var eventPassPdfBlob = new EventPassBlobRequestDto
-            {
-                EventPassGuid = eventPass.EventPassGuid,
-                ContentType = ContentType.PDF,
-                Data = eventPassPDFBitmap
-            };
-            var eventPassBlobResult = await _blobService.CreateEventPassBlob(eventPassPdfBlob);
-            if (!eventPassBlobResult.IsSuccessful)
-            {
-                return Result<(byte[] Bitmap, string FileName)>.Failure(eventPassBlobResult.Error);
-            }
-            var fileName = eventPassBlobResult.Value;
+            string key = hall.Id.ToString();
+            if (hallRent != null)
+                key = $"{hallRent.Id}_{hall.Id}";
+            else if (eventEntity != null)
+                key = $"{eventEntity.Id}_{hall.Id}";
 
-            return Result<(byte[] Bitmap, string FileName)>.Success((eventPassPDFBitmap, fileName));
+            return ToFile(hallViewPDFBitmap, string.Format(hallViewFileNameTemplate, key), ContentType.PDF);
         }
 
-
-        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateTicketPDFBitmap(Reservation reservationEntity, List<byte[]> ticketBitmaps, bool isUpdate = false)
+        private async Task<BlobResponseDto> CreateHallRentFile(HallRent hallRent)
         {
-            var ticketPDFBitmap = await _pdfBuilder.CreateTicketPdf(reservationEntity, ticketBitmaps);
+            var hallRentPDFBitmap = await _pdfBuilder.CreateHallRentPdf(hallRent);
 
-            var ticketPdfBlobs = new TicketBlobsRequestDto
-            {
-                ReservationGuid = reservationEntity.ReservationGuid,
-                Container = BlobContainer.TicketsPDF,
-                ContentType = ContentType.PDF,
-                DataList = new List<byte[]> { ticketPDFBitmap }
-            };
-            var pdfBlobResult = await _blobService.CreateTicketBlobs(ticketPdfBlobs);
-            if (!pdfBlobResult.IsSuccessful)
-            {
-                return Result<(byte[] Bitmap, string FileName)>.Failure(pdfBlobResult.Error);
-            }
-            var fileName = pdfBlobResult.Value.First();
-
-            return Result<(byte[] Bitmap, string FileName)>.Success((ticketPDFBitmap, fileName));
+            return ToFile(hallRentPDFBitmap, string.Format(hallRentPDFFileNameTemplate, hallRent.HallRentGuid), ContentType.PDF);
         }
 
-
-        public async Task<Result<(List<byte[]> Bitmaps, string Folder)>> CreateTicketJPGBitmaps(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
+        private async Task<BlobResponseDto> CreateEventPassFile(EventPass eventPass, FileType fileType)
         {
-            List<byte[]> ticketBitmaps = [];
-            Reservation reservationEntity = reservationsList.First();
+            var eventPassJPGBitmap = await _jpgCreator.CreateEventPass(eventPass);
+            if (fileType == FileType.JPEG)
+                return ToFile(eventPassJPGBitmap, string.Format(_eventPassJPGFileNameTemplate, eventPass.EventPassGuid), ContentType.JPEG);
 
-            if (festival is not null)
-            {
-                ticketBitmaps = await _jpgCreator.CreateFestivalTicket(festival, reservationsList);
-            }
-            else
-            {
-                var ticketBitmap = await _jpgCreator.CreateEventTicket(reservationEntity);
-                ticketBitmaps.Add(ticketBitmap);
-            }
-
-            var ticketJpgBlobs = new TicketBlobsRequestDto
-            {
-                ReservationGuid = reservationEntity.ReservationGuid,
-                Folder = reservationEntity.ReservationGuid.ToString(),
-                Container = BlobContainer.TicketsJPG,
-                ContentType = ContentType.JPEG,
-                DataList = ticketBitmaps
-            };
-            var jpgBlobResult = await _blobService.CreateTicketBlobs(ticketJpgBlobs);
-
-            if (!jpgBlobResult.IsSuccessful)
-            {
-                return Result<(List<byte[]> Bitmaps, string Folder)>.Failure(jpgBlobResult.Error);
-            }
-
-            return Result<(List<byte[]> Bitmaps, string Folder)>.Success((ticketBitmaps, ticketJpgBlobs.Folder));
+            var eventPassPDFBitmap = await _pdfBuilder.CreateEventPassPdf(eventPass, eventPassJPGBitmap, null);
+            return ToFile(eventPassPDFBitmap, string.Format(_eventPassPDFFileNameTemplate, eventPass.EventPassGuid), ContentType.PDF);
         }
 
+        private async Task<BlobResponseDto> CreateTicketPdfFile(Reservation reservation)
+        {
+            var tickets = await CreateTicketImages(reservation);
+            var ticketPDFBitmap = await _pdfBuilder.CreateTicketPdf(tickets.Reservation, tickets.Images);
+
+            return ToFile(ticketPDFBitmap, string.Format(_ticketPDFFileNameTemplate, reservation.ReservationGuid), ContentType.PDF);
+        }
+
+        private async Task<(Reservation Reservation, List<byte[]> Images)> CreateTicketImages(Reservation reservation)
+        {
+            var festivalId = reservation.Ticket.FestivalId;
+            var festival = festivalId == null ? null : await _unitOfWork.GetRepository<Festival>().GetOneAsync(festivalId.Value);
+            if (festival == null)
+                return (reservation, [await _jpgCreator.CreateEventTicket(reservation)]);
+
+            var reservationsList = (await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
+                                        q.Where(r => r.ReservationGuid == reservation.ReservationGuid && !r.IsDeleted)
+                                         .OrderBy(r => r.Id))).ToList();
+            return (reservationsList.First(), await _jpgCreator.CreateFestivalTicket(festival, reservationsList));
+        }
+
+        private string GetFileNameTemplate(string key)
+        {
+            return _configuration.GetSection("FileNames")[key]
+                ?? throw new InvalidOperationException($"Missing configuration value 'FileNames:{key}'.");
+        }
 
         private async Task<Result<TEntity>> ValidateBeforeDownload<TEntity>(int id, bool userAllowed = false, bool authorize = true) where TEntity : class
         {

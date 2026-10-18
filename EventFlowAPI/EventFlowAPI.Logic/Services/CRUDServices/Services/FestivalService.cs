@@ -91,8 +91,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
 
-            bool needToUpdateTickets = false;
-
             var oldFestival = new Festival
             {
                 Name = festival.Name,
@@ -118,7 +116,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(festival.Name != requestDto!.Name)
             {
                 festival.Name = requestDto!.Name;
-                needToUpdateTickets = true;  
             }
 
             if(festival.ShortDescription != requestDto!.ShortDescription)
@@ -137,11 +134,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             bool hasChanges = festival.Events.Count() != newFestivalEventList.Count() ||
                   festival.Events.Any(e => !newFestivalEventList.Any(ne => e.Id == ne.Id)) ||
                   newFestivalEventList.Any(ne => !festival.Events.Any(e => e.Id == ne.Id));
-
-            var reservationForFestival = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.EndDate < DateTime.Now && !r.IsDeleted && r.Ticket.FestivalId == festival.Id));
-            var distinctReservation = reservationForFestival.DistinctBy(r => r.ReservationGuid);
-
-            if (hasChanges) needToUpdateTickets = true;
 
             festival.Events = newFestivalEventList;
 
@@ -170,13 +162,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             _repository.Update(festival);
             await _unitOfWork.SaveChangesAsync();
-
-            if (needToUpdateTickets)
-            {
-                var sendError = await _reservationService.UpdateReservationsTickets(distinctReservation);
-                if (sendError != Error.None)
-                    return Result<FestivalResponseDto>.Failure(sendError);
-            }
 
             var newFestivalEntityDto = MapAsDto(festival);
 

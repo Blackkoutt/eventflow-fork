@@ -20,7 +20,6 @@ namespace EventFlowAPI.DB.Entities
         [Range(0,4),
          Column(TypeName = "NUMERIC(1)")]
         public int Floor { get; set; }
-        public string? HallViewFileName { get; set; }
         public int HallTypeId { get; set; }
 
         [Range(0.00, 99.99),

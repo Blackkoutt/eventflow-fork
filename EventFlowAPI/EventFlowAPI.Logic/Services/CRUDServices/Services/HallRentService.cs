@@ -30,7 +30,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IAuthService authService,
         ICopyMakerService copyMaker,
         ICollisionCheckerService collisionChecker,
-        IFileService fileService,
         IHttpContextAccessor httpContextAccessor) :
         IHallRentService
     {
@@ -40,7 +39,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private readonly ICopyMakerService _copyMaker = copyMaker;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
-        private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
@@ -119,23 +117,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _repository.AddAsync(hallRent);
             await _unitOfWork.SaveChangesAsync();
 
-            // HallView PDF
-            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallRent.Hall, hallRent, null, isUpdate: false);
-            if (!hallViewFileNameResult.IsSuccessful)
-                return Result<HallRentResponseDto>.Failure(hallViewFileNameResult.Error); 
-            var hallViewPDFFileName = hallViewFileNameResult.Value;    
-            hallRent.Hall.HallViewFileName = hallViewPDFFileName;
-
-            // Hall Rent PDF
-            var hallRentFileNameResult = await _fileService.CreateHallRentPDF(hallRent, isUpdate: false);
-            if (!hallRentFileNameResult.IsSuccessful)
-                return Result<HallRentResponseDto>.Failure(hallRentFileNameResult.Error);
-            var hallRentPDFFileName = hallRentFileNameResult.Value.FileName;
-            hallRent.HallRentPDFName = hallRentPDFFileName;
-
-            _repository.Update(hallRent);
-            await _unitOfWork.SaveChangesAsync();
-
             var response = MapAsDto(hallRent);
 
             return Result<HallRentResponseDto>.Success(response);
@@ -159,54 +140,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        public async Task<Error> UpdateHallRentsFiles(IEnumerable<HallRent> activeHallRents)
-        {
-            foreach (var hallRent in activeHallRents)
-            {
-                var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallRent.Hall, hallRent, null, isUpdate: true);
-                if (!hallViewFileNameResult.IsSuccessful)
-                {
-                    return hallViewFileNameResult.Error;
-                }
-
-                var hallRentFileNameResult = await _fileService.CreateHallRentPDF(hallRent, isUpdate: true);
-                if (!hallRentFileNameResult.IsSuccessful)
-                {
-                    return hallRentFileNameResult.Error;
-                }
-
-                hallRent.Hall.HallViewFileName = hallViewFileNameResult.Value;
-                hallRent.HallRentPDFName = hallRentFileNameResult.Value.FileName;
-                _unitOfWork.GetRepository<HallRent>().Update(hallRent);
-            }
-            await _unitOfWork.SaveChangesAsync();
-
-            return Error.None;
-        }
-
         public async Task<Error> SoftDeleteHallRent(HallRent hallRent)
         {
             // Soft Delete HallRent
             hallRent.DeleteDate = DateTime.Now;
             hallRent.IsDeleted = true;
 
-            // Delete Hall Rent PDF in Blob Storage
-            var hallRentPDFDeleteError = await _fileService.DeleteFile(hallRent, FileType.PDF, BlobContainer.HallRentsPDF);
-            if (hallRentPDFDeleteError != Error.None)
-                return hallRentPDFDeleteError;
-            hallRent.HallRentPDFName = null;
-
             // Hard Delete Seats
             foreach (var seat in hallRent.Hall.Seats)
             {
                 _unitOfWork.GetRepository<Seat>().Delete(seat);
             }
-
-            // Delete Hall View PDF in Blob Storage
-            var hallViewPDFDeleteError = await _fileService.DeleteFile(hallRent.Hall, FileType.PDF, BlobContainer.HallViewsPDF);
-            if (hallViewPDFDeleteError != Error.None)
-                return hallViewPDFDeleteError;
-            hallRent.Hall.HallViewFileName = null;
 
             _repository.Update(hallRent);
 

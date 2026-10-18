@@ -92,13 +92,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             eventEntity.Hall = hallCopyResult.Value;
 
-            // HallView PDF
-            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallCopyResult.Value, null, eventEntity);
-            if (!hallViewFileNameResult.IsSuccessful)
-                return Result<EventResponseDto>.Failure(hallViewFileNameResult.Error);
-            var hallViewPDFFileName = hallViewFileNameResult.Value;
-            eventEntity.Hall.HallViewFileName = hallViewPDFFileName;
-
             var tickets = _ticketService.GetEventTickets(requestDto.EventTickets);
             eventEntity.Tickets = tickets;
 
@@ -192,19 +185,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (updateFestivalError != Error.None)
                 return Result<EventResponseDto>.Failure(updateFestivalError);
 
-
-            if (reservationsForEvent.Any())
-            {             
-                if (newEventEntity!.Name != oldEventEntity.Name ||
-                    newEventEntity.HallId != oldEventEntity.HallId ||
-                    newEventEntity!.StartDate != oldEventEntity.StartDate ||
-                    newEventEntity!.EndDate != oldEventEntity.EndDate)
-                {
-                    var resUpdateError = await _reservationService.UpdateReservationsTickets(reservationsForEvent);
-                    if (resUpdateError != Error.None)
-                        return Result<EventResponseDto>.Failure(resUpdateError);
-                }             
-            }
             var newEventEntityDto = MapAsDto(newEventEntity);
 
             return Result<EventResponseDto>.Success(newEventEntityDto);
@@ -240,8 +220,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 }
             }
 
-            await _fileService.DeleteFile(eventEntity, FileType.PDF, BlobContainer.HallViewsPDF);
-            eventEntity.Hall.HallViewFileName = null;
             eventEntity.DeleteDate = DateTime.Now;
             eventEntity.IsDeleted = true;
 

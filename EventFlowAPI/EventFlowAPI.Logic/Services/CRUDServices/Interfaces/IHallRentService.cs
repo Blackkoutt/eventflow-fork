@@ -17,7 +17,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         Task<Result<HallRentResponseDto>> UpdateAsync(int id, UpdateHallRentRequestDto? requestDto);
         Task<Result<object>> DeleteAsync(int id);
         Task<Result<HallRentResponseDto>> MakeRent(HallRentRequestDto? requestDto);
-        Task<Error> UpdateHallRentsFiles(IEnumerable<HallRent> activeHallRents);
         Task<Error> SoftDeleteHallRent(HallRent hallRent);
     }
 }

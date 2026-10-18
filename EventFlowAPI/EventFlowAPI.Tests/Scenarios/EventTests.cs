@@ -213,7 +213,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Seeded_event_image_is_served_but_its_hall_view_pdf_is_missing()
+        public async Task Seeded_event_image_and_hall_view_pdf_are_served()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
 
@@ -221,7 +221,7 @@ namespace EventFlowAPI.Tests.Scenarios
             var pdf = await admin.GetAsync("/api/Events/1/pdf-hallview");
 
             image.StatusCode.ShouldBe(HttpStatusCode.OK);
-            pdf.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            pdf.StatusCode.ShouldBe(HttpStatusCode.OK);
         }
     }
 }

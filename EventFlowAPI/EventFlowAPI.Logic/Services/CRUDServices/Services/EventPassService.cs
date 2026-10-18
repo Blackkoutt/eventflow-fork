@@ -26,7 +26,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EventPassService(
         IUnitOfWork unitOfWork,
-        IFileService fileService,
         IAuthService authService,
         IHttpContextAccessor httpContextAccessor) :
         IEventPassService
@@ -35,7 +34,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IAuthService _authService = authService;
         private readonly IGenericRepository<EventPass> _repository = unitOfWork.GetRepository<EventPass>();
 
-        private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(EventPassQuery query)
@@ -123,10 +121,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await AddAsync(eventPass);
             await _unitOfWork.SaveChangesAsync();
 
-            var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, isUpdate: false);
-            if (!pdfResult.IsSuccessful)
-                return Result<EventPassResponseDto>.Failure(pdfResult.Error);
-
             var eventPassDto = MapAsDto(eventPass);
 
             return Result<EventPassResponseDto>.Success(eventPassDto);
@@ -160,20 +154,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var newPassType = await _unitOfWork.GetRepository<EventPassType>().GetOneAsync(requestDto!.PassTypeId);
 
-            var oldEventPassType = new EventPassType
-            {
-                Name = eventPass.PassType.Name,
-                ValidityPeriodInMonths = eventPass.PassType.ValidityPeriodInMonths,
-                RenewalDiscountPercentage = eventPass.PassType.RenewalDiscountPercentage,
-                Price = eventPass.PassType.Price,
-            };
-
             Log.Information("Hello from renew3");
             UpdateEventPass(eventPass, newPassType!, PaymentType.PayU);
             Log.Information("Hello from renew4");
-            var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, oldEventPassType, isUpdate: true);
-            if (!pdfResult.IsSuccessful)
-                return Result<EventPassResponseDto>.Failure(pdfResult.Error);
+            _repository.Update(eventPass);
+            await _unitOfWork.SaveChangesAsync();
 
             var newEventPassDto = MapAsDto(eventPass);
             return Result<EventPassResponseDto>.Success(newEventPassDto);
@@ -206,18 +191,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventPass = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            // Remove from PDF AND JPG blob storage
-            var jpgDeleteError = await _fileService.DeleteFile(eventPass, FileType.JPEG, BlobContainer.EventPassesJPG);
-            if(jpgDeleteError != Error.None)
-                return Result<object>.Failure(jpgDeleteError);
-
-            var pdfDeleteError = await _fileService.DeleteFile(eventPass, FileType.PDF, BlobContainer.EventPassesPDF);
-            if (pdfDeleteError != Error.None)
-                return Result<object>.Failure(pdfDeleteError);
-
             // Update event pass
-            eventPass.EventPassJPGName = string.Empty;
-            eventPass.EventPassPDFName = string.Empty;
             eventPass.IsDeleted = true;
             eventPass.DeleteDate = DateTime.Now;
             _repository.Update(eventPass);
@@ -243,20 +217,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (allActiveReservations.Any())
             {
-                var firstRes = allActiveReservations.First();
-
-                foreach (var reservation in allActiveReservations)
+                    foreach (var reservation in allActiveReservations)
                 {
                     reservation.IsDeleted = true;
                     reservationRepo.Update(reservation);
                 }
-
-                var deleteTicketFilesError = await _fileService.DeleteTicketFiles(firstRes);
-                if (deleteTicketFilesError != Error.None)
-                    return deleteTicketFilesError;
-
-                firstRes.TicketPDFFileName = null;
-                firstRes.TicketImagesFolder = null;
             }
             return Error.None;
         }
@@ -266,28 +231,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _repository.AddAsync(eventPass);
             var responseDto = MapAsDto(eventPass);
             return responseDto;
-        }
-
-        private async Task<Result<byte[]>> CreateJPGAndPDFFileAndUpdateEventPassInDB(EventPass eventPassEntity, EventPassType? oldEventPassType = null, bool isUpdate=false)
-        {
-            var jpgResult = await _fileService.CreateEventPassJPGBitmap(eventPassEntity, isUpdate);
-            if (!jpgResult.IsSuccessful)
-                return Result<byte[]>.Failure(jpgResult.Error);
-
-            var jpgBitmap = jpgResult.Value.Bitmap;
-            eventPassEntity.EventPassJPGName = jpgResult.Value.FileName;
-
-            var pdfResult = await _fileService.CreateEventPassPDFBitmap(eventPassEntity, jpgBitmap, oldEventPassType, isUpdate);
-            if (!pdfResult.IsSuccessful)
-                return Result<byte[]>.Failure(pdfResult.Error);
-
-            var pdfBitmap = pdfResult.Value.Bitmap;
-            eventPassEntity.EventPassPDFName = pdfResult.Value.FileName;
-
-            _repository.Update(eventPassEntity);
-            await _unitOfWork.SaveChangesAsync();
-
-            return Result<byte[]>.Success(pdfBitmap);
         }
 
 

@@ -525,12 +525,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<Guid>("EventPassGuid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EventPassJPGName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EventPassPDFName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -576,8 +570,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             EndDate = new DateTime(2027, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"),
-                            EventPassJPGName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg",
-                            EventPassPDFName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf",
                             IsDeleted = false,
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
@@ -593,8 +585,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             EndDate = new DateTime(2027, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("766245b4-8c08-49dd-9480-2606aaa590be"),
-                            EventPassJPGName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg",
-                            EventPassPDFName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf",
                             IsDeleted = false,
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
@@ -610,8 +600,6 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             EndDate = new DateTime(2027, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"),
-                            EventPassJPGName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg",
-                            EventPassPDFName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf",
                             IsDeleted = false,
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
@@ -1007,9 +995,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("HallTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("HallViewFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsCopy")
                         .HasColumnType("bit");
 
@@ -1057,7 +1042,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_1.pdf",
                             IsCopy = false,
                             IsVisible = true,
                             MaxNumberOfSeats = 255m,
@@ -1077,7 +1061,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_2.pdf",
                             IsCopy = false,
                             IsVisible = true,
                             MaxNumberOfSeats = 150m,
@@ -1095,7 +1078,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_3.pdf",
                             IsCopy = false,
                             IsVisible = true,
                             MaxNumberOfSeats = 60m,
@@ -1115,7 +1097,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_4.pdf",
                             IsCopy = false,
                             IsVisible = true,
                             MaxNumberOfSeats = 100m,
@@ -1135,7 +1116,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_5.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 255m,
@@ -1155,7 +1135,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_6.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 150m,
@@ -1173,7 +1152,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_7.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 60m,
@@ -1193,7 +1171,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_8.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 100m,
@@ -1213,7 +1190,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_9.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 255m,
@@ -1233,7 +1209,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_10.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 150m,
@@ -1251,7 +1226,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_11.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 100m,
@@ -1271,7 +1245,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_12.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 255m,
@@ -1291,7 +1264,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_13.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 150m,
@@ -1309,7 +1281,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_14.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 60m,
@@ -1329,7 +1300,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_15.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 100m,
@@ -1349,7 +1319,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_16.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 60m,
@@ -1369,7 +1338,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
-                            HallViewFileName = "sala_5_5_17.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 150m,
@@ -1387,7 +1355,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
-                            HallViewFileName = "sala_5_5_18.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 255m,
@@ -1407,7 +1374,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
-                            HallViewFileName = "sala_5_5_19.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 60m,
@@ -1427,7 +1393,6 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
-                            HallViewFileName = "sala_5_5_20.pdf",
                             IsCopy = true,
                             IsVisible = false,
                             MaxNumberOfSeats = 100m,
@@ -1461,9 +1426,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<Guid>("HallRentGuid")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("HallRentPDFName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1499,7 +1461,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 11, 13, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 12,
                             HallRentGuid = new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08"),
-                            HallRentPDFName = "wynajem_sali_1.pdf",
                             IsDeleted = false,
                             PaymentAmount = 899.99m,
                             PaymentType = 1,
@@ -1513,7 +1474,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 11, 14, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 13,
                             HallRentGuid = new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c"),
-                            HallRentPDFName = "wynajem_sali_2.pdf",
                             IsDeleted = false,
                             PaymentAmount = 699.99m,
                             PaymentType = 1,
@@ -1527,7 +1487,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 11, 15, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 14,
                             HallRentGuid = new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5"),
-                            HallRentPDFName = "wynajem_sali_3.pdf",
                             IsDeleted = false,
                             PaymentAmount = 399.99m,
                             PaymentType = 1,
@@ -1541,7 +1500,6 @@ namespace EventFlowAPI.DB.Migrations
                             EndDate = new DateTime(2026, 11, 16, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 15,
                             HallRentGuid = new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b"),
-                            HallRentPDFName = "wynajem_sali_4.pdf",
                             IsDeleted = false,
                             PaymentAmount = 150.99m,
                             PaymentType = 1,
@@ -2120,12 +2078,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TicketImagesFolder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TicketPDFFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("TotalAdditionalPaymentAmount")
                         .HasColumnType("NUMERIC(6,2)");
 
@@ -2161,8 +2113,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
                             StartDate = new DateTime(2026, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
-                            TicketImagesFolder = "53538b58-f885-4f4a-b675-a4aa4063ccf3",
-                            TicketPDFFileName = "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf",
                             TotalAdditionalPaymentAmount = 2.5m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2179,8 +2129,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
                             StartDate = new DateTime(2026, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
-                            TicketImagesFolder = "ed8b9230-223b-4609-8d13-aa6017edad09",
-                            TicketPDFFileName = "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2197,8 +2145,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
                             StartDate = new DateTime(2026, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
-                            TicketImagesFolder = "f9a076c4-3475-4a28-a60c-6e0e3c03731a",
-                            TicketPDFFileName = "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf",
                             TotalAdditionalPaymentAmount = 7.5m,
                             TotalAddtionalPaymentPercentage = 25m,
                             TotalDiscount = 0m,
@@ -2215,8 +2161,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
                             StartDate = new DateTime(2026, 11, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
-                            TicketImagesFolder = "de1d6773-f027-4888-996a-0296e5c52708",
-                            TicketPDFFileName = "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2233,8 +2177,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2026, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
-                            TicketImagesFolder = "0b74ec7b-933b-4163-afa5-e0997681dccd",
-                            TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2251,8 +2193,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
                             StartDate = new DateTime(2026, 12, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
-                            TicketImagesFolder = "0b74ec7b-933b-4163-afa5-e0997681dccd",
-                            TicketPDFFileName = "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf",
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
                             TotalDiscount = 0m,
@@ -2269,8 +2209,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2026, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
-                            TicketImagesFolder = "806cade1-2685-43dc-8cfc-682fc4229db6",
-                            TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,
@@ -2287,8 +2225,6 @@ namespace EventFlowAPI.DB.Migrations
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartDate = new DateTime(2026, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 8,
-                            TicketImagesFolder = "806cade1-2685-43dc-8cfc-682fc4229db6",
-                            TicketPDFFileName = "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf",
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
                             TotalDiscount = 0m,

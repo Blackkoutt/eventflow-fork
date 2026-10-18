@@ -40,8 +40,6 @@ namespace EventFlowAPI.DB.Entities
         public int TicketId { get; set; }
         public int? EventPassId { get; set; }
         public EventPass? EventPass { get; set; } = default!;
-        public string? TicketPDFFileName { get; set; }
-        public string? TicketImagesFolder { get; set; }
         public User User { get; set; } = default!;
         public Ticket Ticket { get; set; } = default!;
         public ICollection<Seat> Seats { get; set; } = [];

@@ -29,8 +29,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "4",
                     PaymentType = PaymentType.PayU,
                     TicketId = 1,
-                    TicketPDFFileName = $"eventflow_bilet_test_{res1}.pdf",
-                    TicketImagesFolder = $"{res1}"
                 },
                 new Reservation
                 {
@@ -45,8 +43,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "2",
                     PaymentType = PaymentType.PayU,
                     TicketId = 2,
-                    TicketPDFFileName = $"eventflow_bilet_test_{res2}.pdf",
-                    TicketImagesFolder = $"{res2}"
                 },
                 new Reservation
                 {
@@ -61,8 +57,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "3",
                     PaymentType = PaymentType.PayU,
                     TicketId = 3,
-                    TicketPDFFileName = $"eventflow_bilet_test_{res3}.pdf",
-                    TicketImagesFolder = $"{res3}"
                 },
                 new Reservation
                 {
@@ -77,8 +71,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "3",
                     PaymentType = PaymentType.PayU,
                     TicketId = 4,
-                    TicketPDFFileName = $"eventflow_bilet_test_{res4}.pdf",
-                    TicketImagesFolder = $"{res4}"
                 },
                 new Reservation
                 {
@@ -93,8 +85,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "2",
                     PaymentType = PaymentType.PayU,
                     TicketId = 5,
-                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
-                    TicketImagesFolder = $"{firstFestivalGuid}"
                 },
                 new Reservation
                 {
@@ -109,8 +99,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "2",
                     PaymentType = PaymentType.PayU,
                     TicketId = 6,
-                    TicketPDFFileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
-                    TicketImagesFolder = $"{firstFestivalGuid}"
                 },
                 new Reservation
                 {
@@ -125,8 +113,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "2",
                     PaymentType = PaymentType.PayU,
                     TicketId = 7,
-                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
-                    TicketImagesFolder = $"{secondFestivalGuid}"
                 },
                 new Reservation
                 {
@@ -141,8 +127,6 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     UserId = "2",
                     PaymentType = PaymentType.PayU,
                     TicketId = 8,
-                    TicketPDFFileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
-                    TicketImagesFolder = $"{secondFestivalGuid}"
                 }
             );
         }

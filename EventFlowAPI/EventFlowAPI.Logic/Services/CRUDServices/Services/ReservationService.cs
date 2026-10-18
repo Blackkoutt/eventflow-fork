@@ -33,7 +33,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         ISeatService seatService,
         IAuthService authService,
-        IFileService fileService,
         IHttpContextAccessor httpContextAccessor
         ) :
         IReservationService
@@ -43,7 +42,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IGenericRepository<Reservation> _repository = unitOfWork.GetRepository<Reservation>();
 
         private readonly ISeatService _seatService = seatService;
-        private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITicketRepository _ticketRepository = (ITicketRepository)unitOfWork.GetRepository<Ticket>();
 
@@ -163,13 +161,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var responseDtoList = await AddAsync(reservationsList);
 
 
-            // Create Tickets
-            var createTicketsError = await CreateTickets(reservationsList, festival);
-
-            if (createTicketsError != Error.None)
-                return Result<IEnumerable<ReservationResponseDto>>.Failure(createTicketsError);
-
-
             return Result<IEnumerable<ReservationResponseDto>>.Success(responseDtoList);
         }
 
@@ -184,9 +175,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var reservation = validationResult.Value.Entity;
             
-            var deleteError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: true);
-            if (deleteError != Error.None)
-                return Result<object>.Failure(deleteError);
+            await SoftDeleteReservations(reservation, deleteForFestival: true);
 
 
             await _unitOfWork.SaveChangesAsync();
@@ -194,56 +183,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-
-        private async Task<Error> UpdateTickets(List<Reservation> userReservations)
-        {
-            if (userReservations.Count == 0)
-                return ReservationError.ReservationListIsEmpty;
-
-            var reservationList = userReservations.DistinctBy(r => r.ReservationGuid);
-
-            foreach (var userReservation in reservationList)
-            {
-                var festivalId = userReservation.Ticket.FestivalId ?? -1;
-                var festival = await _unitOfWork.GetRepository<Festival>().GetOneAsync(festivalId);
-                var reservationsList = new List<Reservation> { userReservation };
-                var festivalReservations = (await _repository.GetAllAsync(q =>
-                                            q.Where(r =>
-                                            r.Id != userReservation.Id &&
-                                            r.UserId == userReservation.UserId &&
-                                            r.Ticket.FestivalId == festivalId))).ToList();
-                reservationsList.AddRange(festivalReservations);
-
-                // Create Ticket JPGs
-                var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmaps(festival, reservationsList, isUpdate: true);
-                if (!ticketJPGFilesResult.IsSuccessful)
-                    return ticketJPGFilesResult.Error;
-
-                var ticketJPGBitmaps = ticketJPGFilesResult.Value.Bitmaps;
-
-                Reservation reservationEntity = userReservations.First();
-
-                // Create Ticket PDF
-                var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmap(reservationEntity, ticketJPGBitmaps, isUpdate: true);
-                if (!ticketPDFFileResult.IsSuccessful)
-                    return ticketPDFFileResult.Error;
-            }
-
-            return Error.None;
-        }
-
-        public async Task<Error> UpdateReservationsTickets(IEnumerable<Reservation> reservations)
-        {
-            var reservationsGroupByUser = reservations.GroupBy(r => r.UserId);
-
-            foreach (var group in reservationsGroupByUser)
-            {
-                var updateError = await UpdateTickets(group.ToList());
-                if (updateError != Error.None)
-                    return updateError;
-            }
-            return Error.None;
-        }
 
 
         public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations)
@@ -273,9 +212,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                     if(!deleteReservationsInfo.Select(r => r.Item1.ReservationGuid).Contains(reservation.ReservationGuid))
                     {
-                        var deleteEventReservationsError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: deleteFestival);
-                        if (deleteEventReservationsError != Error.None)
-                            return deleteEventReservationsError;
+                        await SoftDeleteReservations(reservation, deleteForFestival: deleteFestival);
                     }
 
                     deleteReservationsInfo.Add((reservation, deleteFestival));
@@ -286,7 +223,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
 
-        public async Task<Error> SoftDeleteReservationAndFileTickets(Reservation reservation, bool deleteForFestival = false)
+        private async Task SoftDeleteReservations(Reservation reservation, bool deleteForFestival)
         {
             if (reservation.IsFestivalReservation && deleteForFestival)
             {
@@ -297,50 +234,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     SoftDeleteReservation(res);
                 }
-                var ticketFileDeleteError = await HardDeleteTicketFiles(reservation.Id);
-                if (ticketFileDeleteError != Error.None)
-                    return ticketFileDeleteError;
             }
             else
             {
                 SoftDeleteReservation(reservation);
-
-                if (!reservation.IsFestivalReservation)
-                {
-                    var ticketFileDeleteError = await HardDeleteTicketFiles(reservation.Id);
-                    if (ticketFileDeleteError != Error.None)
-                        return ticketFileDeleteError;
-                }
             }
-
-            return Error.None;
         }
         private void SoftDeleteReservation(Reservation reservation)
         {
             reservation.IsDeleted = true;
             reservation.DeleteDate = DateTime.Now;
             _repository.Update(reservation);
-        }
-
-        private async Task<Error> HardDeleteTicketFiles(int reservationId)
-        {
-            var reservation = await _repository.GetOneAsync(reservationId);
-            if (reservation == null)
-                return Error.None;
-
-            var deleteError = await _fileService.DeleteTicketFiles(reservation);
-            if (deleteError != Error.None)
-                return deleteError;
-
-            var reservationsWithSameGuid = await _repository.GetAllAsync(q => q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
-            foreach (var reservationWithSameGuid in reservationsWithSameGuid)
-            {
-                reservationWithSameGuid.TicketPDFFileName = null;
-                reservationWithSameGuid.TicketImagesFolder = null;
-                _repository.Update(reservationWithSameGuid);
-            }
-
-            return Error.None;
         }
 
 
@@ -363,46 +267,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDtoList;
         }
 
-
-        private async Task<Error> CreateTickets(List<Reservation> reservationsList, Festival? festival, bool isUpdate = false)
-        {
-            if (reservationsList.Count == 0)
-                return ReservationError.ReservationListIsEmpty;
-
-            Reservation reservation = reservationsList.First();
-
-            // Create Ticket JPGs
-            var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmaps(festival, reservationsList, isUpdate);
-            if (!ticketJPGFilesResult.IsSuccessful)
-                return ticketJPGFilesResult.Error;
-
-            var ticketJPGBitmaps = ticketJPGFilesResult.Value.Bitmaps;
-            var ticketImagesFolder = ticketJPGFilesResult.Value.Folder;
-
-            // Create Ticket PDF 
-            var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmap(reservation, ticketJPGBitmaps, isUpdate);
-            if (!ticketPDFFileResult.IsSuccessful)
-                return ticketPDFFileResult.Error;
-
-            var ticketPDFFileName = ticketPDFFileResult.Value.FileName;
-
-            // Update local database
-            await UpdateReservationsAfterCreatingFile(ticketImagesFolder, ticketPDFFileName, reservationsList);
-
-            return Error.None;
-        }
-
-        private async Task UpdateReservationsAfterCreatingFile(string ticketImagesFolder, string ticketPDFFileName, List<Reservation> reservationsList)
-        {
-            foreach (var reservation in reservationsList)
-            {
-                reservation.TicketPDFFileName = ticketPDFFileName;
-                reservation.TicketImagesFolder = ticketImagesFolder;
-
-                _repository.Update(reservation);
-            }
-            await _unitOfWork.SaveChangesAsync();
-        }
 
 
         private Reservation CreateReservationEntityForEvent(Ticket ticket, List<Seat> seatsList,

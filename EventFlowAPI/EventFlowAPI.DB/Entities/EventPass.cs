@@ -29,8 +29,6 @@ namespace EventFlowAPI.DB.Entities
         [Range(0.00, 999.99),
             Column(TypeName = "NUMERIC(5,2)")]
         public decimal TotalDiscount { get; set; }
-        public string? EventPassJPGName { get; set; } = string.Empty;
-        public string? EventPassPDFName { get; set; } = string.Empty;
         public int PassTypeId { get; set; }
         public string UserId {  get; set; } = string.Empty;
         public PaymentType PaymentType { get; set; }

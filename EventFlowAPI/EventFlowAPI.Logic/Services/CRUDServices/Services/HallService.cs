@@ -30,8 +30,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFestivalService festivalService,
         ITicketService ticketService,
         IHallRentService hallRentService,
-        IHallTypeService hallTypeService,
-        IFileService fileService) :
+        IHallTypeService hallTypeService) :
     IHallService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -43,7 +42,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IFestivalService _festivalService = festivalService;
         private readonly ITicketService _ticketService = ticketService;
         private readonly IHallRentService _hallRentService = hallRentService;
-        private readonly IFileService _fileService = fileService;
         private readonly IHallTypeService _hallTypeService = hallTypeService;
 
         public async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query)
@@ -69,13 +67,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _unitOfWork.SaveChangesAsync();
 
             hallEntity.DefaultId = hallEntity.Id;
-
-            // HallView PDF
-            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, null, null, isUpdate: false);
-            if (!hallViewFileNameResult.IsSuccessful)
-                return Result<HallResponseDto>.Failure(hallViewFileNameResult.Error);
-            var hallViewPDFFileName = hallViewFileNameResult.Value;
-            hallEntity.HallViewFileName = hallViewPDFFileName;
 
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -117,14 +108,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
 
             Log.Information("Creating new Hall entity with the following properties:");
-            Log.Information("DefaultId: {DefaultId}, HallNr: {HallNr}, RentalPricePerHour: {RentalPricePerHour}, IsCopy: {IsCopy}, IsVisible: {IsVisible}, Floor: {Floor}, HallViewFileName: {HallViewFileName}, HallTypeId: {HallTypeId}",
+            Log.Information("DefaultId: {DefaultId}, HallNr: {HallNr}, RentalPricePerHour: {RentalPricePerHour}, IsCopy: {IsCopy}, IsVisible: {IsVisible}, Floor: {Floor}, HallTypeId: {HallTypeId}",
                 newHallEntity.DefaultId,
                 newHallEntity.HallNr,
                 newHallEntity.RentalPricePerHour,
                 newHallEntity.IsCopy,
                 newHallEntity.IsVisible,
                 newHallEntity.Floor,
-                newHallEntity.HallViewFileName,
                 newHallEntity.HallTypeId);
 
             Log.Information("Hall dimensions: TotalLength: {TotalLength}, TotalWidth: {TotalWidth}, TotalArea: {TotalArea}, StageLength: {StageLength}, StageWidth: {StageWidth}, MaxNumberOfSeatsRows: {MaxNumberOfSeatsRows}, MaxNumberOfSeatsColumns: {MaxNumberOfSeatsColumns}, NumberOfSeats: {NumberOfSeats}, MaxNumberOfSeats: {MaxNumberOfSeats}",
@@ -196,31 +186,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             //decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
             //newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
 
-            // HallView Update
-            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(newHallEntity, null, null, isUpdate: true);
-            if (!hallViewFileNameResult.IsSuccessful)
-                return Result<HallResponseDto>.Failure(hallViewFileNameResult.Error);
-
             _repository.Update(newHallEntity);
             await _unitOfWork.SaveChangesAsync();
-
-            // Update Reservations for events in hall
-            if (hallEntity.HallNr != requestDto!.HallNr)
-            {
-                var updateReservationError = await UpdateReservationsInCauseOfHallUpdate(hallEntity, oldHallEntity);
-                if (updateReservationError != Error.None)
-                    return Result<HallResponseDto>.Failure(updateReservationError);
-            }
-
-            // Update Hall Rents in hall
-            if (hallEntity.HallNr != requestDto!.HallNr /*||
-                hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
-                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth*/)
-            {
-                var updateHallRentError = await UpdateHallRentsInCauseOfHallUpdate(hallEntity, oldHallEntity);
-                if (updateHallRentError != Error.None)
-                    return Result<HallResponseDto>.Failure(updateHallRentError);
-            }
 
             var newHallEntityDto = MapAsDto(newHallEntity);
             return Result<HallResponseDto>.Success(newHallEntityDto);
@@ -236,11 +203,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
-
-            // HallView Update
-            var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, null, eventEntity, isUpdate: true);
-            if (!eventHallViewFileNameResult.IsSuccessful)
-                return Result<HallResponseDto>.Failure(eventHallViewFileNameResult.Error);
 
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -267,11 +229,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 if (seatType != null)
                     seat.SeatType = seatType;
             }
-            // HallView Update
-            var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, rentEntity, null, isUpdate: true);
-            if (!eventHallViewFileNameResult.IsSuccessful)
-                return Result<HallResponseDto>.Failure(eventHallViewFileNameResult.Error);
-
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
 
@@ -346,53 +303,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 _repository.Update(hall);
             }
-        }
-
-        private async Task<Error> UpdateHallRentsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
-        {
-            var allActiveHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
-                                q.Where(hr =>
-                                hr.Hall.DefaultId == hallEntity.DefaultId &&
-                                !hr.IsDeleted &&
-                                hr.EndDate > DateTime.Now));
-            if (allActiveHallRents.Any())
-            {
-                var updateError = await _hallRentService.UpdateHallRentsFiles(allActiveHallRents);
-                if (updateError != Error.None)
-                {
-                    return updateError;
-                }
-            }
-            return Error.None;
-        }
-        private async Task<Error> UpdateReservationsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
-        {
-            var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
-                                            q.Where(r =>
-                                            !r.IsDeleted &&
-                                            r.EndDate > DateTime.Now &&
-                                            r.Ticket.Event.Hall.DefaultId == hallEntity.DefaultId));
-            if (allActiveReservations.Any())
-            {
-                var eventsIds = allActiveReservations.Select(r => r.Ticket.EventId).Distinct();
-                var eventList = await _unitOfWork.GetRepository<Event>().GetAllAsync(q => q.Where(e => eventsIds.Contains(e.Id)));
-                foreach (var eventEntity in eventList)
-                {
-                    var hall = eventEntity.Hall;
-
-                    // HallView Update
-                    var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hall, null, eventEntity, isUpdate: true);
-                    if (!eventHallViewFileNameResult.IsSuccessful)
-                        return eventHallViewFileNameResult.Error;
-                }
-
-                var updateError = await _reservationService.UpdateReservationsTickets(allActiveReservations);
-                if (updateError != Error.None)
-                {
-                    return updateError;
-                }
-            }
-            return Error.None;
         }
 
         private async Task<ICollection<Event>> CancelEventsInHall(IEnumerable<int> allCopiesOfHallId)

@@ -42,20 +42,20 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Theory]
-        [InlineData("/api/Reservations/1/pdf-ticket")]
-        [InlineData("/api/Reservations/1/jpg-tickets")]
-        [InlineData("/api/EventPasses/1/pdf")]
-        [InlineData("/api/EventPasses/1/jpg")]
-        [InlineData("/api/HallRents/1/pdf-invoice")]
-        [InlineData("/api/HallRents/1/pdf-hallview")]
-        [InlineData("/api/Halls/1/pdf-hallview")]
-        [InlineData("/api/Halls/2/pdf-hallview")]
-        [InlineData("/api/Events/1/pdf-hallview")]
-        public async Task Files_of_seeded_records_are_currently_missing(string url)
+        [InlineData("/api/Reservations/1/pdf-ticket", "application/pdf")]
+        [InlineData("/api/Reservations/1/jpg-tickets", "application/zip")]
+        [InlineData("/api/EventPasses/1/pdf", "application/pdf")]
+        [InlineData("/api/EventPasses/1/jpg", "image/jpeg")]
+        [InlineData("/api/HallRents/1/pdf-invoice", "application/pdf")]
+        [InlineData("/api/HallRents/1/pdf-hallview", "application/pdf")]
+        [InlineData("/api/Halls/1/pdf-hallview", "application/pdf")]
+        [InlineData("/api/Halls/2/pdf-hallview", "application/pdf")]
+        [InlineData("/api/Events/1/pdf-hallview", "application/pdf")]
+        public async Task Files_of_seeded_records_are_generated_on_request(string url, string mediaType)
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
 
-            await AssertStatusAsync(admin, url, HttpStatusCode.BadRequest);
+            await AssertServedAsync(admin, url, mediaType);
         }
 
         [Theory]
@@ -103,7 +103,7 @@ namespace EventFlowAPI.Tests.Scenarios
         }
 
         [Fact]
-        public async Task Ticket_stays_available_but_the_event_hall_view_is_currently_lost_when_the_event_moves_to_another_hall()
+        public async Task Files_stay_available_after_the_event_moves_to_another_hall()
         {
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
             var user = await _world.RegisterUserAsync();
@@ -115,7 +115,7 @@ namespace EventFlowAPI.Tests.Scenarios
 
             response.StatusCode.ShouldBe(HttpStatusCode.NoContent, await admin.ReadErrorsAsync(response));
             await AssertServedAsync(user.Client, $"/api/Reservations/{reservationId}/pdf-ticket", "application/pdf");
-            await AssertStatusAsync(admin, $"/api/Events/{eventId}/pdf-hallview", HttpStatusCode.BadRequest);
+            await AssertServedAsync(admin, $"/api/Events/{eventId}/pdf-hallview", "application/pdf");
         }
 
         [Fact]
