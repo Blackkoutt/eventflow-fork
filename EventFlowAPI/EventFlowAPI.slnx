@@ -3,9 +3,14 @@
   <Project Path="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj">
     <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
   </Project>
+  <Project Path="EventFlowAPI.Data.SqlServer/EventFlowAPI.Data.SqlServer.csproj">
+    <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
+    <BuildDependency Project="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj" />
+  </Project>
   <Project Path="EventFlowAPI/EventFlowAPI.csproj">
     <BuildDependency Project="EventFlowAPI.DB/EventFlowAPI.DB.csproj" />
     <BuildDependency Project="EventFlowAPI.Logic/EventFlowAPI.Logic.csproj" />
+    <BuildDependency Project="EventFlowAPI.Data.SqlServer/EventFlowAPI.Data.SqlServer.csproj" />
   </Project>
   <Project Path="EventFlowAPI.Tests/EventFlowAPI.Tests.csproj">
     <BuildDependency Project="EventFlowAPI/EventFlowAPI.csproj" />

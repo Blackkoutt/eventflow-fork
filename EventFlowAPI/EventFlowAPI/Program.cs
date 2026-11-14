@@ -10,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Set QuestPDF License
 QuestPDF.Settings.License = LicenseType.Community;
 
-// Add connection to DB
-builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
+// Database (relational, object-relational or NoSQL, chosen by "Database:Provider")
+builder.AddDatabase();
 
 // Add local file storage (replaces Azure Blob Storage)
 builder.AddLocalFileStorage();
@@ -22,9 +22,6 @@ builder.AddAuthentication(AuthConfiguration.JWTAuth);
 
 // Logger
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
-
-// UnitOfWork
-builder.Services.AddUnitOfWork();
 
 // CORS
 builder.Services.AddCorsPolicy();

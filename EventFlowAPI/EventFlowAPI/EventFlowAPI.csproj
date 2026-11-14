@@ -42,6 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EventFlowAPI.DB\EventFlowAPI.DB.csproj" />
     <ProjectReference Include="..\EventFlowAPI.Logic\EventFlowAPI.Logic.csproj" />
+    <ProjectReference Include="..\EventFlowAPI.Data.SqlServer\EventFlowAPI.Data.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>
