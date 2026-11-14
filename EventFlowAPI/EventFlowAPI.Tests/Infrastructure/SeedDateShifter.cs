@@ -1,4 +1,4 @@
-using EventFlowAPI.DB.Context;
+using EventFlowAPI.Data.SqlServer.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Tests.Infrastructure

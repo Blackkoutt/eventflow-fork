@@ -1,15 +1,9 @@
 ﻿using EventFlowAPI.Logic;
-using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Extensions
 {
     public static class BuilderExtentionsServices
     {
-        public static void AddUnitOfWork(this IServiceCollection services)
-        {
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-        }
-
         public static void AddApplicationServices(this IServiceCollection services)
         {
             var implementations = AssemblyReference.Assembly.GetTypes()

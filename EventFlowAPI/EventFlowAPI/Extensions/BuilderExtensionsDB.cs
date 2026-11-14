@@ -1,19 +1,37 @@
-﻿using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.DB.Context;
+﻿using EventFlowAPI.Data.SqlServer;
 using EventFlowAPI.Enums;
-using Microsoft.EntityFrameworkCore;
+using EventFlowAPI.Logic.Helpers;
 
 namespace EventFlowAPI.Extensions
 {
     public static class BuilderExtensionsDB
     {
-        public static void AddConnectionToDB(this WebApplicationBuilder builder, ConnectionString connectionString)
+        /// <summary>
+        /// Registers the data layer chosen by the "Database:Provider" setting (SqlServer when not set).
+        /// </summary>
+        public static void AddDatabase(this WebApplicationBuilder builder)
         {
-            builder.Services.AddDbContext<APIContext>(options =>
+            var providerName = builder.Configuration["Database:Provider"] ?? nameof(DatabaseProvider.SqlServer);
+            if (!Enum.TryParse<DatabaseProvider>(providerName, ignoreCase: true, out var provider))
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString(connectionString.ToString()));
-            });
+                throw new InvalidOperationException(
+                    $"Unknown database provider '{providerName}'. Allowed values: {string.Join(", ", Enum.GetNames<DatabaseProvider>())}.");
+            }
+
+            switch (provider)
+            {
+                case DatabaseProvider.SqlServer:
+                    builder.Services.AddSqlServerDatabase(GetRequiredConnectionString(builder, "MSSQLEventFlowDB"));
+                    break;
+                default:
+                    throw new NotSupportedException($"The {provider} database provider is not implemented yet.");
+            }
         }
+
+        private static string GetRequiredConnectionString(WebApplicationBuilder builder, string name)
+            => builder.Configuration.GetConnectionString(name)
+               ?? throw new InvalidOperationException($"Missing connection string '{name}'.");
+
         public static void AddLocalFileStorage(this WebApplicationBuilder builder)
         {
             var contentRootPath = builder.Environment.ContentRootPath;
