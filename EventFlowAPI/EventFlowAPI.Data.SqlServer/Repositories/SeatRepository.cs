@@ -1,34 +1,25 @@
-﻿using EventFlowAPI.Data.SqlServer.Context;
+using EventFlowAPI.Data.SqlServer.Context;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Repositories.Interfaces;
-using EventFlowAPI.Data.SqlServer.Repositories.BaseRepositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Data.SqlServer.Repositories
 {
-    public sealed class SeatRepository(APIContext context) : GenericRepository<Seat>(context), ISeatRepository
+    public sealed class SeatRepository(APIContext context) : ISeatRepository
     {
-        public sealed override async Task<IEnumerable<Seat>> GetAllAsync(Func<IQueryable<Seat>, IQueryable<Seat>>? query = null)
+        public async Task<IReadOnlyList<Seat>> GetByIdsAsync(IEnumerable<int> ids)
         {
-            var _table = _context.Seat
+            var idList = ids.Distinct().ToList();
+            return await context.Seat
                                 .Include(s => s.Hall)
                                 .Include(s => s.SeatType)
                                 .Include(s => s.Reservations)
                                     .ThenInclude(r => r.Ticket)
-                                .AsSplitQuery();
-
-            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
+                                .AsSplitQuery()
+                                .Where(s => idList.Contains(s.Id))
+                                .ToListAsync();
         }
 
-        public sealed override async Task<Seat?> GetOneAsync(int id)
-        {
-            return await _context.Seat
-                        .AsSplitQuery()
-                        .Include(s => s.Hall)
-                        .Include(s => s.SeatType)
-                        .Include(s => s.Reservations)
-                            .ThenInclude(r => r.Ticket)
-                        .FirstOrDefaultAsync(e => e.Id == id);
-        }
+        public Task<bool> ExistsAsync(int id) => context.Seat.AnyAsync(s => s.Id == id);
     }
 }

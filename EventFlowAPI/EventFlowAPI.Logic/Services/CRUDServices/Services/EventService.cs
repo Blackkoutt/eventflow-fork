@@ -136,7 +136,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 Category = eventEntity.Category,
                 Tickets = eventEntity.Tickets
             };
-            var oldHall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity.Hall.Id);
+            var oldHall = await _unitOfWork.Halls.GetByIdAsync(eventEntity.Hall.Id);
             oldEventEntity.Hall.MaxNumberOfSeatsRows = oldHall!.MaxNumberOfSeatsRows;
 
             MapToEntity(requestDto!, eventEntity);
@@ -163,7 +163,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 eventEntity.HallId = newHallResult.Value.Id;
 
-                _unitOfWork.GetRepository<Hall>().Delete(oldEventEntity.Hall);
+                _unitOfWork.Halls.Delete(oldEventEntity.Hall);
             }
 
             var photoPostError = await _fileService.PostPhoto(eventEntity, requestDto!.EventPhoto, $"{eventEntity.Name}_{eventEntity.EventGuid}", isUpdate: true);
@@ -234,10 +234,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
             else
             {
-                foreach (var seat in eventEntity.Hall.Seats)
-                {
-                    _unitOfWork.GetRepository<Seat>().Delete(seat);
-                }
+                _unitOfWork.Halls.DeleteSeats(eventEntity.Hall);
             }
 
             await _fileService.DeleteFile(eventEntity, FileType.PDF, BlobContainer.HallViewsPDF);
@@ -470,17 +467,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!normalTicketTypeExist)
                 return TicketTypeError.NormalTicketTypeNotFound;
 
-            var hallEntity = await _unitOfWork.GetRepository<Hall>()
-                                    .GetAllAsync(q => q.Where(h =>
-                                    h.Id == hallId));
-
-            if (hallEntity == null || !hallEntity.Any())
+            var defaultHallId = await _unitOfWork.Halls.GetDefaultIdAsync(hallId);
+            if (defaultHallId == null)
                 return EventError.HallNotFound;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)hallEntity.First().DefaultId!, startDate, endDate, id))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)defaultHallId, startDate, endDate, id))
                 return EventError.CollisionWithExistingEvent;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)hallEntity.First().DefaultId!, startDate, endDate))
+            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)defaultHallId, startDate, endDate))
                 return EventError.CollisionWithExistingHallRent;
 
             return Error.None;

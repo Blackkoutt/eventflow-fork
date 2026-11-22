@@ -78,8 +78,10 @@ namespace EventFlowAPI.Data.SqlServer
         public IPartnerRepository Partners => _partners;
         public INewsRepository News => _news;
         public IFAQRepository FAQs => _faqs;
+        public IHallRepository Halls => _halls;
+        public ISeatRepository Seats => _seats;
 
-        // Repositories not yet moved to specific methods (blocks 3-6)
+        // Repositories not yet moved to specific methods (blocks 4-6)
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
         {
             return new Dictionary<Type, IRepository>
@@ -89,9 +91,7 @@ namespace EventFlowAPI.Data.SqlServer
                 { typeof(Ticket), _tickets },
                 { typeof(Festival), _festivals },
                 { typeof(HallRent), _hallRents },
-                { typeof(Hall), _halls },
                 { typeof(Reservation), _reservations },
-                { typeof(Seat), _seats },
                 { typeof(Reservation_Seat), _reservation_Seats},
                 { typeof(Festival_Event), _festival_Events},
             };

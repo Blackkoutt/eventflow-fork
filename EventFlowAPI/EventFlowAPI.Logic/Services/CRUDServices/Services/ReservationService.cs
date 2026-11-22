@@ -559,7 +559,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             foreach(var seatId in seatIds)
             {
-                if (!await IsEntityExistInDB<Seat>(seatId))
+                if (!await _unitOfWork.Seats.ExistsAsync(seatId))
                     return SeatError.SeatNotFound;
             }
             if (seatIds.Distinct().Count() != seats.Count())
@@ -859,11 +859,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (entity.IsDeleted) return Status.Canceled;
 
             return Status.Unknown;
-        }
-
-        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
-        {
-            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
         }
 
         private async Task<Result<ReservationResponseDto>> GetOneResponse(int id)
