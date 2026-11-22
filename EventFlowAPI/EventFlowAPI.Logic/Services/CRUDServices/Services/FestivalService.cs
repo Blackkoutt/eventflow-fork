@@ -149,14 +149,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (updateFestivalDateError != Error.None)
                 return Result<FestivalResponseDto>.Failure(updateFestivalDateError);
 
-            var newFestivalMediaPatrons = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q =>
-                                                q.Where(mp => !mp.IsDeleted && mp.Kind == PartnerKind.MediaPatron && requestDto!.MediaPatronIds.Contains(mp.Id)))).ToList();
-
-            var newFestivalOrganizers = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q =>
-                                                q.Where(o => !o.IsDeleted && o.Kind == PartnerKind.Organizer && requestDto!.OrganizerIds.Contains(o.Id)))).ToList();
-
-            var newFestivalSponsors = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q =>
-                                                q.Where(s => !s.IsDeleted && s.Kind == PartnerKind.Sponsor && requestDto!.SponsorIds.Contains(s.Id)))).ToList();
+            var newFestivalMediaPatrons = await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.MediaPatron, requestDto!.MediaPatronIds);
+            var newFestivalOrganizers = await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.Organizer, requestDto!.OrganizerIds);
+            var newFestivalSponsors = await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.Sponsor, requestDto!.SponsorIds);
             festival.Partners = newFestivalMediaPatrons.Concat(newFestivalOrganizers).Concat(newFestivalSponsors).ToList();
 
             Log.Information("Updating tickets for festival. Festival Tickets: {FestivalTickets}",
@@ -247,10 +242,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                                       e.EndDate > DateTime.Now &&
                                                       requestDto!.EventIds.Contains(e.Id)).OrderBy(e => e.StartDate))).ToList();
 
-            var festivalMediaPatrons = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q =>
-                                                q.Where(mp => !mp.IsDeleted && mp.Kind == PartnerKind.MediaPatron && requestDto.MediaPatronIds.Contains(mp.Id)))).ToList();
+            var festivalMediaPatrons = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.MediaPatron, requestDto.MediaPatronIds)).ToList();
 
-            var allOrganizers = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(p => p.Kind == PartnerKind.Organizer));
+            var allOrganizers = await _unitOfWork.Partners.GetByKindAsync(PartnerKind.Organizer);
             var festivalOrganizers = allOrganizers.Where(o => !o.IsDeleted && requestDto.OrganizerIds.Contains(o.Id)).ToList();
             if (!festivalOrganizers.Any(o => o.Name.Equals("EventFlow", StringComparison.OrdinalIgnoreCase)))
             {
@@ -262,8 +256,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 festivalOrganizers.Add(eventFlowOrganizer);
             }
 
-            var festivalSponsors = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q =>
-                                    q.Where(s => !s.IsDeleted && s.Kind == PartnerKind.Sponsor && requestDto.SponsorIds.Contains(s.Id)))).ToList();
+            var festivalSponsors = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.Sponsor, requestDto.SponsorIds)).ToList();
 
             var festivalStartDate = festivalEvents.First().StartDate;
             var festivalEndDate = festivalEvents.Last().EndDate;
@@ -511,7 +504,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return TicketTypeError.TicketDuplicates;
             }
 
-            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted));
+            var allTicketTypes = await _unitOfWork.TicketTypes.GetActiveAsync();
             var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
             if (!ticketTypeIds.All(ticketTypeId => allTicketTypeIds.Contains(ticketTypeId)))
             {
@@ -542,7 +535,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return FestivalError.TooMuchMediaPatronsInFestival;
             }
 
-            var allMediaPatronsIdsInDB = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(mp => !mp.IsDeleted && mp.Kind == PartnerKind.MediaPatron))).Select(mp => mp.Id);
+            var allMediaPatronsIdsInDB = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.MediaPatron, mediaPatronIds)).Select(mp => mp.Id);
             if (!mediaPatronIds.All(mediaPatronId => allMediaPatronsIdsInDB.Contains(mediaPatronId)))
             {
                 return PartnerError.MediaPatronNotFound;
@@ -563,7 +556,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return FestivalError.TooMuchOrganizersInFestival;
             }
 
-            var allOrganizersIdsInDB = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => !o.IsDeleted && o.Kind == PartnerKind.Organizer))).Select(o => o.Id);
+            var allOrganizersIdsInDB = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.Organizer, organizerIds)).Select(o => o.Id);
             if (!organizerIds.All(organizerId => allOrganizersIdsInDB.Contains(organizerId)))
             {
                 return PartnerError.OrganizerNotFound;
@@ -584,7 +577,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return FestivalError.TooMuchSponsorsInFestival;
             }
 
-            var allSponsorsIdsInDB = (await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(s => !s.IsDeleted && s.Kind == PartnerKind.Sponsor))).Select(s => s.Id);
+            var allSponsorsIdsInDB = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.Sponsor, sponsorIds)).Select(s => s.Id);
             if (!sponsorIds.All(sponsorId => allSponsorsIdsInDB.Contains(sponsorId)))
             {
                 return PartnerError.SponsorNotFound;

@@ -3,7 +3,7 @@ using EventFlowAPI.Tests.Infrastructure;
 
 namespace EventFlowAPI.Tests.Scenarios
 {
-    public record LookupCase(string Route, Dictionary<string, object> Create, Dictionary<string, object> Update, object Invalid, string UpdatedField, HttpStatusCode SeededDelete);
+    public record LookupCase(string Route, Dictionary<string, object> Create, Dictionary<string, object> Update, object Invalid, string UpdatedField);
 
     public class LookupCrudTests : IClassFixture<ApiFactory>
     {
@@ -12,31 +12,31 @@ namespace EventFlowAPI.Tests.Scenarios
             ["AdditionalServices"] = new("AdditionalServices",
                 new Dictionary<string, object> { ["name"] = "Nowa usluga", ["price"] = 10.5, ["description"] = "opis" },
                 new Dictionary<string, object> { ["name"] = "Nowa usluga", ["price"] = 12.25, ["description"] = "nowy opis" },
-                new { name = "", price = -1 }, "description", HttpStatusCode.NoContent),
+                new { name = "", price = -1 }, "description"),
             ["Equipments"] = new("Equipments",
                 new Dictionary<string, object> { ["name"] = "Nowy sprzet", ["description"] = "opis" },
                 new Dictionary<string, object> { ["name"] = "Nowy sprzet", ["description"] = "nowy" },
-                new { name = "" }, "description", HttpStatusCode.NoContent),
+                new { name = "" }, "description"),
             ["EventCategories"] = new("EventCategories",
                 new Dictionary<string, object> { ["name"] = "Nowa kategoria", ["icon"] = "fa-solid fa-star", ["color"] = "#112233" },
                 new Dictionary<string, object> { ["name"] = "Nowa kategoria", ["icon"] = "fa-solid fa-star", ["color"] = "#445566" },
-                new { name = "", icon = "", color = "" }, "color", HttpStatusCode.InternalServerError),
+                new { name = "", icon = "", color = "" }, "color"),
             ["EventPassTypes"] = new("EventPassTypes",
                 new Dictionary<string, object> { ["name"] = "Karnet testowy", ["validityPeriodInMonths"] = 2, ["renewalDiscountPercentage"] = 7.5, ["price"] = 150.0 },
                 new Dictionary<string, object> { ["name"] = "Karnet testowy", ["validityPeriodInMonths"] = 2, ["renewalDiscountPercentage"] = 8.0, ["price"] = 160.0 },
-                new { name = "", validityPeriodInMonths = 0, price = -5 }, "price", HttpStatusCode.NoContent),
+                new { name = "", validityPeriodInMonths = 0, price = -5 }, "price"),
             ["FAQ"] = new("FAQ",
                 new Dictionary<string, object> { ["question"] = "Czy dziala?", ["answer"] = "Tak" },
                 new Dictionary<string, object> { ["question"] = "Czy dziala?", ["answer"] = "Na pewno" },
-                new { question = "", answer = "" }, "answer", HttpStatusCode.NoContent),
+                new { question = "", answer = "" }, "answer"),
             ["SeatTypes"] = new("SeatTypes",
                 new Dictionary<string, object> { ["name"] = "Miejsce testowe", ["description"] = "opis", ["seatColor"] = "#AABBCC", ["addtionalPaymentPercentage"] = 5.5 },
                 new Dictionary<string, object> { ["name"] = "Miejsce testowe", ["description"] = "nowy opis", ["seatColor"] = "#DDEEFF", ["addtionalPaymentPercentage"] = 6.5 },
-                new { name = "", seatColor = "zly", addtionalPaymentPercentage = -1 }, "description", HttpStatusCode.InternalServerError),
+                new { name = "", seatColor = "zly", addtionalPaymentPercentage = -1 }, "description"),
             ["TicketTypes"] = new("TicketTypes",
                 new Dictionary<string, object> { ["name"] = "Bilet testowy" },
                 new Dictionary<string, object> { ["name"] = "Bilet testowy zmieniony" },
-                new { name = "" }, "name", HttpStatusCode.InternalServerError),
+                new { name = "" }, "name"),
         };
 
         public static IEnumerable<object[]> Routes
@@ -153,18 +153,19 @@ namespace EventFlowAPI.Tests.Scenarios
             second.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         }
 
+        // Seeded items are used by other records; such items are soft-deleted, the rest removed.
+        // Either way the API answers the same on every database.
         [Theory]
-        [Trait(TestCategories.Name, TestCategories.DatabaseSpecific)]
         [MemberData(nameof(Routes))]
-        public async Task Deleting_a_seeded_item_gives_the_current_result(string key)
+        public async Task Deleting_a_seeded_item_removes_it_from_the_list(string key)
         {
             var lookup = Cases[key];
-            var suffix = Guid.NewGuid().ToString("N")[..6];
             var admin = await _factory.CreateClientAsync(TestUsers.Admin);
 
             var response = await admin.DeleteAsync($"/api/{lookup.Route}/1");
 
-            response.StatusCode.ShouldBe(lookup.SeededDelete);
+            response.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+            new ApiLookups(admin).ReadIds(await admin.GetJsonAsync($"/api/{lookup.Route}")).ShouldNotContain(1);
         }
     }
 }

@@ -287,7 +287,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             Log.Information("Drawing seat with ID: {SeatId}, SeatType: {SeatType}, SeatNr: {SeatNr} SeatTypeId: {SeatNr}",
                seat.Id, seat.SeatType, seat.SeatNr, seat.SeatTypeId);
 
-            var seatType = await _unitOfWork.GetRepository<SeatType>().GetOneAsync(seat.SeatTypeId);
+            var seatType = await _unitOfWork.SeatTypes.GetByIdAsync(seat.SeatTypeId);
             var activeSeatOptions = _hallSeatsConfig.GetActiveSeatRectanglePrintingOptions(seatType);
             canvas.DrawRectangle(activeSeatOptions);
 
@@ -362,7 +362,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
 
             var seatsinHallSeatTypeIds = seatsInHall.Select(s => s.Value.SeatTypeId);
-            var seatTypes = await _unitOfWork.GetRepository<SeatType>().GetAllAsync(q => q.Where(st => seatsinHallSeatTypeIds.Contains(st.Id)));
+            var seatTypes = await _unitOfWork.SeatTypes.GetByIdsAsync(seatsinHallSeatTypeIds);
 
             //var seatTypes = seatsInHall.Select(x => x.Value.SeatType).DistinctBy(x => x.Name);
 

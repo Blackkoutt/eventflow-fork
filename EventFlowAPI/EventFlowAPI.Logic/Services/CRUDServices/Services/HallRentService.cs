@@ -216,8 +216,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<HallRent>> CreateHallRentEntity(HallRentRequestDto requestDto, string userId)
         {
-            var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                      .GetAllAsync(q => q.Where(s => !s.IsDeleted && requestDto.AdditionalServicesIds.Contains(s.Id)));
+            var additionalServices = await _unitOfWork.AdditionalServices.GetActiveByIdsAsync(requestDto.AdditionalServicesIds);
 
             var hallResult = await _copyMaker.MakeCopyOfHall(requestDto.HallId);
             if (!hallResult.IsSuccessful)
@@ -350,8 +349,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (additionalServicesIds.Distinct().Count() != additionalServicesIds.Count())
                 return AdditionalServicesError.ServiceDuplicate;
 
-            var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                        .GetAllAsync(q => q.Where(s => !s.IsDeleted && additionalServicesIds.Contains(s.Id)));
+            var additionalServices = await _unitOfWork.AdditionalServices.GetActiveByIdsAsync(additionalServicesIds);
 
             if (additionalServices.Count() < additionalServicesIds.Count)
                 return AdditionalServicesError.ServiceNotFound;

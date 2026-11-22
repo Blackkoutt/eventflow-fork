@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
@@ -23,15 +23,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<AdditionalServices> _repository = unitOfWork.GetRepository<AdditionalServices>();
+        private readonly IAdditionalServicesRepository _repository = unitOfWork.AdditionalServices;
 
         public async Task<Result<IEnumerable<AdditionalServicesResponseDto>>> GetAllAsync(AdditionalServicesQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
-                                                              .ByName(query)
-                                                              .ByPrice(query)
-                                                              .SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<AdditionalServicesResponseDto>>.Success(response);
         }
@@ -42,7 +38,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<AdditionalServicesResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<AdditionalServicesResponseDto>.Failure(Error.NotFound);
 
@@ -61,7 +57,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            await DeleteEntity(entity, isSoftDelete: entity.Rents.Any());
+            await DeleteEntity(entity, isSoftDelete: await _repository.IsUsedAsync(entity.Id));
 
             return Result<object>.Success();
         }
@@ -95,7 +91,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
@@ -108,12 +104,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             if (requestDto is not INameableRequestDto) return Result<bool>.Failure(Error.BadRequestType);
 
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted
-                      ))).Any();
+            var result = await _repository.ActiveNameExistsAsync(((INameableRequestDto)requestDto).Name, id);
 
             return Result<bool>.Success(result);
         }
@@ -129,7 +120,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<AdditionalServicesResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<AdditionalServicesResponseDto>.Failure(Error.NotFound);
 
@@ -183,7 +174,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(AdditionalServices Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(AdditionalServices Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

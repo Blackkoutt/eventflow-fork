@@ -495,12 +495,25 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
+        private async Task<TEntity?> FindEntityAsync<TEntity>(int id) where TEntity : class
+        {
+            object? entity = typeof(TEntity) switch
+            {
+                var type when type == typeof(HallType) => await _unitOfWork.HallTypes.GetByIdAsync(id),
+                var type when type == typeof(News) => await _unitOfWork.News.GetByIdAsync(id),
+                var type when type == typeof(Partner) => await _unitOfWork.Partners.GetByIdAsync(id),
+                // TODO (blocks 3-5): Event, Festival, Hall, HallRent, EventPass and Reservation get their own lookups
+                _ => await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id)
+            };
+            return (TEntity?)entity;
+        }
+
         private async Task<Result<TEntity>> ValidateBeforeDownload<TEntity>(int id, bool userAllowed = false, bool authorize = true) where TEntity : class
         {
             if (id < 0)
                 return Result<TEntity>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id);
+            var entity = await FindEntityAsync<TEntity>(id);
             if (entity == null)
                 return Result<TEntity>.Failure(Error.NotFound);
 

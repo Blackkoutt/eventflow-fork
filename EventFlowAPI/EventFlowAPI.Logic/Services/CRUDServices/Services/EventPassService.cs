@@ -101,8 +101,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<EventPassResponseDto>.Failure(userResult.Error);
 
             var user = userResult.Value;
-            var eventPassType = await _unitOfWork.GetRepository<EventPassType>()
-                                        .GetOneAsync(requestDto!.PassTypeId);
+            var eventPassType = await _unitOfWork.EventPassTypes.GetByIdAsync(requestDto!.PassTypeId);
 
             var eventPass = new EventPass
             {
@@ -158,7 +157,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(user.IsInRole(Roles.User) && user.Id != eventPass.UserId)
                 return Result<EventPassResponseDto>.Failure(AuthError.UserDoesNotHavePremissionToResource);
 
-            var newPassType = await _unitOfWork.GetRepository<EventPassType>().GetOneAsync(requestDto!.PassTypeId);
+            var newPassType = await _unitOfWork.EventPassTypes.GetByIdAsync(requestDto!.PassTypeId);
 
             var oldEventPassType = new EventPassType
             {
@@ -374,7 +373,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
-            if (!await IsEntityExistInDB<EventPassType>(passTypeId))
+            if (await _unitOfWork.EventPassTypes.GetByIdAsync(passTypeId) == null)
                 return EventPassTypeError.EventPassTypeNotFound;
 
             return Error.None;
@@ -474,10 +473,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Status.Unknown;
         }
 
-        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
-        {
-            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
-        }
 
         private async Task<Result<EventPassResponseDto>> GetOneResponse(int id)
         {

@@ -9,6 +9,17 @@ namespace EventFlowAPI.Logic.UnitOfWork
         IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
         IUserRepository Users { get; }
 
+        IAdditionalServicesRepository AdditionalServices { get; }
+        IEquipmentRepository Equipments { get; }
+        IEventCategoryRepository EventCategories { get; }
+        IEventPassTypeRepository EventPassTypes { get; }
+        IHallTypeRepository HallTypes { get; }
+        ISeatTypeRepository SeatTypes { get; }
+        ITicketTypeRepository TicketTypes { get; }
+        IPartnerRepository Partners { get; }
+        INewsRepository News { get; }
+        IFAQRepository FAQs { get; }
+
         Task SaveChangesAsync();
 
         /// <summary>

@@ -256,16 +256,18 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                                                     .SelectMany(t => t.Reservations.Where(r => r.EventPassId == null)
                                                         .Select(r => r.PaymentAmount)).Sum(), 2)));
 
-            var allOrganizers = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.Organizer && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
-            var organizatorFestivalsDict = allOrganizers.ToDictionary(o => o.Name, o => (double)o.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
+            var festivalIdsInPeriod = allFestivalsThatTookPlaceInTimePeriod.Select(f => f.Id).ToList();
+
+            var organizatorFestivalsDict = (await _unitOfWork.Partners.CountFestivalsAsync(PartnerKind.Organizer, festivalIdsInPeriod))
+                                                       .ToDictionary(o => o.Name, o => (double)o.FestivalCount)
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
-            var allMediaPatrons = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.MediaPatron && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
-            var mediaPatronsFestivalsDict = allMediaPatrons.ToDictionary(mp => mp.Name, mp => (double)mp.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
+            var mediaPatronsFestivalsDict = (await _unitOfWork.Partners.CountFestivalsAsync(PartnerKind.MediaPatron, festivalIdsInPeriod))
+                                                       .ToDictionary(mp => mp.Name, mp => (double)mp.FestivalCount)
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
-            var allSponsors = await _unitOfWork.GetRepository<Partner>().GetAllAsync(q => q.Where(o => o.Kind == PartnerKind.Sponsor && o.Festivals.Any(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f))));
-            var sponsorsFestivalsDict = allSponsors.ToDictionary(s => s.Name, s => (double)s.Festivals.Where(f => allFestivalsThatTookPlaceInTimePeriod.Contains(f)).Count())
+            var sponsorsFestivalsDict = (await _unitOfWork.Partners.CountFestivalsAsync(PartnerKind.Sponsor, festivalIdsInPeriod))
+                                                       .ToDictionary(s => s.Name, s => (double)s.FestivalCount)
                                                        .OrderByDescending(f => f.Value).Take(MIN_MAX_ELEMENTS_IN_PLOT).ToDictionary();
 
             return new FestivalStatistics

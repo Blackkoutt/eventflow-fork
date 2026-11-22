@@ -453,13 +453,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return EventError.EventIsDeleted;
             }
 
-            if (!await IsEntityExistInDB<EventCategory>(categoryId))
+            if (await _unitOfWork.EventCategories.GetByIdAsync(categoryId) == null)
                 return EventError.CategoryNotFound;
 
             var ticketTypeIds = eventTickets.Select(et => et.TicketTypeId);
             if (ticketTypeIds.Count() != ticketTypeIds.Distinct().Count())
                 return TicketTypeError.TicketDuplicates;
-            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted));
+            var allTicketTypes = await _unitOfWork.TicketTypes.GetActiveAsync();
             var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
             if (!ticketTypeIds.All(id => allTicketTypeIds.Contains(id)))
                 return TicketTypeError.NotFound;
@@ -614,9 +614,5 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Status.Unknown;
         }
 
-        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
-        {
-            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
-        }
     }
 }

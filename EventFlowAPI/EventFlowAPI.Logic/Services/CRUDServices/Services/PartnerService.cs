@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities.Enums;
@@ -28,23 +28,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<Partner> _repository = unitOfWork.GetRepository<Partner>();
+        private readonly IPartnerRepository _repository = unitOfWork.Partners;
 
         private readonly IFileService _fileService = fileService;
 
         public async Task<Result<IEnumerable<PartnerResponseDto>>> GetAllAsync(PartnerQuery query)
         {
-            var records = await _repository.GetAllAsync(q =>
-            {
-                var partners = q.Where(p => !p.IsDeleted);
-                if (query.Kind != null)
-                {
-                    partners = partners.Where(p => p.Kind == query.Kind);
-                }
-                return partners.ByName(query)
-                               .SortBy(query.SortBy, query.SortDirection)
-                               .GetPage(query.PageNumber, query.PageSize);
-            });
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<PartnerResponseDto>>.Success(response);
         }
@@ -77,7 +67,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<PartnerResponseDto>.Failure(validationError);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<PartnerResponseDto>.Failure(Error.NotFound);
 
@@ -104,7 +94,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
 
             await _fileService.DeletePhoto(entity);
-            await DeleteEntity(entity, isSoftDelete: entity.Festivals.Any());
+            await DeleteEntity(entity, isSoftDelete: await _repository.IsUsedAsync(entity.Id));
 
             return Result<object>.Success();
         }
@@ -134,7 +124,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
@@ -147,17 +137,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             PartnerKind? kind = requestDto is PartnerRequestDto addRequestDto ? addRequestDto.Kind : null;
             if (kind == null && id != null)
             {
-                var existingEntity = await _repository.GetOneAsync((int)id);
+                var existingEntity = await _repository.GetByIdAsync((int)id);
                 kind = existingEntity?.Kind;
             }
 
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Kind == kind &&
-                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted
-                      ))).Any();
+            var result = await _repository.ActiveNameExistsAsync(kind, ((INameableRequestDto)requestDto).Name, id);
 
             return Result<bool>.Success(result);
         }
@@ -182,7 +166,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<PartnerResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<PartnerResponseDto>.Failure(Error.NotFound);
 
@@ -212,7 +196,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(Partner Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(Partner Entity, UserResponseDto User)>.Failure(Error.NotFound);
 
