@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Serilog;
@@ -10,7 +10,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     public sealed class TicketService(IUnitOfWork unitOfWork) : ITicketService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IGenericRepository<Ticket> _repository = unitOfWork.GetRepository<Ticket>();
+        private readonly ITicketRepository _repository = unitOfWork.Tickets;
         /*public async Task UpdateTicketsForFestival(ICollection<Event_FestivalTicketRequestDto> newFestivalTickets, Festival festival)
         {
             ICollection<Ticket> updatedTickets = [];
@@ -228,14 +228,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task DeleteTickets(ICollection<Event> eventsToDelete, ICollection<Festival> festivalsToDelete)
         {
-            var eventIds = eventsToDelete.Select(e => e.Id);
-            var festivalIds = festivalsToDelete.Select(f => (int?)f.Id);
+            var tickets = await _repository.GetForEventsOrFestivalsAsync(
+                                   eventsToDelete.Select(e => e.Id),
+                                   festivalsToDelete.Select(f => f.Id));
 
-            var tickets = await _repository
-                                   .GetAllAsync(q => q.Where(t =>
-                                   !t.IsDeleted &&
-                                   eventIds.Contains(t.EventId) ||
-                                   festivalIds.Contains(t.FestivalId)));
+            // TODO (block 5): ticket.Reservations is filled only when the reservations were loaded earlier in the request
 
             foreach (var ticket in tickets)
             {

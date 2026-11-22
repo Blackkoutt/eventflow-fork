@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
@@ -33,7 +33,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<Festival> _repository = unitOfWork.GetRepository<Festival>();
+        private readonly IFestivalRepository _repository = unitOfWork.Festivals;
 
         private readonly ITicketService _ticketService = ticketService;
         private readonly IEventService _eventService = eventService;
@@ -42,8 +42,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IPartnerService _partnerService = partnerService;
         public async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(FestivalQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.ByQuery(query)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
 
             var response = MapAsDto(records);
 
@@ -80,7 +79,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<FestivalResponseDto>.Failure(validationError);
 
-            var festival = await _repository.GetOneAsync(id);
+            var festival = await _repository.GetByIdAsync(id);
             if (festival == null)
                 return Result<FestivalResponseDto>.Failure(Error.NotFound);
 
@@ -131,7 +130,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             foreach(var eventId in requestDto.EventIds)
             {
-                var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
+                var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId);
                 newFestivalEventList.Add(eventEntity!);
             }
             bool hasChanges = festival.Events.Count() != newFestivalEventList.Count() ||
@@ -237,10 +236,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Festival> CreateFestivalEntity(FestivalRequestDto requestDto)
         {
-            var festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
-                                        q.Where(e => !e.IsDeleted &&
-                                                      e.EndDate > DateTime.Now &&
-                                                      requestDto!.EventIds.Contains(e.Id)).OrderBy(e => e.StartDate))).ToList();
+            var festivalEvents = (await _unitOfWork.Events.GetActiveByIdsAsync(requestDto!.EventIds)).ToList();
 
             var festivalMediaPatrons = (await _unitOfWork.Partners.GetActiveByIdsAsync(PartnerKind.MediaPatron, requestDto.MediaPatronIds)).ToList();
 
@@ -278,13 +274,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        entity.EndDate >= DateTime.Now &&
-                        !entity.IsDeleted
-                      ))).Any();
+            var result = await _repository.ActiveNameExistsAsync(((INameableRequestDto)requestDto).Name, id);
 
             return Result<bool>.Success(result);
         }
@@ -401,7 +391,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> ValidateFestivalState(int id)
         {
-            var festival = await _repository.GetOneAsync(id);
+            var festival = await _repository.GetByIdAsync(id);
             if (festival == null)
             {
                 return Error.NotFound;
@@ -437,10 +427,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return FestivalError.TooMuchEventsInFestival;
             }
 
-            var allEventsIdsInDB = (await _unitOfWork.GetRepository<Event>()
-                                        .GetAllAsync(q => q.Where(e =>
-                                            !e.IsDeleted &&
-                                            e.EndDate > DateTime.Now))).Select(e => e.Id);
+            var festivalEvents = (await _unitOfWork.Events.GetActiveByIdsAsync(eventList)).ToList();
+            var allEventsIdsInDB = festivalEvents.Select(e => e.Id);
 
             Log.Information("EventList: {EventList}", string.Join(", ", eventList));
             Log.Information("AllEventsIdsInDB: {AllEventsIdsInDB}", string.Join(", ", allEventsIdsInDB));
@@ -448,12 +436,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 return EventError.EventNotFound;
             }
-
-            var festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
-                                        q.Where(e =>
-                                            !e.IsDeleted &&
-                                            e.EndDate > DateTime.Now &&
-                                            eventList.Contains(e.Id)).OrderBy(e => e.StartDate))).ToList();
 
             if (festivalEvents.Last().EndDate - festivalEvents.First().StartDate > TimeSpan.FromDays(14))
             {
@@ -596,12 +578,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<ICollection<Festival>> CancelFestivalIfEssential(IEnumerable<Event> eventsToDelete)
         {
-            var festivalsToDelete = await _repository.GetAllAsync(q =>
-                                        q.Where(f =>
-                                        !f.IsDeleted &&
-                                        f.EndDate > DateTime.Now &&
-                                        f.Events.Any(e => eventsToDelete.Contains(e)) &&
-                                        f.Events.Count(e => !eventsToDelete.Contains(e)) <= 2));
+            // A festival is cancelled when it would be left with two events or fewer
+            var deletedEventIds = eventsToDelete.Select(e => e.Id).ToHashSet();
+            var festivalsToDelete = (await _repository.GetActiveWithAnyEventAsync(deletedEventIds))
+                                        .Where(f => f.Events.Count(e => !deletedEventIds.Contains(e.Id)) <= 2);
 
             ICollection<Festival> deletedFestivals = [];
 
@@ -694,7 +674,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<FestivalResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<FestivalResponseDto>.Failure(Error.NotFound);
 
@@ -708,7 +688,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(Festival Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

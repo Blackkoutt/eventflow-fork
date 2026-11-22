@@ -33,7 +33,6 @@ namespace EventFlowAPI.Data.SqlServer
             _ticketTypes = new TicketTypeRepository(_context);
             _users = new UserRepository(_context);
             _reservation_Seats = new Reservation_SeatRepository(_context);
-            _festival_Events = new Festival_EventRepository(_context);
             _news = new NewsRepository(_context);
             _partners = new PartnerRepository(_context);
             _faqs = new FAQRepository(_context);
@@ -80,20 +79,19 @@ namespace EventFlowAPI.Data.SqlServer
         public IFAQRepository FAQs => _faqs;
         public IHallRepository Halls => _halls;
         public ISeatRepository Seats => _seats;
+        public IEventRepository Events => _events;
+        public IFestivalRepository Festivals => _festivals;
+        public ITicketRepository Tickets => _tickets;
 
-        // Repositories not yet moved to specific methods (blocks 4-6)
+        // Repositories not yet moved to specific methods (blocks 5-6)
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
         {
             return new Dictionary<Type, IRepository>
             {
                 { typeof(EventPass), _eventPasses },
-                { typeof(Event), _events },
-                { typeof(Ticket), _tickets },
-                { typeof(Festival), _festivals },
                 { typeof(HallRent), _hallRents },
                 { typeof(Reservation), _reservations },
                 { typeof(Reservation_Seat), _reservation_Seats},
-                { typeof(Festival_Event), _festival_Events},
             };
         }
 
@@ -114,7 +112,6 @@ namespace EventFlowAPI.Data.SqlServer
         private readonly ITicketTypeRepository _ticketTypes;
         private readonly IUserRepository _users;
         private readonly IReservation_SeatRepository _reservation_Seats;
-        private readonly IFestival_EventRepository _festival_Events;
         private readonly INewsRepository _news;
         private readonly IPartnerRepository _partners;
         private readonly IFAQRepository _faqs;

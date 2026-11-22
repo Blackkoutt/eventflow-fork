@@ -503,7 +503,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 var type when type == typeof(News) => await _unitOfWork.News.GetByIdAsync(id),
                 var type when type == typeof(Partner) => await _unitOfWork.Partners.GetByIdAsync(id),
                 var type when type == typeof(Hall) => await _unitOfWork.Halls.GetByIdAsync(id),
-                // TODO (blocks 4-5): Event, Festival, HallRent, EventPass and Reservation get their own lookups
+                var type when type == typeof(Event) => await _unitOfWork.Events.GetByIdAsync(id),
+                var type when type == typeof(Festival) => await _unitOfWork.Festivals.GetByIdAsync(id),
+                // TODO (block 5): HallRent, EventPass and Reservation get their own lookups
                 _ => await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id)
             };
             return (TEntity?)entity;

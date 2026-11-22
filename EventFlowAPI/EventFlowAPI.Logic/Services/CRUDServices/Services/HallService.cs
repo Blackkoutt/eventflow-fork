@@ -230,7 +230,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<HallResponseDto>.Failure(validationError);
 
-            var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
+            var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId);
             var hallEntity = await _repository.GetByIdAsync(eventEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
@@ -369,7 +369,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (allActiveReservations.Any())
             {
                 var eventsIds = allActiveReservations.Select(r => r.Ticket.EventId).Distinct();
-                var eventList = await _unitOfWork.GetRepository<Event>().GetAllAsync(q => q.Where(e => eventsIds.Contains(e.Id)));
+                var eventList = await _unitOfWork.Events.GetByIdsAsync(eventsIds);
                 foreach (var eventEntity in eventList)
                 {
                     var hall = eventEntity.Hall;
@@ -391,18 +391,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<ICollection<Event>> CancelEventsInHall(IEnumerable<int> allCopiesOfHallId)
         {
-            var eventsToDelete = await _unitOfWork.GetRepository<Event>()
-                                .GetAllAsync(q =>
-                                q.Where(e =>
-                                !e.IsDeleted &&
-                                e.EndDate > DateTime.Now &&
-                                allCopiesOfHallId.Contains(e.HallId)));
+            var eventsToDelete = await _unitOfWork.Events.GetActiveInHallsAsync(allCopiesOfHallId);
 
             foreach (var eventEntity in eventsToDelete)
             {
                 eventEntity.DeleteDate = DateTime.Now;
                 eventEntity.IsDeleted = true;
-                _unitOfWork.GetRepository<Event>().Update(eventEntity);
+                _unitOfWork.Events.Update(eventEntity);
             }
 
             return eventsToDelete.ToList();
@@ -559,7 +554,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (hallRequestDto == null)
                 return Error.NullParameter;
 
-            var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
+            var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId);
             if (eventEntity == null)
                 return EventError.NotFound;
 
