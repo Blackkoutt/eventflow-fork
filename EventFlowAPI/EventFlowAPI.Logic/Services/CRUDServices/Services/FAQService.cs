@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
@@ -25,13 +25,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<FAQ> _repository = unitOfWork.GetRepository<FAQ>();
+        private readonly IFAQRepository _repository = unitOfWork.FAQs;
 
 
         public async Task<Result<IEnumerable<FAQResponseDto>>> GetAllAsync(FAQQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<FAQResponseDto>>.Success(response);
         }
@@ -61,7 +60,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null)
                     return Error.NotFound;
             }
@@ -71,11 +70,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Question.ToLower() == ((IQuestionableRequestDto)requestDto).Question.ToLower()
-                      ))).Any();
+            var result = await _repository.QuestionExistsAsync(((IQuestionableRequestDto)requestDto).Question, id);
 
             return Result<bool>.Success(result);
         }
@@ -91,7 +86,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<FAQResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<FAQResponseDto>.Failure(Error.NotFound);
 
@@ -122,7 +117,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<FAQResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<FAQResponseDto>.Failure(Error.NotFound);
 
@@ -167,7 +162,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(FAQ Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(FAQ Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

@@ -261,10 +261,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
 
+            var seatTypes = (await _unitOfWork.SeatTypes.GetByIdsAsync(hallEntity.Seats.Select(s => s.SeatTypeId)))
+                            .ToDictionary(st => st.Id);
             foreach(var seat in hallEntity.Seats)
             {
-                var seatType = await _unitOfWork.GetRepository<SeatType>().GetOneAsync(seat.SeatTypeId);
-                if (seatType != null)
+                if (seatTypes.TryGetValue(seat.SeatTypeId, out var seatType))
                     seat.SeatType = seatType;
             }
             // HallView Update
@@ -468,7 +469,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var seatTypeIds = seats.Select(seat => seat.SeatTypeId).Distinct().ToList();
             foreach (var seatTypeId in seatTypeIds)
             {
-                if (!await IsEntityExistInDB<SeatType>(seatTypeId))
+                if (await _unitOfWork.SeatTypes.GetByIdAsync(seatTypeId) == null)
                     return false;
             }
             return true;
@@ -532,7 +533,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (rentEntity.IsExpired)
                 return HallRentError.HallRentIsExpired;
 
-           /* if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
+           /* if (await _unitOfWork.HallTypes.GetByIdAsync(hallRequestDto.HallTypeId) == null)
                 return HallError.HallTypeNotFound;*/
 
             if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
@@ -575,7 +576,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (eventEntity.IsExpired)
                 return EventError.EventIsExpired;
 
-            /*if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
+            /*if (await _unitOfWork.HallTypes.GetByIdAsync(hallRequestDto.HallTypeId) == null)
                 return HallError.HallTypeNotFound;*/
 
             if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
@@ -682,7 +683,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Error.BadRequestType;
             }
 
-            if (!await IsEntityExistInDB<HallType>(hallTypeId))
+            if (await _unitOfWork.HallTypes.GetByIdAsync(hallTypeId) == null)
                 return HallError.HallTypeNotFound;
 
             if (!IsSeatNumbersInHallAreUnique(seats))
@@ -875,9 +876,5 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<(Hall Entity, UserResponseDto User)>.Success((entity, user));
         }
 
-        private async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) where TSomeEntity : class
-        {
-            return await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
-        }
     }
 }

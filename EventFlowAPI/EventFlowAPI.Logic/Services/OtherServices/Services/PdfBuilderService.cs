@@ -23,7 +23,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public async Task<byte[]> CreateHallRentPdf(HallRent hallRent)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
-            var additionalServices = (await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync()).ToList();
+            var additionalServices = (await _unitOfWork.AdditionalServices.GetAllAsync()).ToList();
 
             PageOptions pageOptions = new();
             CommonOptions commonOptions = new();
@@ -126,7 +126,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
-            var eventPassTypes = (await _unitOfWork.GetRepository<EventPassType>().GetAllAsync()).ToList();   
+            var eventPassTypes = (await _unitOfWork.EventPassTypes.GetAllAsync()).ToList();   
 
             PageOptions pageOptions = new();
             HeaderOptions headerOptions = new();
@@ -197,7 +197,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
         public async Task<byte[]> CreateTicketPdf(Reservation reservation, List<byte[]> tickets)
         { 
-            var seatTypes = (await _unitOfWork.GetRepository<SeatType>().GetAllAsync()).ToList();
+            var seatTypes = (await _unitOfWork.SeatTypes.GetAllAsync()).ToList();
             var ticketsForEventOrFestival = await GetTicketsForEventOrFestival(reservation);
             var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
 

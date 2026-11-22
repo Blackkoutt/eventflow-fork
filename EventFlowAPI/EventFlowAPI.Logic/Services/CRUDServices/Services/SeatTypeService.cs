@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -23,14 +23,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<SeatType> _repository = unitOfWork.GetRepository<SeatType>();
+        private readonly ISeatTypeRepository _repository = unitOfWork.SeatTypes;
 
         public async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(st => !st.IsDeleted)
-                                                              .ByName(query)
-                                                              .SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<SeatTypeResponseDto>>.Success(response);
         }
@@ -41,7 +38,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<SeatTypeResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<SeatTypeResponseDto>.Failure(Error.NotFound);
 
@@ -69,20 +66,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(entity.Name == "Miejsce zwykłe")
                 return Result<object>.Failure(SeatTypeError.CannotDeleteDefaultSeat);
 
-            var defaultSeatType = (await _repository.GetAllAsync(q => q.Where(s => s.Name == "Miejsce zwykłe"))).FirstOrDefault();
-            if (defaultSeatType == null) return Result<object>.Failure(SeatTypeError.CannotFoundDefaultSeat);
-            var seatsWithoutReservations = entity.Seats.Where(s => !s.Reservations.Any());
-            foreach (var seat in seatsWithoutReservations)
+            // A type used by seats stays in the database (soft delete), so halls and old tickets keep it
+            if (await _repository.IsUsedAsync(entity.Id))
             {
-                seat.SeatType = defaultSeatType;
-                _unitOfWork.GetRepository<Seat>().Update(seat);
-            }
-
-            if (entity is ISoftDeleteable softDeleteableEntity && entity.Seats.Any(s => s.Reservations.Any()))
-            {
-                softDeleteableEntity.IsDeleted = true;
-                softDeleteableEntity.DeleteDate = DateTime.Now;
-                entity.Seats = entity.Seats.Where(s => s.Reservations.Any()).ToList();
+                entity.IsDeleted = true;
+                entity.DeleteDate = DateTime.Now;
                 _repository.Update(entity);
             }
             else
@@ -120,7 +108,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
 
@@ -133,13 +121,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        (entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() ||
-                         entity.SeatColor == ((IColorableRequestDto)requestDto).SeatColor) &&
-                        !entity.IsDeleted
-                      ))).Any();
+            var result = await _repository.ActiveNameOrColorExistsAsync(
+                ((INameableRequestDto)requestDto).Name, ((IColorableRequestDto)requestDto).SeatColor, id);
 
             return Result<bool>.Success(result);
         }
@@ -155,7 +138,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<SeatTypeResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<SeatTypeResponseDto>.Failure(Error.NotFound);
 
@@ -185,7 +168,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(SeatType Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(SeatType Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

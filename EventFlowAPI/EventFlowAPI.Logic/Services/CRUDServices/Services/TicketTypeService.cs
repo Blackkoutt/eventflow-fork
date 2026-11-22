@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
@@ -23,14 +23,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<TicketType> _repository = unitOfWork.GetRepository<TicketType>();
+        private readonly ITicketTypeRepository _repository = unitOfWork.TicketTypes;
 
         public async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
-                                                              .ByName(query)
-                                                              .SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<TicketTypeResponseDto>>.Success(response);
         }
@@ -41,14 +38,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<TicketTypeResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<TicketTypeResponseDto>.Failure(Error.NotFound);
 
             var newEntity = oldEntity;
             newEntity = (TicketType)MapToEntity(requestDto!, oldEntity);
-            var ticketsWithReservations = oldEntity.Tickets.Where(t => t.Reservations.Any()).ToList();
-            newEntity.Tickets = ticketsWithReservations;
             _repository.Update(newEntity);
 
             await _unitOfWork.SaveChangesAsync();
@@ -65,7 +60,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            await DeleteEntity(entity, isSoftDelete: entity.Tickets.Any(t => t.Reservations.Any()));
+            await DeleteEntity(entity, isSoftDelete: await _repository.IsUsedAsync(entity.Id));
 
             return Result<object>.Success();
         }
@@ -95,7 +90,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null || entity.IsDeleted)
                     return Error.NotFound;
             }
@@ -105,12 +100,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted
-                      ))).Any();
+            var result = await _repository.ActiveNameExistsAsync(((INameableRequestDto)requestDto).Name, id);
 
             return Result<bool>.Success(result);
         }
@@ -126,7 +116,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<TicketTypeResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<TicketTypeResponseDto>.Failure(Error.NotFound);
 
@@ -172,7 +162,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(TicketType Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(TicketType Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

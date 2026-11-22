@@ -68,31 +68,32 @@ namespace EventFlowAPI.Data.SqlServer
         }
 
         public IUserRepository Users { get { return _users; } }
+        public IAdditionalServicesRepository AdditionalServices => _additionalServices;
+        public IEquipmentRepository Equipments => _equipments;
+        public IEventCategoryRepository EventCategories => _eventCategories;
+        public IEventPassTypeRepository EventPassTypes => _eventPassTypes;
+        public IHallTypeRepository HallTypes => _hallTypes;
+        public ISeatTypeRepository SeatTypes => _seatTypes;
+        public ITicketTypeRepository TicketTypes => _ticketTypes;
+        public IPartnerRepository Partners => _partners;
+        public INewsRepository News => _news;
+        public IFAQRepository FAQs => _faqs;
 
+        // Repositories not yet moved to specific methods (blocks 3-6)
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
         {
             return new Dictionary<Type, IRepository>
             {
-                { typeof(AdditionalServices), _additionalServices },
-                { typeof(Equipment), _equipments },
-                { typeof(EventCategory), _eventCategories },
                 { typeof(EventPass), _eventPasses },
-                { typeof(EventPassType), _eventPassTypes },
                 { typeof(Event), _events },
                 { typeof(Ticket), _tickets },
                 { typeof(Festival), _festivals },
                 { typeof(HallRent), _hallRents },
                 { typeof(Hall), _halls },
-                { typeof(HallType),  _hallTypes },
                 { typeof(Reservation), _reservations },
                 { typeof(Seat), _seats },
-                { typeof(SeatType), _seatTypes },
-                { typeof(TicketType), _ticketTypes },
                 { typeof(Reservation_Seat), _reservation_Seats},
                 { typeof(Festival_Event), _festival_Events},
-                { typeof(News), _news},
-                { typeof(Partner), _partners},
-                { typeof(FAQ), _faqs},
             };
         }
 

@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Interfaces;
@@ -27,14 +27,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<News> _repository = unitOfWork.GetRepository<News>();
+        private readonly INewsRepository _repository = unitOfWork.News;
 
         private readonly IFileService _fileService = fileService;
 
         public async Task<Result<IEnumerable<NewsResponseDto>>> GetAllAsync(NewsQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
             return Result<IEnumerable<NewsResponseDto>>.Success(response);
         }
@@ -66,7 +65,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<NewsResponseDto>.Failure(validationError);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<NewsResponseDto>.Failure(Error.NotFound);
 
@@ -124,7 +123,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (id != null)
             {
-                var entity = await _repository.GetOneAsync((int)id);
+                var entity = await _repository.GetByIdAsync((int)id);
                 if (entity == null)
                     return Error.NotFound;
             }
@@ -134,11 +133,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var result = (await _repository.GetAllAsync(q =>
-                      q.Where(entity =>
-                        entity.Id != id &&
-                        entity.Title.ToLower() == ((ITitleableRequestDto)requestDto).Title.ToLower()
-                      ))).Any();
+            var result = await _repository.TitleExistsAsync(((ITitleableRequestDto)requestDto).Title, id);
 
             return Result<bool>.Success(result);
         }
@@ -169,7 +164,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<NewsResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<NewsResponseDto>.Failure(Error.NotFound);
 
@@ -190,7 +185,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(News Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(News Entity, UserResponseDto User)>.Failure(Error.NotFound);
 
