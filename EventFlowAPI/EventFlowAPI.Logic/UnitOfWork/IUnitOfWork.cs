@@ -24,6 +24,9 @@ namespace EventFlowAPI.Logic.UnitOfWork
         IEventRepository Events { get; }
         IFestivalRepository Festivals { get; }
         ITicketRepository Tickets { get; }
+        IReservationRepository Reservations { get; }
+        IEventPassRepository EventPasses { get; }
+        IHallRentRepository HallRents { get; }
 
         Task SaveChangesAsync();
 

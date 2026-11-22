@@ -254,7 +254,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<HallResponseDto>.Failure(validationError);
 
-            var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
+            var rentEntity = await _unitOfWork.HallRents.GetByIdAsync(rentId);
             var hallEntity = await _repository.GetByIdAsync(rentEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
@@ -297,12 +297,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {   
                 await CancelHallRentsOnHall(allCopiesOfHallId);
 
-                var reservations = await _unitOfWork.GetRepository<Reservation>()
-                                    .GetAllAsync(q =>
-                                    q.Where(r =>
-                                    !r.IsDeleted &&
-                                    r.EndDate > DateTime.Now &&
-                                    allCopiesOfHallId.Contains(r.Ticket.Event.HallId)));
+                var reservations = await _unitOfWork.Reservations.GetActiveInHallsAsync(allCopiesOfHallId);
 
                 var eventsToDelete = await CancelEventsInHall(allCopiesOfHallId);
                 var festivalsToDelete = await _festivalService.CancelFestivalIfEssential(eventsToDelete);
@@ -344,11 +339,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> UpdateHallRentsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
         {
-            var allActiveHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
-                                q.Where(hr =>
-                                hr.Hall.DefaultId == hallEntity.DefaultId &&
-                                !hr.IsDeleted &&
-                                hr.EndDate > DateTime.Now));
+            var allActiveHallRents = await _unitOfWork.HallRents.GetActiveForDefaultHallAsync(hallEntity.DefaultId);
             if (allActiveHallRents.Any())
             {
                 var updateError = await _hallRentService.UpdateHallRentsFiles(allActiveHallRents);
@@ -361,11 +352,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
         private async Task<Error> UpdateReservationsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
         {
-            var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
-                                            q.Where(r =>
-                                            !r.IsDeleted &&
-                                            r.EndDate > DateTime.Now &&
-                                            r.Ticket.Event.Hall.DefaultId == hallEntity.DefaultId));
+            var allActiveReservations = await _unitOfWork.Reservations.GetActiveForDefaultHallAsync(hallEntity.DefaultId);
             if (allActiveReservations.Any())
             {
                 var eventsIds = allActiveReservations.Select(r => r.Ticket.EventId).Distinct();
@@ -407,14 +394,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> CancelHallRentsOnHall(List<int> allCopiesOfHallId)
         {
-            var hallRentRepo = _unitOfWork.GetRepository<HallRent>();
-
-            var hallRentsToDelete = await hallRentRepo
-                                    .GetAllAsync(q =>
-                                    q.Where(hr =>
-                                    !hr.IsDeleted &&
-                                    hr.StartDate > DateTime.Now.AddHours(3) &&
-                                    allCopiesOfHallId.Contains(hr.HallId)));
+            var hallRentsToDelete = await _unitOfWork.HallRents.GetStartingAfterInHallsAsync(allCopiesOfHallId, DateTime.Now.AddHours(3));
 
             // Cancel all Hall Rents 
             foreach (var hallRent in hallRentsToDelete)
@@ -495,7 +475,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (hallRequestDto == null)
                 return Error.NullParameter;
 
-            var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
+            var rentEntity = await _unitOfWork.HallRents.GetByIdAsync(rentId);
             if (rentEntity == null)
                 return HallRentError.NotFound;
 

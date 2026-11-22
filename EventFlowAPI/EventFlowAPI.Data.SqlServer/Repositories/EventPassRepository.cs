@@ -1,30 +1,37 @@
-﻿using EventFlowAPI.Data.SqlServer.Context;
-using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces;
+using EventFlowAPI.Data.SqlServer.Context;
 using EventFlowAPI.Data.SqlServer.Repositories.BaseRepositories;
+using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.Logic.Query;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Data.SqlServer.Repositories
 {
+    // TODO (block 6): GenericRepository stays only because StatisticsService still uses GetRepository<EventPass>()
     public sealed class EventPassRepository(APIContext context) : GenericRepository<EventPass>(context), IEventPassRepository
     {
-        public sealed override async Task<IEnumerable<EventPass>> GetAllAsync(Func<IQueryable<EventPass>, IQueryable<EventPass>>? query = null)
-        {
-            var _table = _context.EventPass
-                    .Include(ep => ep.User)
-                    .Include(ep => ep.PassType)
-                    .AsSplitQuery();
+        private IQueryable<EventPass> WithDetails => _context.EventPass
+                                                        .Include(ep => ep.User)
+                                                        .Include(ep => ep.PassType)
+                                                        .AsSplitQuery();
 
-            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
-        }
-        public sealed override async Task<EventPass?> GetOneAsync(int id)
+        public Task<EventPass?> GetByIdAsync(int id) => WithDetails.FirstOrDefaultAsync(ep => ep.Id == id);
+        public override Task<EventPass?> GetOneAsync(int id) => GetByIdAsync(id);
+        public override async Task<IEnumerable<EventPass>> GetAllAsync(Func<IQueryable<EventPass>, IQueryable<EventPass>>? query = null)
+            => await (query?.Invoke(WithDetails) ?? WithDetails).ToListAsync();
+
+        public async Task<IReadOnlyList<EventPass>> GetPageAsync(EventPassQuery query, string? userId = null)
         {
-            return await _context.EventPass
-                        .AsSplitQuery()
-                        .Include(ep => ep.User)
-                        .Include(ep => ep.PassType)
-                        .FirstOrDefaultAsync(ep => ep.Id == id);
+            var passes = WithDetails.ByQuery(query);
+            if (userId != null)
+            {
+                passes = passes.Where(ep => ep.UserId == userId);
+            }
+            return await passes.GetPage(query.PageNumber, query.PageSize).ToListAsync();
         }
+
+        public Task<EventPass?> GetActiveForUserAsync(string userId)
+            => WithDetails.FirstOrDefaultAsync(ep => ep.UserId == userId && !ep.IsDeleted && ep.EndDate > DateTime.Now);
     }
 }

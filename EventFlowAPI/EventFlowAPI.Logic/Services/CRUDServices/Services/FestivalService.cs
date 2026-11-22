@@ -137,7 +137,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                   festival.Events.Any(e => !newFestivalEventList.Any(ne => e.Id == ne.Id)) ||
                   newFestivalEventList.Any(ne => !festival.Events.Any(e => e.Id == ne.Id));
 
-            var reservationForFestival = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.EndDate < DateTime.Now && !r.IsDeleted && r.Ticket.FestivalId == festival.Id));
+            var reservationForFestival = await _unitOfWork.Reservations.GetFinishedForFestivalAsync(festival.Id);
             var distinctReservation = reservationForFestival.DistinctBy(r => r.ReservationGuid);
 
             if (hasChanges) needToUpdateTickets = true;

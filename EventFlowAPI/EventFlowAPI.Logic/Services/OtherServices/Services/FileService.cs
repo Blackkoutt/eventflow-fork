@@ -505,8 +505,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 var type when type == typeof(Hall) => await _unitOfWork.Halls.GetByIdAsync(id),
                 var type when type == typeof(Event) => await _unitOfWork.Events.GetByIdAsync(id),
                 var type when type == typeof(Festival) => await _unitOfWork.Festivals.GetByIdAsync(id),
-                // TODO (block 5): HallRent, EventPass and Reservation get their own lookups
-                _ => await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id)
+                var type when type == typeof(HallRent) => await _unitOfWork.HallRents.GetByIdAsync(id),
+                var type when type == typeof(EventPass) => await _unitOfWork.EventPasses.GetByIdAsync(id),
+                var type when type == typeof(Reservation) => await _unitOfWork.Reservations.GetByIdAsync(id),
+                _ => throw new NotSupportedException($"Files are not stored for {typeof(TEntity).Name}.")
             };
             return (TEntity?)entity;
         }

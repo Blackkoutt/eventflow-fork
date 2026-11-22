@@ -24,7 +24,7 @@ namespace EventFlowAPI.Data.SqlServer
             _events = new EventRepository(_context);
             _tickets = new TicketRepository(_context);
             _festivals = new FestivalRepository(_context);
-            _hallRents = new HallRentRespository(_context);
+            _hallRents = new HallRentRepository(_context);
             _halls = new HallRepository(_context);
             _hallTypes = new HallTypeRepository(_context);
             _reservations = new ReservationRepository(_context);
@@ -32,7 +32,6 @@ namespace EventFlowAPI.Data.SqlServer
             _seatTypes = new SeatTypeRepository(_context);
             _ticketTypes = new TicketTypeRepository(_context);
             _users = new UserRepository(_context);
-            _reservation_Seats = new Reservation_SeatRepository(_context);
             _news = new NewsRepository(_context);
             _partners = new PartnerRepository(_context);
             _faqs = new FAQRepository(_context);
@@ -82,8 +81,11 @@ namespace EventFlowAPI.Data.SqlServer
         public IEventRepository Events => _events;
         public IFestivalRepository Festivals => _festivals;
         public ITicketRepository Tickets => _tickets;
+        public IReservationRepository Reservations => _reservations;
+        public IEventPassRepository EventPasses => _eventPasses;
+        public IHallRentRepository HallRents => _hallRents;
 
-        // Repositories not yet moved to specific methods (blocks 5-6)
+        // TODO (block 6): only StatisticsService still uses GetRepository<T>() for these
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
         {
             return new Dictionary<Type, IRepository>
@@ -91,7 +93,6 @@ namespace EventFlowAPI.Data.SqlServer
                 { typeof(EventPass), _eventPasses },
                 { typeof(HallRent), _hallRents },
                 { typeof(Reservation), _reservations },
-                { typeof(Reservation_Seat), _reservation_Seats},
             };
         }
 
@@ -111,7 +112,6 @@ namespace EventFlowAPI.Data.SqlServer
         private readonly ISeatTypeRepository _seatTypes;
         private readonly ITicketTypeRepository _ticketTypes;
         private readonly IUserRepository _users;
-        private readonly IReservation_SeatRepository _reservation_Seats;
         private readonly INewsRepository _news;
         private readonly IPartnerRepository _partners;
         private readonly IFAQRepository _faqs;

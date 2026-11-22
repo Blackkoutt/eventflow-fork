@@ -10,6 +10,7 @@ using EventFlowAPI.Logic.Mapper;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -36,7 +37,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<HallRent> _repository = unitOfWork.GetRepository<HallRent>();
+        private readonly IHallRentRepository _repository = unitOfWork.HallRents;
 
         private readonly ICopyMakerService _copyMaker = copyMaker;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
@@ -56,19 +57,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (query.GetAll == true || user.IsInRole(Roles.Admin))
             {
-                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(query)
-                                                                       .GetPage(query.PageNumber, query.PageSize));
+                var allHallRents = await _repository.GetPageAsync(query);
 
                 var allHallRentsDto = MapAsDto(allHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(allHallRentsDto);
             }
             else if (user.IsInRole(Roles.User))
             {
-                var userHallRents = await _repository.GetAllAsync(q =>
-                                            q.ByStatus(query.Status)
-                                            .Where(hr => hr.User.Id == user.Id)
-                                            .SortBy(query.SortBy, query.SortDirection)
-                                            .GetPage(query.PageNumber, query.PageSize));
+                var userHallRents = await _repository.GetUserPageAsync(query, user.Id);
 
                 var userHallRentsResponse = MapAsDto(userHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(userHallRentsResponse);
@@ -177,7 +173,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 hallRent.Hall.HallViewFileName = hallViewFileNameResult.Value;
                 hallRent.HallRentPDFName = hallRentFileNameResult.Value.FileName;
-                _unitOfWork.GetRepository<HallRent>().Update(hallRent);
+                _repository.Update(hallRent);
             }
             await _unitOfWork.SaveChangesAsync();
 
@@ -322,7 +318,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var hallRentId = id ?? -1;
-                var hallRent = await _repository.GetOneAsync(hallRentId);
+                var hallRent = await _repository.GetByIdAsync(hallRentId);
                 if (hallRent == null)
                     return Error.NotFound;
 
@@ -356,13 +352,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (user.IsInRole(Roles.User))
             {
-                var userActiveHallRentsInMonthCount = (await _repository.GetAllAsync(q =>
-                                                            q.Where(hr =>
-                                                                hr.User.Id == user.Id &&    
-                                                                !hr.IsDeleted &&
-                                                                hr.EndDate > DateTime.Now &&
-                                                                hr.StartDate.Month == DateTime.Now.Month)))
-                                                                .Count();
+                var userActiveHallRentsInMonthCount = await _repository.CountActiveForUserStartingThisMonthAsync(user.Id);
                 var userMaxHallRentsInMonth = 5;
                 if (userActiveHallRentsInMonthCount > userMaxHallRentsInMonth)
                     return HallRentError.TooMuchActiveHallRentsInMonth;
@@ -410,7 +400,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<HallRentResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<HallRentResponseDto>.Failure(Error.NotFound);
 
@@ -432,7 +422,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(HallRent Entity, UserResponseDto User)>.Failure(Error.NotFound);
 
@@ -483,7 +473,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<HallRentResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<HallRentResponseDto>.Failure(Error.NotFound);
 

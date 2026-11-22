@@ -9,15 +9,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<bool> CheckTimeCollisionsWithHallRents(int hallId, DateTime startDate, DateTime endDate, int? hallRentId = null)
         {
-            return (await _unitOfWork.GetRepository<HallRent>()
-                        .GetAllAsync(q =>
-                            q.Where(entity =>
-                                entity.Id != hallRentId &&
-                                !entity.IsDeleted &&
-                                entity.EndDate >= DateTime.Now &&
-                                entity.Hall.DefaultId == hallId &&
-                               (startDate < entity.EndDate &&
-                               endDate > entity.StartDate)))).Any();
+            return await _unitOfWork.HallRents.HasCollisionAsync(hallId, startDate, endDate, hallRentId);
         }
         public async Task<bool> CheckTimeCollisionsWithEvents(int hallId, DateTime startDate, DateTime endDate, int? eventId = null)
         {

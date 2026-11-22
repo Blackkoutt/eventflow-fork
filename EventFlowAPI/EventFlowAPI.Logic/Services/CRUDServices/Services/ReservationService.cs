@@ -40,7 +40,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<Reservation> _repository = unitOfWork.GetRepository<Reservation>();
+        private readonly IReservationRepository _repository = unitOfWork.Reservations;
 
         private readonly ISeatService _seatService = seatService;
         private readonly IFileService _fileService = fileService;
@@ -61,19 +61,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (query.GetAll == true || user.IsInRole(Roles.Admin))
             {
-                var allReservations = await _repository.GetAllAsync(q =>
-                                                q.ByQuery(query)
-                                                .GetPage(query.PageNumber, query.PageSize));
+                var allReservations = await _repository.GetPageAsync(query);
 
                 var allReservationsDto = MapAsDto(allReservations);
                 return Result<IEnumerable<ReservationResponseDto>>.Success(allReservationsDto);
             }
             else if (user.IsInRole(Roles.User))
             {
-                var userReservations = await _repository.GetAllAsync(q =>
-                                            q.ByQuery(query)
-                                            .Where(r => r.User.Id == user.Id)
-                                            .GetPage(query.PageNumber, query.PageSize));
+                var userReservations = await _repository.GetPageAsync(query, user.Id);
 
                 var userReservationsResponse = MapAsDto(userReservations);
                 return Result<IEnumerable<ReservationResponseDto>>.Success(userReservationsResponse);
@@ -117,11 +112,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
 
             // Event Pass
-            var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
-                                            q.Where(ep =>
-                                            ep.UserId == user.Id &&
-                                            !ep.IsDeleted &&
-                                            ep.EndDate > DateTime.Now))).FirstOrDefault();
+            var userActiveEventPass = await _unitOfWork.EventPasses.GetActiveForUserAsync(user.Id);
 
             var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
             var ticketRepository = _unitOfWork.Tickets;
@@ -207,11 +198,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var festivalId = userReservation.Ticket.FestivalId ?? -1;
                 var festival = await _unitOfWork.Festivals.GetByIdAsync(festivalId);
                 var reservationsList = new List<Reservation> { userReservation };
-                var festivalReservations = (await _repository.GetAllAsync(q =>
-                                            q.Where(r =>
-                                            r.Id != userReservation.Id &&
-                                            r.UserId == userReservation.UserId &&
-                                            r.Ticket.FestivalId == festivalId))).ToList();
+                var festivalReservations = (await _repository.GetOtherFestivalReservationsAsync(userReservation.Id, userReservation.UserId, festivalId)).ToList();
                 reservationsList.AddRange(festivalReservations);
 
                 // Create Ticket JPGs
@@ -262,11 +249,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 foreach (var reservation in group.ReservationList)
                 {
                     bool deleteFestival = false;
-                    var eventsInFestival = await _repository
-                                                    .GetAllAsync(q => q.Where(r =>
-                                                    r.Ticket.FestivalId != null &&
-                                                    r.ReservationGuid == reservation.ReservationGuid &&
-                                                    !r.IsDeleted));
+                    var eventsInFestival = (await _repository.GetByGuidAsync(reservation.ReservationGuid))
+                                                    .Where(r => r.Ticket.FestivalId != null && !r.IsDeleted);
 
                     if (reservation.IsFestivalReservation && eventsInFestival.Count() <= 2)
                         deleteFestival = true;
@@ -290,8 +274,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             if (reservation.IsFestivalReservation && deleteForFestival)
             {
-                var allReservationsWithSameGuid = await _repository.GetAllAsync(q =>
-                                               q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
+                var allReservationsWithSameGuid = await _repository.GetByGuidAsync(reservation.ReservationGuid);
 
                 foreach (var res in allReservationsWithSameGuid)
                 {
@@ -324,7 +307,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> HardDeleteTicketFiles(int reservationId)
         {
-            var reservation = await _repository.GetOneAsync(reservationId);
+            var reservation = await _repository.GetByIdAsync(reservationId);
             if (reservation == null)
                 return Error.None;
 
@@ -332,7 +315,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (deleteError != Error.None)
                 return deleteError;
 
-            var reservationsWithSameGuid = await _repository.GetAllAsync(q => q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
+            var reservationsWithSameGuid = await _repository.GetByGuidAsync(reservation.ReservationGuid);
             foreach (var reservationWithSameGuid in reservationsWithSameGuid)
             {
                 reservationWithSameGuid.TicketPDFFileName = null;
@@ -538,19 +521,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId)
         {
-            return await _repository
-                        .GetAllAsync(q => q.Where(r =>
-                        !r.IsDeleted &&
-                        r.EndDate > DateTime.Now &&
-                        r.Ticket.EventId == eventId));
+            return await _repository.GetActiveForEventAsync(eventId);
         }
         public async Task<IEnumerable<Reservation>> GetActiveReservationsForFestival(int festivalId)
         {
-            return await _repository
-                        .GetAllAsync(q => q.Where(r =>
-                        !r.IsDeleted &&
-                        r.EndDate > DateTime.Now &&
-                        r.Ticket.FestivalId == festivalId));
+            return await _repository.GetActiveForFestivalAsync(festivalId);
         }
 
 
@@ -588,11 +563,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Festival? festivalEntity, Event eventEntity, List<Seat> seats, Ticket ticket)
         {
             var paymentType = (PaymentType)paymentTypeId;
-            var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
-                                           q.Where(ep =>
-                                           ep.UserId == user.Id &&
-                                           !ep.IsDeleted &&
-                                           ep.EndDate > DateTime.Now))).FirstOrDefault();
+            var userActiveEventPass = await _unitOfWork.EventPasses.GetActiveForUserAsync(user.Id);
 
             if (paymentType == PaymentType.Pass)
             {
@@ -604,11 +575,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 if (!isReservationForFestival && seatIds.Count > 1)
                     return EventPassError.OnlyOneSeatPerEvent;
 
-                var activeReservationsForEventPass = await _repository.GetAllAsync(q =>
-                                                    q.Where(r =>
-                                                    r.EventPassId == userActiveEventPass.Id &&
-                                                    !r.IsDeleted &&
-                                                    r.EndDate > DateTime.Now));
+                var activeReservationsForEventPass = await _repository.GetActiveForEventPassAsync(userActiveEventPass.Id);
 
                 var isAnyActiveReservationForEvent = activeReservationsForEventPass.Any(r => r.Ticket.EventId == ticket.EventId);
                 if (isAnyActiveReservationForEvent)
@@ -632,7 +599,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(Reservation, UserResponseDto)>.Failure(Error.RouteParamOutOfRange);
 
-            var reservation = await _repository.GetOneAsync(id);
+            var reservation = await _repository.GetByIdAsync(id);
             if (reservation == null)
                 return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationDoesNotExist);
 
@@ -819,7 +786,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<ReservationResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<ReservationResponseDto>.Failure(Error.NotFound);
 
@@ -865,7 +832,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<ReservationResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<ReservationResponseDto>.Failure(Error.NotFound);
 
