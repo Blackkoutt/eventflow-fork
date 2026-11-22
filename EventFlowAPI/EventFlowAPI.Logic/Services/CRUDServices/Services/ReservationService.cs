@@ -45,7 +45,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ISeatService _seatService = seatService;
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly ITicketRepository _ticketRepository = (ITicketRepository)unitOfWork.GetRepository<Ticket>();
+        private readonly ITicketRepository _ticketRepository = unitOfWork.Tickets;
 
         public async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
         {
@@ -124,8 +124,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                             ep.EndDate > DateTime.Now))).FirstOrDefault();
 
             var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
-            var ticketRepository = (ITicketRepository)_unitOfWork.GetRepository<Ticket>();
-            var ticket = await ticketRepository.GetOneAsync(requestDto.TicketId);
+            var ticketRepository = _unitOfWork.Tickets;
+            var ticket = await ticketRepository.GetByIdAsync(requestDto.TicketId);
 
             // if ticket is deleted
             var festival = ticket!.Festival;
@@ -205,7 +205,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             foreach (var userReservation in reservationList)
             {
                 var festivalId = userReservation.Ticket.FestivalId ?? -1;
-                var festival = await _unitOfWork.GetRepository<Festival>().GetOneAsync(festivalId);
+                var festival = await _unitOfWork.Festivals.GetByIdAsync(festivalId);
                 var reservationsList = new List<Reservation> { userReservation };
                 var festivalReservations = (await _repository.GetAllAsync(q =>
                                             q.Where(r =>
@@ -509,8 +509,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             if (festival == null) return null;
 
-            var ticketsForFestival = await _ticketRepository.GetAllAsync(q => q.Where(t => 
-                                                                    t.FestivalId == festival.Id));
+            var ticketsForFestival = await _ticketRepository.GetByFestivalAsync(festival.Id);
 
             Dictionary<Ticket, List<Seat>> eventSeatsDict = [];
             foreach (var eventTicket in ticketsForFestival)
@@ -691,7 +690,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!Enum.IsDefined(typeof(PaymentType), paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
-            var ticket = await _ticketRepository.GetOneAsync(ticketId);
+            var ticket = await _ticketRepository.GetByIdAsync(ticketId);
             if (ticket is null)
                 return TicketError.TicketNotFound;
 

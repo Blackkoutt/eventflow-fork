@@ -200,7 +200,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private async Task<FestivalStatistics> GenerateStatisticsAboutFestivals(DateTime startDate, DateTime endDate)
         {
-            var allFestivals = await _unitOfWork.GetRepository<Festival>().GetAllAsync();
+            var allFestivals = await _unitOfWork.Festivals.GetAllAsync();
 
             var allAddedFestivals = allFestivals.Where(e => e.AddDate >= startDate && e.AddDate <= endDate && !e.IsDeleted);
             var allAddedFestivalsCount = allAddedFestivals.Count();
@@ -328,7 +328,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private async Task<EventStatistics> GenerateStatisticsAboutEvents(DateTime startDate, DateTime endDate)
         {
-            var allEvents = await _unitOfWork.GetRepository<Event>().GetAllAsync();
+            var allEvents = await _unitOfWork.Events.GetAllAsync();
 
             var allAddedEvents = allEvents.Where(e => e.AddDate >= startDate && e.AddDate <= endDate && !e.IsDeleted);
             var allAddedEventsCount = allAddedEvents.Count();

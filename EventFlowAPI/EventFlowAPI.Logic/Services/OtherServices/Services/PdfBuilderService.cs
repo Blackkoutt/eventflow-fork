@@ -182,17 +182,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             if (reservation.IsFestivalReservation)
             {
-                return (await _unitOfWork.GetRepository<Ticket>().GetAllAsync(q =>
-                        q.Where(t =>
-                        t.FestivalId == reservation.Ticket.FestivalId))
-                        ).DistinctBy(t => t.TicketType)
+                return (await _unitOfWork.Tickets.GetByFestivalAsync((int)reservation.Ticket.FestivalId!))
+                        .DistinctBy(t => t.TicketType)
                         .ToList();
             }
-            return (await _unitOfWork.GetRepository<Ticket>().GetAllAsync(q =>
-                    q.Where(t =>
-                    t.FestivalId == null &&
-                    t.EventId == reservation.Ticket.EventId))
-                    ).DistinctBy(t => t.TicketType)
+            return (await _unitOfWork.Tickets.GetEventTicketsAsync(reservation.Ticket.EventId))
+                    .DistinctBy(t => t.TicketType)
                     .ToList();
         }
         public async Task<byte[]> CreateTicketPdf(Reservation reservation, List<byte[]> tickets)

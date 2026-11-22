@@ -21,15 +21,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
         public async Task<bool> CheckTimeCollisionsWithEvents(int hallId, DateTime startDate, DateTime endDate, int? eventId = null)
         {
-            return (await _unitOfWork.GetRepository<Event>()
-                        .GetAllAsync(q =>
-                            q.Where(entity =>
-                                entity.Id != eventId &&
-                                !entity.IsDeleted &&
-                                entity.EndDate >= DateTime.Now &&
-                                entity.Hall.DefaultId == hallId &&
-                               (startDate < entity.EndDate &&
-                                endDate > entity.StartDate)))).Any();
+            return await _unitOfWork.Events.HasCollisionAsync(hallId, startDate, endDate, eventId);
         }
     }
 }
