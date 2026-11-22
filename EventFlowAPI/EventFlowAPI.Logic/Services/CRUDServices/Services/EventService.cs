@@ -257,7 +257,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     reservation.StartDate = startDate;
                     reservation.EndDate = endDate;
-                    _unitOfWork.GetRepository<Reservation>().Update(reservation);
+                    _unitOfWork.Reservations.Update(reservation);
                 }
             }
         }
@@ -373,7 +373,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     var seatsForReservation = reservationsSeatsDict.FirstOrDefault(s => s.Key == reservation).Value;
                     reservation.Seats = seatsForReservation;
-                    _unitOfWork.GetRepository<Reservation>().Update(reservation);
+                    _unitOfWork.Reservations.Update(reservation);
                 }
             }
             return Result<Hall>.Success(newHall);

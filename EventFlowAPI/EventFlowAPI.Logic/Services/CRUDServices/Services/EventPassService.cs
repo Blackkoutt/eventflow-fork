@@ -33,7 +33,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<EventPass> _repository = unitOfWork.GetRepository<EventPass>();
+        private readonly IEventPassRepository _repository = unitOfWork.EventPasses;
 
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -47,18 +47,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(query)
-                                                                         .GetPage(query.PageNumber, query.PageSize));
+                var allEventPasses = await _repository.GetPageAsync(query);
 
                 var allEventPassesDto = MapAsDto(allEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(allEventPassesDto);
             }
             else if (user.IsInRole(Roles.User))
             {
-                var userEventPasses = await _repository.GetAllAsync(q =>
-                                            q.ByQuery(query)
-                                            .Where(r => r.User.Id == user.Id)
-                                            .GetPage(query.PageNumber, query.PageSize));
+                var userEventPasses = await _repository.GetPageAsync(query, user.Id);
 
                 var userEventPassesResponse = MapAsDto(userEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(userEventPassesResponse);
@@ -139,7 +135,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<EventPassResponseDto>.Failure(validationError);
 
             Log.Information("Hello from renew2");
-            var eventPass= await _repository.GetOneAsync(id);
+            var eventPass= await _repository.GetByIdAsync(id);
             if (eventPass == null)
                 return Result<EventPassResponseDto>.Failure(Error.NotFound);
 
@@ -233,12 +229,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> DeleteAllAssociatedActiveReservations(int eventPassId)
         {
-            var reservationRepo = _unitOfWork.GetRepository<Reservation>();
-            var allActiveReservations = await reservationRepo
-                                                .GetAllAsync(q => q.Where(r =>
-                                                r.EventPassId == eventPassId &&
-                                                !r.IsDeleted &&
-                                                r.EndDate > DateTime.Now));
+            var allActiveReservations = await _unitOfWork.Reservations.GetActiveForEventPassAsync(eventPassId);
 
             if (allActiveReservations.Any())
             {
@@ -247,7 +238,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 foreach (var reservation in allActiveReservations)
                 {
                     reservation.IsDeleted = true;
-                    reservationRepo.Update(reservation);
+                    _unitOfWork.Reservations.Update(reservation);
                 }
 
                 var deleteTicketFilesError = await _fileService.DeleteTicketFiles(firstRes);
@@ -326,11 +317,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<bool>.Failure(userResult.Error);
 
             var user = userResult.Value;
-            var isUserHaveAnyEventPass = (await _repository.GetAllAsync(q =>
-                                            q.Where(ep =>
-                                            ep.EndDate > DateTime.Now &&
-                                            !ep.IsDeleted &&
-                                            ep.UserId == user.Id))).Any();
+            var isUserHaveAnyEventPass = await _repository.GetActiveForUserAsync(user.Id) != null;
 
             return Result<bool>.Success(isUserHaveAnyEventPass);
         }
@@ -405,7 +392,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<EventPassResponseDto>.Failure(error);
 
-            var oldEntity = await _repository.GetOneAsync(id);
+            var oldEntity = await _repository.GetByIdAsync(id);
             if (oldEntity == null)
                 return Result<EventPassResponseDto>.Failure(Error.NotFound);
 
@@ -427,7 +414,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(EventPass Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(EventPass Entity, UserResponseDto User)>.Failure(Error.NotFound);
 
@@ -479,7 +466,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<EventPassResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<EventPassResponseDto>.Failure(Error.NotFound);
 
