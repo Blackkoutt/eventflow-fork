@@ -19,6 +19,8 @@ namespace EventFlowAPI.Logic.UnitOfWork
         IPartnerRepository Partners { get; }
         INewsRepository News { get; }
         IFAQRepository FAQs { get; }
+        IHallRepository Halls { get; }
+        ISeatRepository Seats { get; }
 
         Task SaveChangesAsync();
 

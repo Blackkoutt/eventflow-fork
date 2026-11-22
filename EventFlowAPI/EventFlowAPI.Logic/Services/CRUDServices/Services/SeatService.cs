@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<IEnumerable<Seat>> GetSeatsByListOfIds(List<int> seatsIds)
         {
-           return await _unitOfWork.GetRepository<Seat>().GetAllAsync(q => q.Where(s => seatsIds.Contains(s.Id)));
+           return await _unitOfWork.Seats.GetByIdsAsync(seatsIds);
         }
     }
 }

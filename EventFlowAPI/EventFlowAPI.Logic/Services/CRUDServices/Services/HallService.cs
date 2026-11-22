@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Enums;
-using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Abstract;
@@ -36,7 +36,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IAuthService _authService = authService;
-        private readonly IGenericRepository<Hall> _repository = unitOfWork.GetRepository<Hall>();
+        private readonly IHallRepository _repository = unitOfWork.Halls;
 
         private readonly ISeatService _seatService = seatService;
         private readonly IReservationService _reservationService = reservationService;
@@ -48,9 +48,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible)
-                                                              .ByQuery(query)
-                                                              .GetPage(query.PageNumber, query.PageSize));
+            var records = await _repository.GetPageAsync(query);
             var response = MapAsDto(records);
 
             return Result<IEnumerable<HallResponseDto>>.Success(response);
@@ -91,7 +89,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (error != Error.None)
                 return Result<HallResponseDto>.Failure(error);
 
-            var hallEntity = await _repository.GetOneAsync(id);
+            var hallEntity = await _repository.GetByIdAsync(id);
             if (hallEntity == null)
                 return Result<HallResponseDto>.Failure(Error.NotFound);
 
@@ -233,7 +231,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<HallResponseDto>.Failure(validationError);
 
             var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
-            var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity!.HallId);
+            var hallEntity = await _repository.GetByIdAsync(eventEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
 
@@ -257,7 +255,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<HallResponseDto>.Failure(validationError);
 
             var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
-            var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(rentEntity!.HallId);
+            var hallEntity = await _repository.GetByIdAsync(rentEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
 
@@ -291,9 +289,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hall = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            var allCopiesOfHall = await _repository.GetAllAsync(q => q.Where(h =>
-                                                                    h.Id != hall.Id &&
-                                                                    h.DefaultId == hall.Id));
+            var allCopiesOfHall = await _repository.GetCopiesAsync(defaultHallId: hall.Id, excludedId: hall.Id);
 
             var allCopiesOfHallId = allCopiesOfHall.Select(h => h.Id).ToList();
 
@@ -331,10 +327,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task UpdateHallCopies(Hall hallEntity, UpdateHallRequestDto requestDto)
         {
-            var hallCopies = await _repository.GetAllAsync(q =>
-                        q.Where(h =>
-                        h.Id != hallEntity.Id &&
-                        h.DefaultId == hallEntity.DefaultId));
+            var hallCopies = await _repository.GetCopiesAsync(defaultHallId: hallEntity.DefaultId ?? hallEntity.Id, excludedId: hallEntity.Id);
 
             foreach (var hall in hallCopies)
             {
@@ -511,7 +504,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (rentEntity == null)
                 return HallRentError.NotFound;
 
-            var hall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(rentEntity.HallId);
+            var hall = await _repository.GetByIdAsync(rentEntity.HallId);
             if (hall == null)
                 return HallError.NotFound;
 
@@ -585,7 +578,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
                 return SeatTypeError.SeatTypeNotFound;
 
-            var hall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity.HallId);
+            var hall = await _repository.GetByIdAsync(eventEntity.HallId);
             if (hall == null)
                 return HallError.NotFound;
 
@@ -716,11 +709,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Result<bool>.Failure(Error.BadRequestType);
             }
 
-            var result = (await _repository.GetAllAsync(q =>
-                                q.Where(entity =>
-                                entity.Id != id &&
-                                entity.IsVisible &&
-                                entity.HallNr == hallNr))).Any();
+            var result = await _repository.VisibleHallNrExistsAsync(hallNr, id);
 
             return Result<bool>.Success(result);
         }
@@ -844,7 +833,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<HallResponseDto>.Failure(Error.RouteParamOutOfRange);
 
-            var record = await _repository.GetOneAsync(id);
+            var record = await _repository.GetByIdAsync(id);
             if (record == null)
                 return Result<HallResponseDto>.Failure(Error.NotFound);
 
@@ -858,7 +847,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id < 0)
                 return Result<(Hall Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
 
-            var entity = await _repository.GetOneAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
                 return Result<(Hall Entity, UserResponseDto User)>.Failure(Error.NotFound);
 

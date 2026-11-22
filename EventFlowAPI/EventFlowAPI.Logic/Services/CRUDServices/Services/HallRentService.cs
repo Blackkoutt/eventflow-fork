@@ -197,10 +197,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             hallRent.HallRentPDFName = null;
 
             // Hard Delete Seats
-            foreach (var seat in hallRent.Hall.Seats)
-            {
-                _unitOfWork.GetRepository<Seat>().Delete(seat);
-            }
+            _unitOfWork.Halls.DeleteSeats(hallRent.Hall);
 
             // Delete Hall View PDF in Blob Storage
             var hallViewPDFDeleteError = await _fileService.DeleteFile(hallRent.Hall, FileType.PDF, BlobContainer.HallViewsPDF);
@@ -340,10 +337,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return PaymentTypeError.PaymentTypeNotFound;
 
 
-            var hallEntity = await _unitOfWork.GetRepository<Hall>()
-                               .GetAllAsync(q => q.Where(h =>
-                               h.Id == hallId));
-            if (hallEntity == null || !hallEntity.Any())
+            var defaultHallId = await _unitOfWork.Halls.GetDefaultIdAsync(hallId);
+            if (defaultHallId == null)
                 return HallRentError.HallNotFound;
 
             if (additionalServicesIds.Distinct().Count() != additionalServicesIds.Count())
@@ -373,10 +368,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return HallRentError.TooMuchActiveHallRentsInMonth;
             }
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)hallEntity.First().DefaultId!, startDate, endDate))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)defaultHallId, startDate, endDate))
                 return HallRentError.CollisionWithExistingEvent;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)hallEntity.First().DefaultId!, startDate, endDate, id))
+            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)defaultHallId, startDate, endDate, id))
                 return HallRentError.CollisionWithExistingHallRent;
 
             return Error.None;
